@@ -5,15 +5,15 @@ parent: "Core Abstraction"
 nav_order: 5
 ---
 
-# (Advanced) Async
+# (高级) 异步
 
-**Async** Nodes implement `prep_async()`, `exec_async()`, `exec_fallback_async()`, and/or `post_async()`. This is useful for:
+**异步**节点实现了 `prep_async()`, `exec_async()`, `exec_fallback_async()` 和/或 `post_async()`。这适用于以下场景:
 
-1. **prep_async()**: For *fetching/reading data (files, APIs, DB)* in an I/O-friendly way.
-2. **exec_async()**: Typically used for async LLM calls.
-3. **post_async()**: For *awaiting user feedback*, *coordinating across multi-agents* or any additional async steps after `exec_async()`.
+1. **prep_async()**: 以I/O友好的方式*获取/读取数据(文件、API、数据库)*
+2. **exec_async()**: 通常用于异步LLM调用
+3. **post_async()**: 用于*等待用户反馈*、*跨多智能体协调*或在`exec_async()`之后执行任何额外的异步步骤
 
-**Note**: `AsyncNode` must be wrapped in `AsyncFlow`. `AsyncFlow` can also include regular (sync) nodes.
+**注意**: `AsyncNode`必须包装在`AsyncFlow`中。`AsyncFlow`也可以包含常规(同步)节点。
 
 ### Example
 

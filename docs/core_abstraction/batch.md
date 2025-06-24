@@ -5,22 +5,22 @@ parent: "Core Abstraction"
 nav_order: 4
 ---
 
-# Batch
+# 批处理
 
-**Batch** makes it easier to handle large inputs in one Node or **rerun** a Flow multiple times. Example use cases:
-- **Chunk-based** processing (e.g., splitting large texts).
-- **Iterative** processing over lists of input items (e.g., user queries, files, URLs).
+**批处理**使得在一个节点中处理大量输入或**多次运行**一个流变得更容易。示例用例:
+- **基于块**的处理(例如，分割大文本)。
+- 对输入项列表(例如，用户查询、文件、URL)进行**迭代**处理。
 
-## 1. BatchNode
+## 1. 批处理节点
 
-A **BatchNode** extends `Node` but changes `prep()` and `exec()`:
+**批处理节点**扩展了`Node`，但改变了`prep()`和`exec()`:
 
-- **`prep(shared)`**: returns an **iterable** (e.g., list, generator).
-- **`exec(item)`**: called **once** per item in that iterable.
-- **`post(shared, prep_res, exec_res_list)`**: after all items are processed, receives a **list** of results (`exec_res_list`) and returns an **Action**.
+- **`prep(shared)`**: 返回一个**可迭代对象**(例如，列表、生成器)。
+- **`exec(item)`**: 对该可迭代对象中的每个项**调用一次**。
+- **`post(shared, prep_res, exec_res_list)`**: 处理完所有项后，接收一个结果**列表**(`exec_res_list`)并返回一个**动作**。
 
 
-### Example: Summarize a Large File
+### 示例: 汇总大文件
 
 ```python
 class MapSummaries(BatchNode):
@@ -48,20 +48,20 @@ flow.run(shared)
 
 ---
 
-## 2. BatchFlow
+## 2. 批处理流
 
-A **BatchFlow** runs a **Flow** multiple times, each time with different `params`. Think of it as a loop that replays the Flow for each parameter set.
+**批处理流**多次运行一个**流**，每次使用不同的`params`。可以将其视为一个循环，为每个参数集重播流。
 
-### Key Differences from BatchNode
+### 与批处理节点的主要区别
 
-**Important**: Unlike BatchNode, which processes items and modifies the shared store:
+**重要**: 与处理项并修改共享存储的批处理节点不同:
 
-1. BatchFlow returns **parameters to pass to the child Flow**, not data to process
-2. These parameters are accessed in child nodes via `self.params`, not from the shared store
-3. Each child Flow runs independently with a different set of parameters
-4. Child nodes can be regular Nodes, not BatchNodes (the batching happens at the Flow level)
+1. 批处理流返回**要传递给子流的参数**，而不是要处理的数据
+2. 这些参数通过`self.params`在子节点中访问，而不是从共享存储中访问
+3. 每个子流都独立运行，具有不同的参数集
+4. 子节点可以是常规节点，而不是批处理节点(批处理发生在流级别)
 
-### Example: Summarize Many Files
+### 示例: 汇总多个文件
 
 ```python
 class SummarizeAllFiles(BatchFlow):
@@ -114,23 +114,23 @@ summarize_all_files = SummarizeAllFiles(start=summarize_file)
 summarize_all_files.run(shared)
 ```
 
-### Under the Hood
-1. `prep(shared)` in the BatchFlow returns a list of param dicts—e.g., `[{"filename": "file1.txt"}, {"filename": "file2.txt"}, ...]`.
-2. The **BatchFlow** loops through each dict. For each one:
-   - It merges the dict with the BatchFlow's own `params` (if any): `{**batch_flow.params, **dict_from_prep}`
-   - It calls `flow.run(shared)` using the merged parameters
-   - **IMPORTANT**: These parameters are passed to the child Flow's nodes via `self.params`, NOT via the shared store
-3. This means the sub-Flow is run **repeatedly**, once for every param dict, with each node in the flow accessing the parameters via `self.params`.
+### 幕后
+1. 批处理流中的`prep(shared)`返回一个参数字典列表——例如，`[{"filename": "file1.txt"}, {"filename": "file2.txt"}, ...]`。
+2. **批处理流**遍历每个字典。对于每个字典:
+   - 它将字典与批处理流自己的`params`(如果有的话)合并:`{**batch_flow.params, **dict_from_prep}`
+   - 它使用合并后的参数调用`flow.run(shared)`
+   - **重要**: 这些参数通过`self.params`传递给子流的节点，而不是通过共享存储
+3. 这意味着子流会**重复**运行，每个参数字典运行一次，流中的每个节点都通过`self.params`访问参数。
 
 ---
 
-## 3. Nested or Multi-Level Batches
+## 3. 嵌套或多级批处理
 
-You can nest a **BatchFlow** in another **BatchFlow**. For instance:
-- **Outer** batch: returns a list of directory param dicts (e.g., `{"directory": "/pathA"}`, `{"directory": "/pathB"}`, ...).
-- **Inner** batch: returning a list of per-file param dicts.
+您可以在另一个**批处理流**中嵌套一个**批处理流**。例如:
+- **外部**批处理: 返回目录参数字典列表(例如，`{"directory": "/pathA"}`，`{"directory": "/pathB"}`，...)。
+- **内部**批处理: 返回每个文件参数字典列表。
 
-At each level, **BatchFlow** merges its own param dict with the parent’s. By the time you reach the **innermost** node, the final `params` is the merged result of **all** parents in the chain. This way, a nested structure can keep track of the entire context (e.g., directory + file name) at once.
+在每个级别，**批处理流**将其自己的参数字典与父级的参数字典合并。当您到达**最内层**节点时，最终的`params`是链中**所有**父级的合并结果。这样，嵌套结构可以同时跟踪整个上下文(例如，目录+文件名)。
 
 ```python
 

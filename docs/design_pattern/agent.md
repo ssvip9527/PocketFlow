@@ -1,96 +1,96 @@
 ---
 layout: default
-title: "Agent"
-parent: "Design Pattern"
+title: "代理"
+parent: "设计模式"
 nav_order: 1
 ---
 
-# Agent
+# 代理
 
-Agent is a powerful design pattern in which nodes can take dynamic actions based on the context.
+代理（Agent）是一种强大的设计模式，其中节点可以根据上下文采取动态行动。
 
 <div align="center">
   <img src="https://github.com/the-pocket/.github/raw/main/assets/agent.png?raw=true" width="350"/>
 </div>
 
-## Implement Agent with Graph
+## 使用图实现代理
 
-1. **Context and Action:** Implement nodes that supply context and perform actions.  
-2. **Branching:** Use branching to connect each action node to an agent node. Use action to allow the agent to direct the [flow](../core_abstraction/flow.md) between nodes—and potentially loop back for multi-step.
-3. **Agent Node:** Provide a prompt to decide action—for example:
+1. **上下文和行动**：实现提供上下文并执行行动的节点。
+2. **分支**：使用分支将每个行动节点连接到代理节点。使用行动允许代理指导节点之间的[流](../core_abstraction/flow.md)——并可能循环回多步骤。
+3. **代理节点**：提供一个提示来决定行动——例如：
 
 ```python
 f"""
-### CONTEXT
-Task: {task_description}
-Previous Actions: {previous_actions}
-Current State: {current_state}
+### 上下文
+任务：{task_description}
+之前的行动：{previous_actions}
+当前状态：{current_state}
 
-### ACTION SPACE
-[1] search
-  Description: Use web search to get results
-  Parameters:
-    - query (str): What to search for
+### 行动空间
+[1] 搜索
+  描述：使用网络搜索获取结果
+  参数：
+    - query (str)：要搜索的内容
 
-[2] answer
-  Description: Conclude based on the results
-  Parameters:
-    - result (str): Final answer to provide
+[2] 回答
+  描述：根据结果得出结论
+  参数：
+    - result (str)：要提供的最终答案
 
-### NEXT ACTION
-Decide the next action based on the current context and available action space.
-Return your response in the following format:
+### 下一步行动
+根据当前上下文和可用的行动空间决定下一步行动。
+以以下格式返回您的响应：
 
 ```yaml
 thinking: |
-    <your step-by-step reasoning process>
-action: <action_name>
+    <您的逐步推理过程>
+action: <行动名称>
 parameters:
-    <parameter_name>: <parameter_value>
+    <参数名称>：<参数值>
 ```"""
 ```
 
-The core of building **high-performance** and **reliable** agents boils down to:
+构建**高性能**和**可靠**代理的核心归结为：
 
-1. **Context Management:** Provide *relevant, minimal context.* For example, rather than including an entire chat history, retrieve the most relevant via [RAG](./rag.md). Even with larger context windows, LLMs still fall victim to ["lost in the middle"](https://arxiv.org/abs/2307.03172), overlooking mid-prompt content.
+1. **上下文管理**：提供*相关、最小的上下文*。例如，与其包含整个聊天历史记录，不如通过[RAG](./rag.md)检索最相关的。即使上下文窗口更大，LLM 仍然容易受到["中间丢失"](https://arxiv.org/abs/2307.03172)的影响，忽略提示中间的内容。
 
-2. **Action Space:** Provide *a well-structured and unambiguous* set of actions—avoiding overlap like separate `read_databases` or  `read_csvs`. Instead, import CSVs into the database.
+2. **行动空间**：提供*结构良好且明确*的行动集——避免像单独的 `read_databases` 或 `read_csvs` 这样的重叠。相反，将 CSV 导入数据库。
 
-## Example Good Action Design
+## 良好行动设计的示例
 
-- **Incremental:** Feed content in manageable chunks (500 lines or 1 page) instead of all at once.
+- **增量**：以可管理的块（500 行或 1 页）而不是一次性地提供内容。
 
-- **Overview-zoom-in:** First provide high-level structure (table of contents, summary), then allow drilling into details (raw texts).
+- **概览-深入**：首先提供高级结构（目录、摘要），然后允许深入细节（原始文本）。
 
-- **Parameterized/Programmable:** Instead of fixed actions, enable parameterized (columns to select) or programmable (SQL queries) actions, for example, to read CSV files.
+- **参数化/可编程**：除了固定行动外，还启用参数化（要选择的列）或可编程（SQL 查询）行动，例如，读取 CSV 文件。
 
-- **Backtracking:** Let the agent undo the last step instead of restarting entirely, preserving progress when encountering errors or dead ends.
+- **回溯**：让代理撤消上一步而不是完全重新开始，在遇到错误或死胡同时保留进度。
 
-## Example: Search Agent
+## 示例：搜索代理
 
-This agent:
-1. Decides whether to search or answer
-2. If searches, loops back to decide if more search needed
-3. Answers when enough context gathered
+此代理：
+1. 决定是搜索还是回答
+2. 如果搜索，则循环回决定是否需要更多搜索
+3. 在收集到足够上下文时回答
 
 ```python
 class DecideAction(Node):
     def prep(self, shared):
-        context = shared.get("context", "No previous search")
+        context = shared.get("context", "没有之前的搜索")
         query = shared["query"]
         return query, context
         
     def exec(self, inputs):
         query, context = inputs
         prompt = f"""
-Given input: {query}
-Previous search results: {context}
-Should I: 1) Search web for more info 2) Answer with current knowledge
-Output in yaml:
+给定输入：{query}
+之前的搜索结果：{context}
+我应该：1) 搜索网络获取更多信息 2) 用当前知识回答
+以 yaml 格式输出：
 ```yaml
 action: search/answer
-reason: why this action
-search_term: search phrase if action is search
+reason: 为什么采取此行动
+search_term: 如果行动是搜索，则为搜索短语
 ```"""
         resp = call_llm(prompt)
         yaml_str = resp.split("```yaml")[1].split("```")[0].strip()
@@ -130,21 +130,21 @@ class DirectAnswer(Node):
         
     def exec(self, inputs):
         query, context = inputs
-        return call_llm(f"Context: {context}\nAnswer: {query}")
+        return call_llm(f"上下文：{context}\n回答：{query}")
 
     def post(self, shared, prep_res, exec_res):
-       print(f"Answer: {exec_res}")
+       print(f"回答：{exec_res}")
        shared["answer"] = exec_res
 
-# Connect nodes
+# 连接节点
 decide = DecideAction()
 search = SearchWeb()
 answer = DirectAnswer()
 
 decide - "search" >> search
 decide - "answer" >> answer
-search - "decide" >> decide  # Loop back
+search - "decide" >> decide  # 循环回
 
 flow = Flow(start=decide)
-flow.run({"query": "Who won the Nobel Prize in Physics 2024?"})
+flow.run({"query": "谁获得了 2024 年诺贝尔物理学奖？"})
 ```

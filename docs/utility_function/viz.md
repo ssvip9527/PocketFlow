@@ -1,17 +1,17 @@
 ---
 layout: default
-title: "Viz and Debug"
-parent: "Utility Function"
+title: "可视化与调试"
+parent: "实用函数"
 nav_order: 2
 ---
 
-# Visualization and Debugging
+# 可视化与调试
 
-Similar to LLM wrappers, we **don't** provide built-in visualization and debugging. Here, we recommend some *minimal* (and incomplete) implementations These examples can serve as a starting point for your own tooling.
+与 LLM 封装器类似，我们**不**提供内置的可视化和调试功能。这里，我们推荐一些*最小化*（且不完整）的实现。这些示例可以作为您自己工具的起点。
 
-## 1. Visualization with Mermaid
+## 1. 使用 Mermaid 进行可视化
 
-This code recursively traverses the nested graph, assigns unique IDs to each node, and treats Flow nodes as subgraphs to generate Mermaid syntax for a hierarchical visualization.
+此代码递归遍历嵌套图，为每个节点分配唯一 ID，并将 Flow 节点视为子图，以生成用于分层可视化的 Mermaid 语法。
 
 {% raw %}
 ```python
@@ -44,7 +44,7 @@ def build_mermaid(start):
 {% endraw %}
 
 
-For example, suppose we have a complex Flow for data science:
+例如，假设我们有一个用于数据科学的复杂 Flow：
 
 ```python
 class DataPrepBatchNode(BatchNode):
@@ -68,7 +68,7 @@ data_science_flow = DataScienceFlow(start=data_prep_node)
 result = build_mermaid(start=data_science_flow)
 ```
 
-The code generates a Mermaid diagram:
+该代码生成一个 Mermaid 图：
 
 ```mermaid
 graph LR
@@ -89,11 +89,11 @@ graph LR
     end
 ```
 
-For visualization based on d3.js, check out [the cookbook](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-visualization).
+有关基于 d3.js 的可视化，请查看 [cookbook](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-visualization)。
 
-## 2. Call Stack Debugging
+## 2. 调用栈调试
 
-It would be useful to print the Node call stacks for debugging. This can be achieved by inspecting the runtime call stack:
+打印节点调用栈对于调试很有用。这可以通过检查运行时调用栈来实现：
 
 ```python
 import inspect
@@ -112,7 +112,7 @@ def get_node_call_stack():
     return node_names
 ```
 
-For example, suppose we have a complex Flow for data science:
+例如，假设我们有一个用于数据科学的复杂 Flow：
 
 ```python
 class DataPrepBatchNode(BatchNode): 
@@ -139,4 +139,4 @@ data_science_flow = DataScienceFlow(start=data_prep_node)
 data_science_flow.run({})
 ```
 
-The output would be: `Call stack: ['EvaluateModelNode', 'ModelFlow', 'DataScienceFlow']`
+输出将是：`Call stack: ['EvaluateModelNode', 'ModelFlow', 'DataScienceFlow']`

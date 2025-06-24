@@ -5,39 +5,39 @@ parent: "Core Abstraction"
 nav_order: 3
 ---
 
-# Communication
+# 通信
 
-Nodes and Flows **communicate** in 2 ways:
+节点和流通过两种方式**通信**:
 
-1. **Shared Store (for almost all the cases)** 
+1. **共享存储(适用于几乎所有情况)**
 
-   - A global data structure (often an in-mem dict) that all nodes can read ( `prep()`) and write (`post()`).  
-   - Great for data results, large content, or anything multiple nodes need.
-   - You shall design the data structure and populate it ahead.
-     
-   - > **Separation of Concerns:** Use `Shared Store` for almost all cases to separate *Data Schema* from *Compute Logic*!  This approach is both flexible and easy to manage, resulting in more maintainable code. `Params` is more a syntax sugar for [Batch](./batch.md).
+   - 一个全局数据结构(通常是内存中的字典)，所有节点都可以读取(`prep()`)和写入(`post()`)。
+   - 非常适合数据结果、大内容或多个节点需要的任何东西。
+   - 您应该提前设计数据结构并填充它。
+
+   - > **关注点分离:** 在几乎所有情况下都使用`共享存储`来分离*数据模式*和*计算逻辑*! 这种方法既灵活又易于管理，从而产生更可维护的代码。`Params`更像是[批处理](./batch.md)的语法糖。
      {: .best-practice }
 
-2. **Params (only for [Batch](./batch.md))** 
-   - Each node has a local, ephemeral `params` dict passed in by the **parent Flow**, used as an identifier for tasks. Parameter keys and values shall be **immutable**.
-   - Good for identifiers like filenames or numeric IDs, in Batch mode.
+2. **参数(仅适用于[批处理](./batch.md))**
+   - 每个节点都有一个由**父流**传入的本地、临时`params`字典，用作任务的标识符。参数键和值应为**不可变**。
+   - 适用于批处理模式下的文件名或数字ID等标识符。
 
-If you know memory management, think of the **Shared Store** like a **heap** (shared by all function calls), and **Params** like a **stack** (assigned by the caller).
+如果您了解内存管理，可以将**共享存储**视为**堆**(所有函数调用共享)，将**参数**视为**栈**(由调用者分配)。
 
 ---
 
-## 1. Shared Store
+## 1. 共享存储
 
-### Overview
+### 概述
 
-A shared store is typically an in-mem dictionary, like:
+共享存储通常是一个内存中的字典，例如:
 ```python
 shared = {"data": {}, "summary": {}, "config": {...}, ...}
 ```
 
-It can also contain local file handlers, DB connections, or a combination for persistence. We recommend deciding the data structure or DB schema first based on your app requirements.
+它还可以包含本地文件句柄、数据库连接或用于持久化的组合。我们建议根据您的应用程序需求首先确定数据结构或数据库模式。
 
-### Example
+### 示例
 
 ```python
 class LoadData(Node):
@@ -77,21 +77,21 @@ Here:
 
 ---
 
-## 2. Params
+## 2. 参数
 
-**Params** let you store *per-Node* or *per-Flow* config that doesn't need to live in the shared store. They are:
-- **Immutable** during a Node's run cycle (i.e., they don't change mid-`prep->exec->post`).
-- **Set** via `set_params()`.
-- **Cleared** and updated each time a parent Flow calls it.
+**参数**允许您存储*每个节点*或*每个流*的配置，而无需存储在共享存储中。它们是:
+- 在节点的运行周期中**不可变**(即，它们在`prep->exec->post`中间不会改变)。
+- 通过`set_params()`**设置**。
+- 每次父流调用时都会**清除**和更新。
 
-> Only set the uppermost Flow params because others will be overwritten by the parent Flow. 
+> 只设置最上层的流参数，因为其他参数将被父流覆盖。
 > 
-> If you need to set child node params, see [Batch](./batch.md).
+> 如果您需要设置子节点参数，请参阅[批处理](./batch.md)。
 {: .warning }
 
-Typically, **Params** are identifiers (e.g., file name, page number). Use them to fetch the task you assigned or write to a specific part of the shared store.
+通常，**参数**是标识符(例如，文件名、页码)。使用它们来获取您分配的任务或写入共享存储的特定部分。
 
-### Example
+### 示例
 
 ```python
 # 1) Create a Node that uses params

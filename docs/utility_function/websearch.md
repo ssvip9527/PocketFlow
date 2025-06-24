@@ -1,25 +1,25 @@
 ---
 layout: default
-title: "Web Search"
-parent: "Utility Function"
+title: "网络搜索"
+parent: "实用函数"
 nav_order: 3
 ---
-# Web Search
+# 网络搜索
 
-We recommend some implementations of commonly used web search tools.
+我们推荐一些常用网络搜索工具的实现。
 
-| **API**                         | **Free Tier**                                | **Pricing Model**                                              | **Docs**                                                  |
+| **API**                         | **免费额度**                                | **定价模式**                                              | **文档**                                                  |
 |---------------------------------|-----------------------------------------------|-----------------------------------------------------------------|------------------------------------------------------------------------|
-| **Google Custom Search JSON API** | 100 queries/day free       | $5 per 1000 queries.           | [Link](https://developers.google.com/custom-search/v1/overview)        |
-| **Bing Web Search API**         | 1,000 queries/month               | $15–$25 per 1,000 queries. | [Link](https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/) |
-| **DuckDuckGo Instant Answer**   | Completely free (Instant Answers only, **no URLs**) | No paid plans; usage unlimited, but data is limited             | [Link](https://duckduckgo.com/api)                                     |
-| **Brave Search API**         | 2,000 queries/month free | $3 per 1k queries for Base, $5 per 1k for Pro | [Link](https://brave.com/search/api/)                                  |
-| **SerpApi**              | 100 searches/month free            | Start at $75/month for 5,000 searches| [Link](https://serpapi.com/)                                             |
-| **RapidAPI**           | Many  options    | Many  options             | [Link](https://rapidapi.com/search?term=search&sortBy=ByRelevance)      |
+| **Google Custom Search JSON API** | 每天 100 次查询免费       | 每 1000 次查询 5 美元。           | [链接](https://developers.google.com/custom-search/v1/overview)        |
+| **Bing Web Search API**         | 每月 1,000 次查询               | 每 1,000 次查询 15-25 美元。 | [链接](https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/) |
+| **DuckDuckGo Instant Answer**   | 完全免费（仅限即时答案，**无 URL**） | 无付费计划；使用无限制，但数据有限             | [链接](https://duckduckgo.com/api)                                     |
+| **Brave Search API**         | 每月 2,000 次查询免费 | 基础版每 1k 次查询 3 美元，专业版每 1k 次查询 5 美元 | [链接](https://brave.com/search/api/)                                  |
+| **SerpApi**              | 每月 100 次搜索免费            | 5,000 次搜索每月 75 美元起| [链接](https://serpapi.com/)                                             |
+| **RapidAPI**           | 许多选项    | 许多选项             | [链接](https://rapidapi.com/search?term=search&sortBy=ByRelevance)      |
 
-## Example Python Code
+## Python 代码示例
 
-### 1. Google Custom Search JSON API
+### 1. Google 自定义搜索 JSON API
 ```python
 import requests
 
@@ -39,7 +39,7 @@ results = response.json()
 print(results)
 ```
 
-### 2. Bing Web Search API
+### 2. Bing 网络搜索 API
 ```python
 import requests
 
@@ -55,7 +55,7 @@ results = response.json()
 print(results)
 ```
 
-### 3. DuckDuckGo Instant Answer
+### 3. DuckDuckGo 即时答案
 ```python
 import requests
 
@@ -71,7 +71,7 @@ results = response.json()
 print(results)
 ```
 
-### 4. Brave Search API
+### 4. Brave 勇敢搜索 API
 ```python
 import requests
 

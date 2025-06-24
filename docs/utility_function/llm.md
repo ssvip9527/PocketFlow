@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "LLM Wrapper"
-parent: "Utility Function"
+title: "LLM 封装器"
+parent: "实用函数"
 nav_order: 1
 ---
 
-# LLM Wrappers
+# LLM 封装器
 
-Check out libraries like [litellm](https://github.com/BerriAI/litellm). 
-Here, we provide some minimal example implementations:
+可以查看 [litellm](https://github.com/BerriAI/litellm) 等库。
+这里，我们提供了一些最小的示例实现：
 
 1. OpenAI
     ```python
@@ -21,10 +21,10 @@ Here, we provide some minimal example implementations:
         )
         return r.choices[0].message.content
 
-    # Example usage
-    call_llm("How are you?")
+    # 示例用法
+    call_llm("你好吗？")
     ```
-    > Store the API key in an environment variable like OPENAI_API_KEY for security.
+    > 为了安全起见，请将 API 密钥存储在环境变量中，例如 OPENAI_API_KEY。
     {: .best-practice }
 
 2. Claude (Anthropic)
@@ -70,7 +70,7 @@ Here, we provide some minimal example implementations:
         return r.choices[0].message.content
     ```
 
-5. Ollama (Local LLM)
+5. Ollama (本地 LLM)
     ```python
     def call_llm(prompt):
         from ollama import chat
@@ -94,10 +94,10 @@ Here, we provide some minimal example implementations:
     ```
 
 
-## Improvements
-Feel free to enhance your `call_llm` function as needed. Here are examples:
+## 改进
+您可以根据需要随意增强 `call_llm` 函数。以下是一些示例：
 
-- Handle chat history:
+- 处理聊天历史记录：
 
 ```python
 def call_llm(messages):
@@ -110,20 +110,20 @@ def call_llm(messages):
     return r.choices[0].message.content
 ```
 
-- Add in-memory caching 
+- 添加内存缓存
 
 ```python
 from functools import lru_cache
 
 @lru_cache(maxsize=1000)
 def call_llm(prompt):
-    # Your implementation here
+    # 您的实现代码
     pass
 ```
 
-> ⚠️ Caching conflicts with Node retries, as retries yield the same result.
+> ⚠️ 缓存与节点重试冲突，因为重试会产生相同的结果。
 >
-> To address this, you could use cached results only if not retried.
+> 为解决此问题，您可以仅在未重试时使用缓存结果。
 {: .warning }
 
 
@@ -137,7 +137,7 @@ def cached_call(prompt):
 def call_llm(prompt, use_cache):
     if use_cache:
         return cached_call(prompt)
-    # Call the underlying function directly
+    # 直接调用底层函数
     return cached_call.__wrapped__(prompt)
 
 class SummarizeNode(Node):
@@ -145,13 +145,13 @@ class SummarizeNode(Node):
         return call_llm(f"Summarize: {text}", self.cur_retry==0)
 ```
 
-- Enable logging:
+- 启用日志记录：
 
 ```python
 def call_llm(prompt):
     import logging
     logging.info(f"Prompt: {prompt}")
-    response = ... # Your implementation here
+    response = ... # 您的实现代码
     logging.info(f"Response: {response}")
     return response
 ```

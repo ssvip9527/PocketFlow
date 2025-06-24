@@ -1,21 +1,21 @@
 ---
 layout: default
-title: "Text-to-Speech"
-parent: "Utility Function"
+title: "文本转语音"
+parent: "实用函数"
 nav_order: 7
 ---
 
-# Text-to-Speech
+# 文本转语音
 
-| **Service**          | **Free Tier**         | **Pricing Model**                                            | **Docs**                                                            |
+| **服务**          | **免费额度**         | **定价模式**                                            | **文档**                                                            |
 |----------------------|-----------------------|--------------------------------------------------------------|---------------------------------------------------------------------|
-| **Amazon Polly**     | 5M std + 1M neural   | ~$4 /M (std), ~$16 /M (neural) after free tier               | [Polly Docs](https://aws.amazon.com/polly/)                         |
-| **Google Cloud TTS** | 4M std + 1M WaveNet  | ~$4 /M (std), ~$16 /M (WaveNet) pay-as-you-go                | [Cloud TTS Docs](https://cloud.google.com/text-to-speech)           |
-| **Azure TTS**        | 500K neural ongoing  | ~$15 /M (neural), discount at higher volumes                 | [Azure TTS Docs](https://azure.microsoft.com/products/cognitive-services/text-to-speech/) |
-| **IBM Watson TTS**   | 10K chars Lite plan  | ~$0.02 /1K (i.e. ~$20 /M). Enterprise options available       | [IBM Watson Docs](https://www.ibm.com/cloud/watson-text-to-speech)   |
-| **ElevenLabs**       | 10K chars monthly    | From ~$5/mo (30K chars) up to $330/mo (2M chars). Enterprise  | [ElevenLabs Docs](https://elevenlabs.io)                            |
+| **Amazon Polly**     | 5M 标准 + 1M 神经   | 免费额度后：约 $4 /M (标准), 约 $16 /M (神经)               | [Polly 文档](https://aws.amazon.com/polly/)                         |
+| **Google Cloud TTS** | 4M 标准 + 1M WaveNet  | 约 $4 /M (标准), 约 $16 /M (WaveNet) 按量付费                | [Cloud TTS 文档](https://cloud.google.com/text-to-speech)           |
+| **Azure TTS**        | 500K 神经持续         | 约 $15 /M (神经)，量大有折扣                                  | [Azure TTS 文档](https://azure.microsoft.com/products/cognitive-services/text-to-speech/) |
+| **IBM Watson TTS**   | 10K 字符精简计划      | 约 $0.02 /1K (即约 $20 /M)。提供企业选项                     | [IBM Watson 文档](https://www.ibm.com/cloud/watson-text-to-speech)   |
+| **ElevenLabs**       | 每月 10K 字符         | 从约 $5/月 (30K 字符) 到 $330/月 (2M 字符)。企业版          | [ElevenLabs 文档](https://elevenlabs.io)                            |
 
-## Example Python Code
+## Python 代码示例
 
 ### Amazon Polly
 ```python

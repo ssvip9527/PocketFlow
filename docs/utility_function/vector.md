@@ -1,51 +1,50 @@
 ---
 layout: default
-title: "Vector Databases"
-parent: "Utility Function"
+title: "向量数据库"
+parent: "实用函数"
 nav_order: 6
 ---
 
-# Vector Databases
+# 向量数据库
 
+下面是常用向量搜索解决方案的表格：
 
-Below is a  table of the popular vector search solutions:
-
-| **Tool** | **Free Tier** | **Pricing Model** | **Docs** |
+| **工具** | **免费额度** | **定价模式** | **文档** |
 | --- | --- | --- | --- |
-| **FAISS** | N/A, self-host | Open-source | [Faiss.ai](https://faiss.ai) |
-| **Pinecone** | 2GB free | From $25/mo | [pinecone.io](https://pinecone.io) |
-| **Qdrant** | 1GB free cloud | Pay-as-you-go | [qdrant.tech](https://qdrant.tech) |
-| **Weaviate** | 14-day sandbox | From $25/mo | [weaviate.io](https://weaviate.io) |
-| **Milvus** | 5GB free cloud | PAYG or $99/mo dedicated | [milvus.io](https://milvus.io) |
-| **Chroma** | N/A, self-host | Free (Apache 2.0) | [trychroma.com](https://trychroma.com) |
-| **Redis** | 30MB free | From $5/mo | [redis.io](https://redis.io) |
+| **FAISS** | 不适用，自托管 | 开源 | [Faiss.ai](https://faiss.ai) |
+| **Pinecone** | 2GB 免费 | $25/月起 | [pinecone.io](https://pinecone.io) |
+| **Qdrant** | 1GB 免费云 | 按量付费 | [qdrant.tech](https://qdrant.tech) |
+| **Weaviate** | 14 天沙盒 | $25/月起 | [weaviate.io](https://weaviate.io) |
+| **Milvus** | 5GB 免费云 | 按量付费或 $99/月专用 | [milvus.io](https://milvus.io) |
+| **Chroma** | 不适用，自托管 | 免费 (Apache 2.0) | [trychroma.com](https://trychroma.com) |
+| **Redis** | 30MB 免费 | $5/月起 | [redis.io](https://redis.io) |
 
 ---
-## Example Python Code
+## Python 代码示例
 
-Below are basic usage snippets for each tool.
+以下是每个工具的基本用法片段。
 
 ### FAISS
 ```python
 import faiss
 import numpy as np
 
-# Dimensionality of embeddings
+# 嵌入的维度
 d = 128
 
-# Create a flat L2 index
+# 创建一个平面 L2 索引
 index = faiss.IndexFlatL2(d)
 
-# Random vectors
+# 随机向量
 data = np.random.random((1000, d)).astype('float32')
 index.add(data)
 
-# Query
+# 查询
 query = np.random.random((1, d)).astype('float32')
 D, I = index.search(query, k=5)
 
-print("Distances:", D)
-print("Neighbors:", I)
+print("距离:", D)
+print("邻居:", I)
 ```
 
 ### Pinecone
@@ -56,21 +55,21 @@ pinecone.init(api_key="YOUR_API_KEY", environment="YOUR_ENV")
 
 index_name = "my-index"
 
-# Create the index if it doesn't exist
+# 如果索引不存在则创建
 if index_name not in pinecone.list_indexes():
     pinecone.create_index(name=index_name, dimension=128)
 
-# Connect
+# 连接
 index = pinecone.Index(index_name)
 
-# Upsert
+# 插入
 vectors = [
     ("id1", [0.1]*128),
     ("id2", [0.2]*128)
 ]
 index.upsert(vectors)
 
-# Query
+# 查询
 response = index.query([[0.15]*128], top_k=3)
 print(response)
 ```
@@ -197,7 +196,7 @@ import struct
 
 r = redis.Redis(host="localhost", port=6379)
 
-# Create index
+# 创建索引
 r.execute_command(
     "FT.CREATE", "my_idx", "ON", "HASH",
     "SCHEMA", "embedding", "VECTOR", "FLAT", "6",

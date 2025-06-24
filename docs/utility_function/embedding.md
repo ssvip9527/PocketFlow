@@ -1,31 +1,31 @@
 ---
 layout: default
-title: "Embedding"
-parent: "Utility Function"
+title: "嵌入"
+parent: "实用函数"
 nav_order: 5
 ---
 
-# Embedding
+# 嵌入
 
-Below you will find an overview table of various text embedding APIs, along with example Python code.
+下面是各种文本嵌入 API 的概述表，以及 Python 代码示例。
 
->  Embedding is more a micro optimization, compared to the Flow Design.
+> 嵌入与流程设计相比，更多是一种微观优化。
 > 
-> It's recommended to start with the most convenient one and optimize later.
+> 建议从最方便的开始，之后再进行优化。
 {: .best-practice }
 
 
-| **API** | **Free Tier** | **Pricing Model** | **Docs** |
+| **API** | **免费额度** | **定价模式** | **文档** |
 | --- | --- | --- | --- |
-| **OpenAI** | ~$5 credit | ~$0.0001/1K tokens | [OpenAI Embeddings](https://platform.openai.com/docs/api-reference/embeddings) |
-| **Azure OpenAI** | $200 credit | Same as OpenAI (~$0.0001/1K tokens) | [Azure OpenAI Embeddings](https://learn.microsoft.com/azure/cognitive-services/openai/how-to/create-resource?tabs=portal) |
-| **Google Vertex AI** | $300 credit | ~$0.025 / million chars | [Vertex AI Embeddings](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) |
-| **AWS Bedrock** | No free tier, but AWS credits may apply | ~$0.00002/1K tokens (Titan V2) | [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/) |
-| **Cohere** | Limited free tier | ~$0.0001/1K tokens | [Cohere Embeddings](https://docs.cohere.com/docs/cohere-embed) |
-| **Hugging Face** | ~$0.10 free compute monthly | Pay per second of compute | [HF Inference API](https://huggingface.co/docs/api-inference) |
-| **Jina** | 1M tokens free | Pay per token after | [Jina Embeddings](https://jina.ai/embeddings/) |
+| **OpenAI** | 约 $5 信用额度 | 约 $0.0001/1K tokens | [OpenAI 嵌入](https://platform.openai.com/docs/api-reference/embeddings) |
+| **Azure OpenAI** | $200 信用额度 | 与 OpenAI 相同（约 $0.0001/1K tokens） | [Azure OpenAI 嵌入](https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/how-to/create-resource?tabs=portal) |
+| **Google Vertex AI** | $300 信用额度 | 约 $0.025 / 百万字符 | [Vertex AI 嵌入](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) |
+| **AWS Bedrock** | 无免费额度，但可能适用 AWS 积分 | 约 $0.00002/1K tokens (Titan V2) | [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/) |
+| **Cohere** | 有限免费额度 | 约 $0.0001/1K tokens | [Cohere 嵌入](https://docs.cohere.com/docs/cohere-embed) |
+| **Hugging Face** | 每月约 $0.10 免费计算 | 按计算秒数付费 | [HF 推理 API](https://huggingface.co/docs/api-inference) |
+| **Jina** | 1M tokens 免费 | 之后按 token 付费 | [Jina 嵌入](https://jina.ai/embeddings/) |
 
-## Example Python Code
+## Python 代码示例
 
 ### 1. OpenAI
 ```python
@@ -37,7 +37,7 @@ response = client.embeddings.create(
     input=text
 )
     
-# Extract the embedding vector from the response
+# 从响应中提取嵌入向量
 embedding = response.data[0].embedding
 embedding = np.array(embedding, dtype=np.float32)
 print(embedding)

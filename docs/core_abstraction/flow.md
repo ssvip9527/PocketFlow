@@ -5,32 +5,32 @@ parent: "Core Abstraction"
 nav_order: 2
 ---
 
-# Flow
+# 流
 
-A **Flow** orchestrates a graph of Nodes. You can chain Nodes in a sequence or create branching depending on the **Actions** returned from each Node's `post()`.
+**流**编排了一个节点图。您可以按顺序链接节点，或根据每个节点的`post()`返回的**动作**创建分支。
 
-## 1. Action-based Transitions
+## 1. 基于动作的转换
 
-Each Node's `post()` returns an **Action** string. By default, if `post()` doesn't return anything, we treat that as `"default"`.
+每个节点的`post()`返回一个**动作**字符串。默认情况下，如果`post()`不返回任何内容，我们将其视为`"default"`。
 
-You define transitions with the syntax:
+您可以使用以下语法定义转换:
 
-1. **Basic default transition**: `node_a >> node_b`
-  This means if `node_a.post()` returns `"default"`, go to `node_b`. 
-  (Equivalent to `node_a - "default" >> node_b`)
+1. **基本默认转换**: `node_a >> node_b`
+  这意味着如果`node_a.post()`返回`"default"`，则转到`node_b`。
+  (等同于`node_a - "default" >> node_b`)
 
-2. **Named action transition**: `node_a - "action_name" >> node_b`
-  This means if `node_a.post()` returns `"action_name"`, go to `node_b`.
+2. **命名动作转换**: `node_a - "action_name" >> node_b`
+  这意味着如果`node_a.post()`返回`"action_name"`，则转到`node_b`。
 
-It's possible to create loops, branching, or multi-step flows.
+可以创建循环、分支或多步骤流。
 
-## 2. Creating a Flow
+## 2. 创建流
 
-A **Flow** begins with a **start** node. You call `Flow(start=some_node)` to specify the entry point. When you call `flow.run(shared)`, it executes the start node, looks at its returned Action from `post()`, follows the transition, and continues until there's no next node.
+**流**从一个**起始**节点开始。您调用`Flow(start=some_node)`来指定入口点。当您调用`flow.run(shared)`时，它会执行起始节点，查看其从`post()`返回的动作，遵循转换，并继续直到没有下一个节点。
 
-### Example: Simple Sequence
+### 示例: 简单序列
 
-Here's a minimal flow of two nodes in a chain:
+这是一个由两个节点组成的最小流:
 
 ```python
 node_a >> node_b
@@ -38,20 +38,20 @@ flow = Flow(start=node_a)
 flow.run(shared)
 ```
 
-- When you run the flow, it executes `node_a`.  
-- Suppose `node_a.post()` returns `"default"`.  
-- The flow then sees `"default"` Action is linked to `node_b` and runs `node_b`.  
-- `node_b.post()` returns `"default"` but we didn't define `node_b >> something_else`. So the flow ends there.
+- 当您运行流时，它会执行`node_a`。
+- 假设`node_a.post()`返回`"default"`。
+- 然后流会看到`"default"`动作链接到`node_b`并运行`node_b`。
+- `node_b.post()`返回`"default"`，但我们没有定义`node_b >> something_else`。所以流在那里结束。
 
-### Example: Branching & Looping
+### 示例: 分支与循环
 
-Here's a simple expense approval flow that demonstrates branching and looping. The `ReviewExpense` node can return three possible Actions:
+这是一个简单的费用审批流，演示了分支和循环。`ReviewExpense`节点可以返回三种可能的动作:
 
-- `"approved"`: expense is approved, move to payment processing
-- `"needs_revision"`: expense needs changes, send back for revision 
-- `"rejected"`: expense is denied, finish the process
+- `"approved"`: 费用已批准，进入支付处理
+- `"needs_revision"`: 费用需要修改，发回修订
+- `"rejected"`: 费用被拒绝，结束流程
 
-We can wire them like this:
+我们可以这样连接它们:
 
 ```python
 # Define the flow connections
@@ -65,11 +65,11 @@ payment >> finish  # After payment, finish the process
 flow = Flow(start=review)
 ```
 
-Let's see how it flows:
+让我们看看它是如何流动的:
 
-1. If `review.post()` returns `"approved"`, the expense moves to the `payment` node
-2. If `review.post()` returns `"needs_revision"`, it goes to the `revise` node, which then loops back to `review`
-3. If `review.post()` returns `"rejected"`, it moves to the `finish` node and stops
+1. 如果`review.post()`返回`"approved"`，费用将移动到`payment`节点
+2. 如果`review.post()`返回`"needs_revision"`，它将转到`revise`节点，然后循环回`review`
+3. 如果`review.post()`返回`"rejected"`，它将移动到`finish`节点并停止
 
 ```mermaid
 flowchart TD
@@ -81,81 +81,81 @@ flowchart TD
     payment --> finish
 ```
 
-### Running Individual Nodes vs. Running a Flow
+### 运行单个节点与运行流
 
-- `node.run(shared)`: Just runs that node alone (calls `prep->exec->post()`), returns an Action. 
-- `flow.run(shared)`: Executes from the start node, follows Actions to the next node, and so on until the flow can't continue.
+- `node.run(shared)`: 只运行该节点(调用`prep->exec->post()`)，返回一个动作。
+- `flow.run(shared)`: 从起始节点开始执行，遵循动作到下一个节点，依此类推，直到流无法继续。
 
-> `node.run(shared)` **does not** proceed to the successor.
-> This is mainly for debugging or testing a single node.
+> `node.run(shared)`**不会**继续到后续节点。
+> 这主要用于调试或测试单个节点。
 > 
-> Always use `flow.run(...)` in production to ensure the full pipeline runs correctly.
+> 在生产环境中始终使用`flow.run(...)`以确保整个管道正确运行。
 {: .warning }
 
-## 3. Nested Flows
+## 3. 嵌套流
 
-A **Flow** can act like a Node, which enables powerful composition patterns. This means you can:
+**流**可以像节点一样工作，这使得强大的组合模式成为可能。这意味着您可以:
 
-1. Use a Flow as a Node within another Flow's transitions.  
-2. Combine multiple smaller Flows into a larger Flow for reuse.  
-3. Node `params` will be a merging of **all** parents' `params`.
+1. 在另一个流的转换中使用流作为节点。
+2. 将多个较小的流组合成一个较大的流以供重用。
+3. 节点`params`将是**所有**父级`params`的合并。
 
-### Flow's Node Methods
+### 流的节点方法
 
-A **Flow** is also a **Node**, so it will run `prep()` and `post()`. However:
+**流**也是一个**节点**，因此它将运行`prep()`和`post()`。但是:
 
-- It **won't** run `exec()`, as its main logic is to orchestrate its nodes.
-- `post()` always receives `None` for `exec_res` and should instead get the flow execution results from the shared store.
+- 它**不会**运行`exec()`，因为它的主要逻辑是编排其节点。
+- `post()`总是接收`None`作为`exec_res`，而应该从共享存储中获取流执行结果。
 
-### Basic Flow Nesting
+### 基本流嵌套
 
-Here's how to connect a flow to another node:
+以下是如何将一个流连接到另一个节点:
 
 ```python
-# Create a sub-flow
+# 创建一个子流
 node_a >> node_b
 subflow = Flow(start=node_a)
 
-# Connect it to another node
+# 将其连接到另一个节点
 subflow >> node_c
 
-# Create the parent flow
+# 创建父流
 parent_flow = Flow(start=subflow)
 ```
 
-When `parent_flow.run()` executes:
-1. It starts `subflow`
-2. `subflow` runs through its nodes (`node_a->node_b`)
-3. After `subflow` completes, execution continues to `node_c`
+当`parent_flow.run()`执行时:
+1. 它启动`subflow`
+2. `subflow`运行其节点(`node_a->node_b`)
+3. `subflow`完成后，执行继续到`node_c`
 
-### Example: Order Processing Pipeline
+### 示例: 订单处理管道
 
-Here's a practical example that breaks down order processing into nested flows:
+这是一个将订单处理分解为嵌套流的实际示例:
 
 ```python
-# Payment processing sub-flow
+# 支付处理子流
 validate_payment >> process_payment >> payment_confirmation
 payment_flow = Flow(start=validate_payment)
 
-# Inventory sub-flow
+# 库存子流
 check_stock >> reserve_items >> update_inventory
 inventory_flow = Flow(start=check_stock)
 
-# Shipping sub-flow
+# 运输子流
 create_label >> assign_carrier >> schedule_pickup
 shipping_flow = Flow(start=create_label)
 
-# Connect the flows into a main order pipeline
+# 将流连接到主订单管道
 payment_flow >> inventory_flow >> shipping_flow
 
-# Create the master flow
+# 创建主流
 order_pipeline = Flow(start=payment_flow)
 
-# Run the entire pipeline
+# 运行整个管道
 order_pipeline.run(shared_data)
 ```
 
-This creates a clean separation of concerns while maintaining a clear execution path:
+这创建了清晰的关注点分离，同时保持了清晰的执行路径:
 
 ```mermaid
 flowchart LR

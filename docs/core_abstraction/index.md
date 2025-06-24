@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Core Abstraction"
+title: "核心抽象"
 nav_order: 2
 has_children: true
 ---

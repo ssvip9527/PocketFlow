@@ -1,40 +1,40 @@
 ---
 layout: default
 title: "RAG"
-parent: "Design Pattern"
+parent: "设计模式"
 nav_order: 3
 ---
 
-# RAG (Retrieval Augmented Generation)
+# RAG (检索增强生成)
 
-For certain LLM tasks like answering questions, providing relevant context is essential. One common architecture is a **two-stage** RAG pipeline:
+对于某些 LLM 任务，例如回答问题，提供相关上下文至关重要。一种常见的架构是 **两阶段** RAG 管道：
 
 <div align="center">
   <img src="https://github.com/the-pocket/.github/raw/main/assets/rag.png?raw=true" width="400"/>
 </div>
 
-1. **Offline stage**: Preprocess and index documents ("building the index").
-2. **Online stage**: Given a question, generate answers by retrieving the most relevant context.
+1. **离线阶段**：预处理和索引文档（“构建索引”）。
+2. **在线阶段**：给定一个问题，通过检索最相关的上下文来生成答案。
 
 ---
-## Stage 1: Offline Indexing
+## 阶段 1：离线索引
 
-We create three Nodes:
-1. `ChunkDocs` – [chunks](../utility_function/chunking.md) raw text.
-2. `EmbedDocs` – [embeds](../utility_function/embedding.md) each chunk.
-3. `StoreIndex` – stores embeddings into a [vector database](../utility_function/vector.md).
+我们创建三个节点：
+1. `ChunkDocs` – [分块](../utility_function/chunking.md) 原始文本。
+2. `EmbedDocs` – [嵌入](../utility_function/embedding.md) 每个分块。
+3. `StoreIndex` – 将嵌入存储到 [向量数据库](../utility_function/vector.md) 中。
 
 ```python
 class ChunkDocs(BatchNode):
     def prep(self, shared):
-        # A list of file paths in shared["files"]. We process each file.
+        # shared["files"] 中的文件路径列表。我们处理每个文件。
         return shared["files"]
 
     def exec(self, filepath):
-        # read file content. In real usage, do error handling.
+        # 读取文件内容。在实际使用中，进行错误处理。
         with open(filepath, "r", encoding="utf-8") as f:
             text = f.read()
-        # chunk by 100 chars each
+        # 每 100 个字符分块
         chunks = []
         size = 100
         for i in range(0, len(text), size):
@@ -42,8 +42,8 @@ class ChunkDocs(BatchNode):
         return chunks
     
     def post(self, shared, prep_res, exec_res_list):
-        # exec_res_list is a list of chunk-lists, one per file.
-        # flatten them all into a single list of chunks.
+        # exec_res_list 是分块列表的列表，每个文件一个。
+        # 将它们全部展平为单个分块列表。
         all_chunks = []
         for chunk_list in exec_res_list:
             all_chunks.extend(chunk_list)
@@ -57,24 +57,24 @@ class EmbedDocs(BatchNode):
         return get_embedding(chunk)
 
     def post(self, shared, prep_res, exec_res_list):
-        # Store the list of embeddings.
+        # 存储嵌入列表。
         shared["all_embeds"] = exec_res_list
-        print(f"Total embeddings: {len(exec_res_list)}")
+        print(f"总嵌入数：{len(exec_res_list)}")
 
 class StoreIndex(Node):
     def prep(self, shared):
-        # We'll read all embeds from shared.
+        # 我们将从 shared 中读取所有嵌入。
         return shared["all_embeds"]
 
     def exec(self, all_embeds):
-        # Create a vector index (faiss or other DB in real usage).
+        # 创建向量索引（实际使用中可以是 faiss 或其他数据库）。
         index = create_index(all_embeds)
         return index
 
     def post(self, shared, prep_res, index):
         shared["index"] = index
 
-# Wire them in sequence
+# 按顺序连接它们
 chunk_node = ChunkDocs()
 embed_node = EmbedDocs()
 store_node = StoreIndex()
@@ -84,22 +84,22 @@ chunk_node >> embed_node >> store_node
 OfflineFlow = Flow(start=chunk_node)
 ```
 
-Usage example:
+使用示例：
 
 ```python
 shared = {
-    "files": ["doc1.txt", "doc2.txt"],  # any text files
+    "files": ["doc1.txt", "doc2.txt"],  # 任何文本文件
 }
 OfflineFlow.run(shared)
 ```
 
 ---
-## Stage 2: Online Query & Answer
+## 阶段 2：在线查询与回答
 
-We have 3 nodes:
-1. `EmbedQuery` – embeds the user’s question.
-2. `RetrieveDocs` – retrieves top chunk from the index.
-3. `GenerateAnswer` – calls the LLM with the question + chunk to produce the final answer.
+我们有 3 个节点：
+1. `EmbedQuery` – 嵌入用户的查询。
+2. `RetrieveDocs` – 从索引中检索最佳分块。
+3. `GenerateAnswer` – 使用问题 + 分块调用 LLM 以生成最终答案。
 
 ```python
 class EmbedQuery(Node):
@@ -114,7 +114,7 @@ class EmbedQuery(Node):
 
 class RetrieveDocs(Node):
     def prep(self, shared):
-        # We'll need the query embedding, plus the offline index/chunks
+        # 我们需要查询嵌入，以及离线索引/分块
         return shared["q_emb"], shared["index"], shared["all_chunks"]
 
     def exec(self, inputs):
@@ -126,7 +126,7 @@ class RetrieveDocs(Node):
 
     def post(self, shared, prep_res, relevant_chunk):
         shared["retrieved_chunk"] = relevant_chunk
-        print("Retrieved chunk:", relevant_chunk[:60], "...")
+        print("检索到的分块：", relevant_chunk[:60], "...")
 
 class GenerateAnswer(Node):
     def prep(self, shared):
@@ -134,12 +134,12 @@ class GenerateAnswer(Node):
 
     def exec(self, inputs):
         question, chunk = inputs
-        prompt = f"Question: {question}\nContext: {chunk}\nAnswer:"
+        prompt = f"问题：{question}\n上下文：{chunk}\n答案："
         return call_llm(prompt)
 
     def post(self, shared, prep_res, answer):
         shared["answer"] = answer
-        print("Answer:", answer)
+        print("答案：", answer)
 
 embed_qnode = EmbedQuery()
 retrieve_node = RetrieveDocs()
@@ -149,13 +149,13 @@ embed_qnode >> retrieve_node >> generate_node
 OnlineFlow = Flow(start=embed_qnode)
 ```
 
-Usage example:
+使用示例：
 
 ```python
-# Suppose we already ran OfflineFlow and have:
-# shared["all_chunks"], shared["index"], etc.
-shared["question"] = "Why do people like cats?"
+# 假设我们已经运行了 OfflineFlow 并拥有：
+# shared["all_chunks"], shared["index"] 等。
+shared["question"] = "为什么人们喜欢猫？"
 
 OnlineFlow.run(shared)
-# final answer in shared["answer"]
+# 最终答案在 shared["answer"] 中
 ```

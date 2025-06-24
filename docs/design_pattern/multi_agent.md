@@ -1,44 +1,44 @@
 ---
 layout: default
-title: "(Advanced) Multi-Agents"
-parent: "Design Pattern"
+title: "(高级) 多智能体"
+parent: "设计模式"
 nav_order: 6
 ---
 
-# (Advanced) Multi-Agents
+# (高级) 多智能体
 
-Multiple [Agents](./flow.md) can work together by handling subtasks and communicating the progress. 
-Communication between agents is typically implemented using message queues in shared storage.
+多个 [智能体](./flow.md) 可以通过处理子任务和沟通进度来协同工作。
+智能体之间的通信通常使用共享存储中的消息队列来实现。
 
-> Most of time, you don't need Multi-Agents. Start with a simple solution first.
+> 大多数情况下，您不需要多智能体。请先从简单的解决方案开始。
 {: .best-practice }
 
-### Example Agent Communication: Message Queue
+### 智能体通信示例：消息队列
 
-Here's a simple example showing how to implement agent communication using `asyncio.Queue`. 
-The agent listens for messages, processes them, and continues listening:
+这是一个使用 `asyncio.Queue` 实现智能体通信的简单示例。
+智能体监听消息，处理它们，并继续监听：
 
 ```python
 class AgentNode(AsyncNode):
     async def prep_async(self, _):
         message_queue = self.params["messages"]
         message = await message_queue.get()
-        print(f"Agent received: {message}")
+        print(f"智能体收到：{message}")
         return message
 
-# Create node and flow
+# 创建节点和流
 agent = AgentNode()
-agent >> agent  # connect to self
+agent >> agent  # 连接到自身
 flow = AsyncFlow(start=agent)
 
-# Create heartbeat sender
+# 创建心跳发送器
 async def send_system_messages(message_queue):
     counter = 0
     messages = [
-        "System status: all systems operational",
-        "Memory usage: normal",
-        "Network connectivity: stable",
-        "Processing load: optimal"
+        "系统状态：所有系统运行正常",
+        "内存使用：正常",
+        "网络连接：稳定",
+        "处理负载：最佳"
     ]
     
     while True:
@@ -52,7 +52,7 @@ async def main():
     shared = {}
     flow.set_params({"messages": message_queue})
     
-    # Run both coroutines
+    # 运行两个协程
     await asyncio.gather(
         flow.run_async(shared),
         send_system_messages(message_queue)
@@ -61,19 +61,19 @@ async def main():
 asyncio.run(main())
 ```
 
-The output:
+输出：
 
 ```
-Agent received: System status: all systems operational | timestamp_0
-Agent received: Memory usage: normal | timestamp_1
-Agent received: Network connectivity: stable | timestamp_2
-Agent received: Processing load: optimal | timestamp_3
+智能体收到：系统状态：所有系统运行正常 | timestamp_0
+智能体收到：内存使用：正常 | timestamp_1
+智能体收到：网络连接：稳定 | timestamp_2
+智能体收到：处理负载：最佳 | timestamp_3
 ```
 
-### Interactive Multi-Agent Example: Taboo Game
+### 交互式多智能体示例：禁忌游戏
 
-Here's a more complex example where two agents play the word-guessing game Taboo. 
-One agent provides hints while avoiding forbidden words, and another agent tries to guess the target word:
+这是一个更复杂的示例，其中两个智能体玩猜词游戏禁忌。
+一个智能体提供提示，同时避免禁忌词，另一个智能体尝试猜测目标词：
 
 ```python
 class AsyncHinter(AsyncNode):
@@ -87,13 +87,13 @@ class AsyncHinter(AsyncNode):
         if inputs is None:
             return None
         target, forbidden, past_guesses = inputs
-        prompt = f"Generate hint for '{target}'\nForbidden words: {forbidden}"
+        prompt = f"为 '{target}' 生成提示\n禁忌词：{forbidden}"
         if past_guesses:
-            prompt += f"\nPrevious wrong guesses: {past_guesses}\nMake hint more specific."
-        prompt += "\nUse at most 5 words."
+            prompt += f"\n之前错误的猜测：{past_guesses}\n使提示更具体。"
+        prompt += "\n最多使用 5 个词。"
         
         hint = call_llm(prompt)
-        print(f"\nHinter: Here's your hint - {hint}")
+        print(f"\n提示者：这是你的提示 - {hint}")
         return hint
 
     async def post_async(self, shared, prep_res, exec_res):
@@ -109,14 +109,14 @@ class AsyncGuesser(AsyncNode):
 
     async def exec_async(self, inputs):
         hint, past_guesses = inputs
-        prompt = f"Given hint: {hint}, past wrong guesses: {past_guesses}, make a new guess. Directly reply a single word:"
+        prompt = f"给定提示：{hint}，过去错误的猜测：{past_guesses}，进行新的猜测。直接回复一个单词："
         guess = call_llm(prompt)
-        print(f"Guesser: I guess it's - {guess}")
+        print(f"猜测者：我猜是 - {guess}")
         return guess
 
     async def post_async(self, shared, prep_res, exec_res):
         if exec_res.lower() == shared["target_word"].lower():
-            print("Game Over - Correct guess!")
+            print("游戏结束 - 猜测正确！")
             await shared["hinter_queue"].put("GAME_OVER")
             return "end"
             
@@ -128,34 +128,34 @@ class AsyncGuesser(AsyncNode):
         return "continue"
 
 async def main():
-    # Set up game
+    # 设置游戏
     shared = {
-        "target_word": "nostalgia",
-        "forbidden_words": ["memory", "past", "remember", "feeling", "longing"],
+        "target_word": "怀旧",
+        "forbidden_words": ["记忆", "过去", "记住", "感觉", "渴望"],
         "hinter_queue": asyncio.Queue(),
         "guesser_queue": asyncio.Queue()
     }
     
-    print("Game starting!")
-    print(f"Target word: {shared['target_word']}")
-    print(f"Forbidden words: {shared['forbidden_words']}")
+    print("游戏开始！")
+    print(f"目标词：{shared['target_word']}")
+    print(f"禁忌词：{shared['forbidden_words']}")
 
-    # Initialize by sending empty guess to hinter
+    # 通过向提示者发送空猜测来初始化
     await shared["hinter_queue"].put("")
 
-    # Create nodes and flows
+    # 创建节点和流
     hinter = AsyncHinter()
     guesser = AsyncGuesser()
 
-    # Set up flows
+    # 设置流
     hinter_flow = AsyncFlow(start=hinter)
     guesser_flow = AsyncFlow(start=guesser)
 
-    # Connect nodes to themselves
+    # 连接节点到自身
     hinter - "continue" >> hinter
     guesser - "continue" >> guesser
 
-    # Run both agents concurrently
+    # 并发运行两个智能体
     await asyncio.gather(
         hinter_flow.run_async(shared),
         guesser_flow.run_async(shared)
@@ -164,23 +164,23 @@ async def main():
 asyncio.run(main())
 ```
 
-The Output:
+输出：
 
 ```
-Game starting!
-Target word: nostalgia
-Forbidden words: ['memory', 'past', 'remember', 'feeling', 'longing']
+游戏开始！
+目标词：怀旧
+禁忌词：['记忆', '过去', '记住', '感觉', '渴望']
 
-Hinter: Here's your hint - Thinking of childhood summer days
-Guesser: I guess it's - popsicle
+提示者：这是你的提示 - 思考童年夏日
+猜测者：我猜是 - 冰棒
 
-Hinter: Here's your hint - When childhood cartoons make you emotional
-Guesser: I guess it's - nostalgic
+提示者：这是你的提示 - 当童年卡通让你感动时
+猜测者：我猜是 - 怀旧
 
-Hinter: Here's your hint - When old songs move you
-Guesser: I guess it's - memories
+提示者：这是你的提示 - 当老歌打动你时
+猜测者：我猜是 - 记忆
 
-Hinter: Here's your hint - That warm emotion about childhood
-Guesser: I guess it's - nostalgia
-Game Over - Correct guess!
+提示者：这是你的提示 - 关于童年的那种温暖情感
+猜测者：我猜是 - 怀旧
+游戏结束 - 猜测正确！
 ```
