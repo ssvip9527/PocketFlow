@@ -4,21 +4,21 @@ import yaml
 
 class DecideAction(Node):
     def prep(self, shared):
-        """Prepare the context and question for the decision-making process."""
-        # Get the current context (default to "No previous search" if none exists)
+        """为决策过程准备上下文和问题。"""
+        # 获取当前上下文（如果不存在，则默认为“无先前搜索”）
         context = shared.get("context", "No previous search")
-        # Get the question from the shared store
+        # 从共享存储中获取问题
         question = shared["question"]
-        # Return both for the exec step
+        # 返回两者以供执行步骤使用
         return question, context
         
     def exec(self, inputs):
-        """Call the LLM to decide whether to search or answer."""
+        """调用LLM来决定是搜索还是回答。"""
         question, context = inputs
         
         print(f"🤔 Agent deciding what to do next...")
         
-        # Create a prompt to help the LLM decide what to do next with proper yaml formatting
+        # 创建一个提示，帮助LLM决定下一步做什么，并使用正确的yaml格式
         prompt = f"""
 ### CONTEXT
 You are a research assistant that can search the web.
@@ -54,63 +54,63 @@ IMPORTANT: Make sure to:
 3. Keep single-line fields without the | character
 """
         
-        # Call the LLM to make a decision
+        # 调用LLM做出决定
         response = call_llm(prompt)
         
-        # Parse the response to get the decision
+        # 解析响应以获取决策
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         decision = yaml.safe_load(yaml_str)
         
         return decision
     
     def post(self, shared, prep_res, exec_res):
-        """Save the decision and determine the next step in the flow."""
-        # If LLM decided to search, save the search query
+        """保存决策并确定流程中的下一步。"""
+        # 如果LLM决定搜索，则保存搜索查询
         if exec_res["action"] == "search":
             shared["search_query"] = exec_res["search_query"]
             print(f"🔍 Agent decided to search for: {exec_res['search_query']}")
         else:
-            shared["context"] = exec_res["answer"] #save the context if LLM gives the answer without searching.
+            shared["context"] = exec_res["answer"] # 如果LLM直接给出答案而没有搜索，则保存上下文。
             print(f"💡 Agent decided to answer the question")
         
-        # Return the action to determine the next node in the flow
+        # 返回动作以确定流程中的下一个节点
         return exec_res["action"]
 
 class SearchWeb(Node):
     def prep(self, shared):
-        """Get the search query from the shared store."""
+        """从共享存储中获取搜索查询。"""
         return shared["search_query"]
         
     def exec(self, search_query):
-        """Search the web for the given query."""
-        # Call the search utility function
+        """搜索给定查询的网页。"""
+        # 调用搜索工具函数
         print(f"🌐 Searching the web for: {search_query}")
         results = search_web(search_query)
         return results
     
     def post(self, shared, prep_res, exec_res):
-        """Save the search results and go back to the decision node."""
-        # Add the search results to the context in the shared store
+        """保存搜索结果并返回决策节点。"""
+        # 将搜索结果添加到共享存储的上下文中
         previous = shared.get("context", "")
         shared["context"] = previous + "\n\nSEARCH: " + shared["search_query"] + "\nRESULTS: " + exec_res
         
         print(f"📚 Found information, analyzing results...")
         
-        # Always go back to the decision node after searching
+        # 搜索后总是返回决策节点
         return "decide"
 
 class AnswerQuestion(Node):
     def prep(self, shared):
-        """Get the question and context for answering."""
+        """获取问题和上下文以进行回答。"""
         return shared["question"], shared.get("context", "")
         
     def exec(self, inputs):
-        """Call the LLM to generate a final answer."""
+        """调用LLM生成最终答案。"""
         question, context = inputs
         
         print(f"✍️ Crafting final answer...")
         
-        # Create a prompt for the LLM to answer the question
+        # 为LLM创建回答问题的提示
         prompt = f"""
 ### CONTEXT
 Based on the following information, answer the question.
@@ -120,16 +120,16 @@ Research: {context}
 ## YOUR ANSWER:
 Provide a comprehensive answer using the research results.
 """
-        # Call the LLM to generate an answer
+        # 调用LLM生成答案
         answer = call_llm(prompt)
         return answer
     
     def post(self, shared, prep_res, exec_res):
-        """Save the final answer and complete the flow."""
-        # Save the answer in the shared store
+        """保存最终答案并完成流程。"""
+        # 将答案保存在共享存储中
         shared["answer"] = exec_res
         
         print(f"✅ Answer generated successfully")
         
-        # We're done - no need to continue the flow
-        return "done" 
+        # 完成 - 无需继续流程
+        return "done"

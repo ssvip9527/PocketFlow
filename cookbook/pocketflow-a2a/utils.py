@@ -3,6 +3,7 @@ import os
 from duckduckgo_search import DDGS
 
 def call_llm(prompt):    
+    # 出于测试目的，请替换为您的实际OpenAI密钥或设置为环境变量
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
     r = client.chat.completions.create(
         model="gpt-4o",

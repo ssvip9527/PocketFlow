@@ -49,13 +49,13 @@ def colorize(color, text):
     help="URL of the PocketFlow A2A agent server.",
 )
 async def cli(agent_url: str):
-    """Minimal CLI client to interact with an A2A agent."""
+    """与A2A代理交互的最小CLI客户端。"""
 
     print(colorize(C_BRIGHT_MAGENTA, f"Connecting to agent at: {agent_url}"))
 
-    # Instantiate the client - only URL is needed if not fetching card first
-    # Note: The PocketFlow wrapper doesn't expose much via the AgentCard,
-    # so we skip fetching it for this minimal client.
+    # 实例化客户端 - 如果不先获取卡片，只需要URL
+    # 注意：PocketFlow包装器通过AgentCard暴露的内容不多，
+    # 所以在这个最小客户端中我们跳过获取卡片。
     client = A2AClient(url=agent_url)
 
     sessionId = uuid4().hex # Generate a new session ID for this run
@@ -64,17 +64,17 @@ async def cli(agent_url: str):
     while True:
         taskId = uuid4().hex # Generate a new task ID for each interaction
         try:
-            # Use functools.partial to prepare the prompt function call
+            # 使用functools.partial准备提示函数调用
             prompt_func = functools.partial(
                 click.prompt,
                 colorize(C_CYAN, "\nEnter your question (:q or quit to exit)"),
                 prompt_suffix=" > ",
                 type=str
             )
-            # Run the synchronous prompt function in a worker thread
+            # 在工作线程中运行同步提示函数
             prompt = await anyio.to_thread.run_sync(prompt_func)
         except (EOFError, RuntimeError, KeyboardInterrupt):
-            # Catch potential errors during input or if stdin closes
+            # 捕获输入期间或stdin关闭时的潜在错误
             print(colorize(C_RED, "\nInput closed or interrupted. Exiting."))
             break
 
@@ -82,7 +82,7 @@ async def cli(agent_url: str):
             print(colorize(C_YELLOW, "Exiting client."))
             break
 
-        # --- Construct A2A Request Payload ---
+        # --- 构造A2A请求负载 ---
         payload = {
             "id": taskId,
             "sessionId": sessionId,
@@ -90,22 +90,22 @@ async def cli(agent_url: str):
                 "role": "user",
                 "parts": [
                     {
-                        "type": "text", # Explicitly match TextPart structure
+                        "type": "text", # 明确匹配TextPart结构
                         "text": prompt,
                     }
                 ],
             },
-            "acceptedOutputModes": ["text", "text/plain"], # What the client wants back
-            # historyLength could be added if needed
+            "acceptedOutputModes": ["text", "text/plain"], # 客户端期望返回的内容
+            # 如果需要可以添加historyLength
         }
 
         print(colorize(C_GRAY, f"Sending task {taskId}..."))
 
         try:
-            # --- Send Task (Non-Streaming) ---
+            # --- 发送任务(非流式) ---
             response = await client.send_task(payload)
 
-            # --- Process Response ---
+            # --- 处理响应 ---
             if response.error:
                 print(colorize(C_RED, f"Error from agent (Code: {response.error.code}): {response.error.message}"))
                 if response.error.data:
@@ -115,7 +115,7 @@ async def cli(agent_url: str):
                 print(colorize(C_GREEN, f"Task {task_result.id} finished with state: {task_result.status.state}"))
 
                 final_answer = "Agent did not provide a final artifact."
-                # Extract answer from artifacts (as implemented in PocketFlowTaskManager)
+                # 从artifacts中提取答案(如PocketFlowTaskManager中的实现)
                 if task_result.artifacts:
                     try:
                         # Find the first text part in the first artifact
@@ -131,7 +131,7 @@ async def cli(agent_url: str):
                     except (IndexError, AttributeError, TypeError) as e:
                         final_answer = f"(Error parsing artifact: {e})"
                 elif task_result.status.message and task_result.status.message.parts:
-                     # Fallback to status message if no artifact
+                     # 如果没有artifact则回退到状态消息
                      try:
                         first_text_part = next(
                              (p for p in task_result.status.message.parts if isinstance(p, TextPart)),

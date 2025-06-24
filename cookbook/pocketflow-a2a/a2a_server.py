@@ -2,21 +2,21 @@ import click
 import logging
 import os
 
-# Import from the common code you copied
+# 从您复制的通用代码中导入
 from common.server import A2AServer
 from common.types import AgentCard, AgentCapabilities, AgentSkill, MissingAPIKeyError
 
-# Import your custom TaskManager (which now imports from your original files)
+# 导入您的自定义任务管理器（现在从您的原始文件导入）
 from task_manager import PocketFlowTaskManager
 
-# --- Configure logging ---
-# Set level to INFO to see server start, requests, responses
-# Set level to DEBUG to see raw response bodies from client
+# --- 配置日志 ---
+# 设置INFO级别以查看服务器启动、请求、响应
+# 设置DEBUG级别以查看来自客户端的原始响应体
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-# Optionally silence overly verbose libraries
+# 可选地，使过于详细的库静默
 # logging.getLogger("httpx").setLevel(logging.WARNING)
 # logging.getLogger("httpcore").setLevel(logging.WARNING)
 # logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
@@ -27,17 +27,17 @@ logger = logging.getLogger(__name__)
 @click.option("--host", "host", default="localhost")
 @click.option("--port", "port", default=10003) # Use a different port from other agents
 def main(host, port):
-    """Starts the PocketFlow A2A Agent server."""
+    """启动PocketFlow A2A代理服务器。"""
     try:
-        # Check for necessary API keys (add others if needed)
+        # 检查必要的API密钥（如果需要，可添加其他）
         if not os.getenv("OPENAI_API_KEY"):
             raise MissingAPIKeyError("OPENAI_API_KEY environment variable not set.")
 
-        # --- Define the Agent Card ---
+        # --- 定义代理卡片 ---
         capabilities = AgentCapabilities(
-            streaming=False, # This simple implementation is synchronous
+            streaming=False, # 这个简单的实现是同步的
             pushNotifications=False,
-            stateTransitionHistory=False # PocketFlow state isn't exposed via A2A history
+            stateTransitionHistory=False # PocketFlow状态不通过A2A历史暴露
         )
         skill = AgentSkill(
             id="web_research_qa",
@@ -49,26 +49,26 @@ def main(host, port):
                 "What is quantum computing?",
                 "Summarize the latest news about AI.",
             ],
-            # Input/Output modes defined in the TaskManager
+            # 在TaskManager中定义的输入/输出模式
             inputModes=PocketFlowTaskManager.SUPPORTED_CONTENT_TYPES,
             outputModes=PocketFlowTaskManager.SUPPORTED_CONTENT_TYPES,
         )
         agent_card = AgentCard(
             name="PocketFlow Research Agent (A2A Wrapped)",
             description="A simple research agent based on PocketFlow, made accessible via A2A.",
-            url=f"http://{host}:{port}/", # The endpoint A2A clients will use
+            url=f"http://{host}:{port}/", # A2A客户端将使用的端点
             version="0.1.0-a2a",
             capabilities=capabilities,
             skills=[skill],
-            # Assuming no specific provider or auth for this example
+            # 假设此示例没有特定的提供者或认证
             provider=None,
             authentication=None,
             defaultInputModes=PocketFlowTaskManager.SUPPORTED_CONTENT_TYPES,
             defaultOutputModes=PocketFlowTaskManager.SUPPORTED_CONTENT_TYPES,
         )
 
-        # --- Initialize and Start Server ---
-        task_manager = PocketFlowTaskManager() # Instantiate your custom manager
+        # --- 初始化并启动服务器 ---
+        task_manager = PocketFlowTaskManager() # 实例化您的自定义管理器
         server = A2AServer(
             agent_card=agent_card,
             task_manager=task_manager,

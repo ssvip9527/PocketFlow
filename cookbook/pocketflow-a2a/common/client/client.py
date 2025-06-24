@@ -28,11 +28,11 @@ from common.types import (
 import json
 import logging
 
-# Configure a logger specific to the client
+# 配置客户端特有的日志记录器
 logger = logging.getLogger("A2AClient")
 
 class A2AClientError(Exception):
-    """Base class for A2A client errors"""
+    """A2A客户端错误的基类"""
     def __init__(self, message):
         super().__init__(message)
 

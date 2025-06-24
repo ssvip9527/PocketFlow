@@ -3,31 +3,31 @@ from nodes import DecideAction, SearchWeb, AnswerQuestion
 
 def create_agent_flow():
     """
-    Create and connect the nodes to form a complete agent flow.
+    创建并连接节点以形成完整的代理流。
     
-    The flow works like this:
-    1. DecideAction node decides whether to search or answer
-    2. If search, go to SearchWeb node
-    3. If answer, go to AnswerQuestion node
-    4. After SearchWeb completes, go back to DecideAction
+    流程如下：
+    1. DecideAction节点决定是搜索还是回答
+    2. 如果是搜索，则转到SearchWeb节点
+    3. 如果是回答，则转到AnswerQuestion节点
+    4. SearchWeb完成后，返回DecideAction
     
-    Returns:
-        Flow: A complete research agent flow
+    返回：
+        Flow: 一个完整的研究代理流
     """
-    # Create instances of each node
+    # 创建每个节点的实例
     decide = DecideAction()
     search = SearchWeb()
     answer = AnswerQuestion()
     
-    # Connect the nodes
-    # If DecideAction returns "search", go to SearchWeb
+    # 连接节点
+    # 如果DecideAction返回“search”，则转到SearchWeb
     decide - "search" >> search
     
-    # If DecideAction returns "answer", go to AnswerQuestion
+    # 如果DecideAction返回“answer”，则转到AnswerQuestion
     decide - "answer" >> answer
     
-    # After SearchWeb completes and returns "decide", go back to DecideAction
+    # SearchWeb完成后并返回“decide”，则返回DecideAction
     search - "decide" >> decide
     
-    # Create and return the flow, starting with the DecideAction node
-    return Flow(start=decide) 
+    # 创建并返回流程，从DecideAction节点开始
+    return Flow(start=decide)

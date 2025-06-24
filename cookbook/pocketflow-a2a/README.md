@@ -1,20 +1,20 @@
 # PocketFlow Agent with A2A Protocol
 
-This project demonstrates how to take an existing agent built with the PocketFlow library and make it accessible to other agents using the **Agent-to-Agent (A2A) communication protocol**.
+本项目演示了如何将使用 PocketFlow 库构建的现有代理通过**代理间通信协议(A2A)**使其可被其他代理访问。
 
-This implementation is based  on the tutorial: [A2A Protocol Simply Explained: Here are 3 key differences to MCP!](https://zacharyhuang.substack.com/p/a2a-protocol-simply-explained-here)
+本实现基于教程: [A2A协议简明解释:与MCP的3个关键区别!](https://zacharyhuang.substack.com/p/a2a-protocol-simply-explained-here)
 
-## How it Works: A2A Integration
+## 工作原理: A2A集成
 
-This project combines two main parts:
+本项目结合了两个主要部分:
 
-1.  **PocketFlow Agent Logic:** The original agent code ([`nodes.py`](nodes.py), [`utils.py`](utils.py), [`flow.py`](flow.py)) defines the internal workflow (Decide -> Search -> Answer). This code is taken directly from the [PocketFlow Agent Tutorial](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-agent).
-2.  **A2A Server Wrapper:** Code from the [google/A2A samples repository](https://github.com/google/A2A/tree/main/samples/python) (`common/` directory) provides the necessary infrastructure to host the agent as an A2A-compliant server. *Note: Minor modifications were made to the common server/client code to add detailed logging for educational purposes.*
-3.  **The Bridge ([`task_manager.py`](task_manager.py)):** A custom `PocketFlowTaskManager` class acts as the bridge. It receives A2A requests (like `tasks/send`), extracts the user query, runs the PocketFlow `agent_flow`, takes the final result from the flow's shared state, and packages it back into an A2A `Task` object with the answer as an `Artifact`.
+1.  **PocketFlow代理逻辑:** 原始代理代码([`nodes.py`](nodes.py), [`utils.py`](utils.py), [`flow.py`](flow.py))定义了内部工作流程(决策->搜索->回答)。此代码直接取自[PocketFlow代理教程](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-agent)。
+2.  **A2A服务器封装:** 来自[google/A2A示例仓库](https://github.com/google/A2A/tree/main/samples/python)的代码(`common/`目录)提供了必要的基础设施，将代理托管为符合A2A标准的服务器。*注:对通用服务器/客户端代码进行了少量修改，添加了详细日志记录用于教学目的。*
+3.  **桥梁([`task_manager.py`](task_manager.py)):** 自定义的`PocketFlowTaskManager`类充当桥梁。它接收A2A请求(如`tasks/send`)，提取用户查询，运行PocketFlow的`agent_flow`，从流程的共享状态中获取最终结果，并将其打包回带有答案作为`Artifact`的A2A`Task`对象。
 
-This demonstrates how a non-A2A agent framework can be exposed over the A2A protocol by implementing a specific `TaskManager`.
+这展示了如何通过实现特定的`TaskManager`将非A2A代理框架通过A2A协议暴露出来。
 
-## Simplified Interaction Sequence
+## 简化交互流程
 
 ```mermaid
 sequenceDiagram
@@ -28,52 +28,52 @@ sequenceDiagram
     Note over Client: Displays final answer
 ```
 
-## Getting Started
+## 开始使用
 
-### Prerequisites
+### 先决条件
 
-*   Python 3.10+ (due to type hinting used in the A2A `common` code)
-*   An OpenAI API Key
+*   Python 3.10+(由于A2A`common`代码中使用了类型提示)
+*   OpenAI API密钥
 
-### Installation
+### 安装
 
 
-1.  Install dependencies:
+1.  安装依赖:
     ```bash
     pip install -r requirements.txt
     ```
 
-2. Set your OpenAI API key as an environment variable:
+2. 将您的OpenAI API密钥设置为环境变量:
 
     ```bash
     export OPENAI_API_KEY="your-api-key-here"
     ```
 
-    Let's do a quick check to make sure your API key is working properly:
+    让我们快速检查一下您的API密钥是否正常工作:
 
     ```bash
     python utils.py
     ```
-3. Run the server from this directory:
+3. 从该目录运行服务器:
 
     ```bash
     python a2a_server.py --port 10003
     ```
 
-    You should see logs indicating the server has started on `http://localhost:10003`.
+    您应该会看到日志显示服务器已在`http://localhost:10003`上启动。
 
 
-4.  Run the Client in a *separate terminal* 
+4.  在*单独的终端*中运行客户端 
 
     ```bash
     python a2a_client.py --agent-url http://localhost:10003
     ```
 
-5.  Follow the instructions in the client terminal to ask questions. Type `:q` or `quit` to exit the client.
+5.  按照客户端终端中的说明提问。输入`:q`或`quit`退出客户端。
 
-## Example Interaction Logs
+## 示例交互日志
 
-**(Server Log - showing internal PocketFlow steps)**
+**(服务器日志-显示内部PocketFlow步骤)**
 
 ```
 2025-04-12 17:20:40,893 - __main__ - INFO - Starting PocketFlow A2A server on http://localhost:10003
@@ -147,7 +147,7 @@ INFO:     Uvicorn running on http://localhost:10003 (Press CTRL+C to quit)
 }
 ```
 
-**(Client Log - showing request/response)**
+**(客户端日志-显示请求/响应)**
 
 ```
 Connecting to agent at: http://localhost:10003
@@ -211,20 +211,20 @@ Agent Response:
 The 2024 Nobel Prize in Physics was awarded to John J. Hopfield and Geoffrey Hinton for their foundational discoveries and inventions that have significantly advanced the field of machine learning through the use of artificial neural networks. Their pioneering work has been crucial in the development and implementation of algorithms that enable machines to learn and process information in a manner that mimics human cognitive functions. This advancement in artificial intelligence technology has had a profound impact on numerous industries, facilitating innovations across various applications, from image and speech recognition to self-driving cars.
 ```
 
-## Key A2A Integration Points
+## 关键A2A集成点
 
-To make the PocketFlow agent A2A-compatible, the following were essential:
+为了使PocketFlow代理兼容A2A，以下内容至关重要:
 
-1.  **A2A Server ([`common/server/server.py`](common/server/server.py)):** An ASGI application (using Starlette/Uvicorn) that listens for HTTP POST requests, parses JSON-RPC, and routes requests based on the `method` field.
-2.  **A2A Data Types ([`common/types.py`](common/types.py)):** Pydantic models defining the structure of A2A messages, tasks, artifacts, errors, and the agent card, ensuring compliance with the `a2a.json` specification.
-3.  **Task Manager ([`task_manager.py`](task_manager.py)):** A custom class (`PocketFlowTaskManager`) inheriting from the common `InMemoryTaskManager`. Its primary role is implementing the `on_send_task` method (and potentially others like `on_send_task_subscribe` if streaming were supported). This method:
-    *   Receives the validated A2A `SendTaskRequest`.
-    *   Extracts the user's query (`TextPart`) from the request's `message`.
-    *   Initializes the PocketFlow `shared_data` dictionary.
-    *   Creates and runs the PocketFlow `agent_flow`.
-    *   Retrieves the final answer from the `shared_data` dictionary *after* the flow completes.
-    *   Updates the task's state (e.g., to `COMPLETED` or `FAILED`) in the `InMemoryTaskManager`'s store.
-    *   Packages the final answer into an A2A `Artifact` containing a `TextPart`.
-    *   Constructs the final A2A `Task` object for the response.
-4.  **Agent Card ([`a2a_server.py`](a2a_server.py)):** A Pydantic model (`AgentCard`) defining the agent's metadata (name, description, URL, capabilities, skills) served at `/.well-known/agent.json`.
-5.  **Server Entry Point ([`a2a_server.py`](a2a_server.py)):** A script that initializes the `AgentCard`, the `PocketFlowTaskManager`, and the `A2AServer`, then starts the Uvicorn server process.
+1.  **A2A服务器([`common/server/server.py`](common/server/server.py)):** 一个ASGI应用程序(使用Starlette/Uvicorn)，监听HTTP POST请求，解析JSON-RPC，并根据`method`字段路由请求。
+2.  **A2A数据类型([`common/types.py`](common/types.py)):** 定义A2A消息、任务、工件、错误和代理卡结构的Pydantic模型，确保符合`a2a.json`规范。
+3.  **任务管理器([`task_manager.py`](task_manager.py)):** 继承自通用`InMemoryTaskManager`的自定义类(`PocketFlowTaskManager`)。其主要作用是实现`on_send_task`方法(如果支持流式传输，还可能实现`on_send_task_subscribe`等方法)。该方法:
+    *   接收经过验证的A2A`SendTaskRequest`。
+    *   从请求的`message`中提取用户查询(`TextPart`)。
+    *   初始化PocketFlow`shared_data`字典。
+    *   创建并运行PocketFlow`agent_flow`。
+    *   在流程完成后从`shared_data`字典中检索最终答案。
+    *   在`InMemoryTaskManager`的存储中更新任务状态(例如，设置为`COMPLETED`或`FAILED`)。
+    *   将最终答案打包成包含`TextPart`的A2A`Artifact`。
+    *   为响应构造最终的A2A`Task`对象。
+4.  **代理卡([`a2a_server.py`](a2a_server.py)):** 定义代理元数据(名称、描述、URL、能力、技能)的Pydantic模型(`AgentCard`)，在`/.well-known/agent.json`提供服务。
+5.  **服务器入口点([`a2a_server.py`](a2a_server.py)):** 初始化`AgentCard`、`PocketFlowTaskManager`和`A2AServer`，然后启动Uvicorn服务器进程的脚本。

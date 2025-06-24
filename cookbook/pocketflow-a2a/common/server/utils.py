@@ -9,8 +9,7 @@ from typing import List
 def are_modalities_compatible(
     server_output_modes: List[str], client_output_modes: List[str]
 ):
-    """Modalities are compatible if they are both non-empty
-    and there is at least one common element."""
+    """如果两种模态都非空且至少有一个共同元素，则它们是兼容的。"""
     if client_output_modes is None or len(client_output_modes) == 0:
         return True
 
