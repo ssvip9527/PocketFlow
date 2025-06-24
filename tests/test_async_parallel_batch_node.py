@@ -16,7 +16,7 @@ class AsyncParallelNumberProcessor(AsyncParallelBatchNode):
         return numbers
     
     async def exec_async(self, number):
-        await asyncio.sleep(self.delay)  # Simulate async processing
+        await asyncio.sleep(self.delay)  # 模拟异步处理
         return number * 2
         
     async def post_async(self, shared_storage, prep_result, exec_result):
@@ -34,7 +34,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
     
     def test_parallel_processing(self):
         """
-        Test that numbers are processed in parallel by measuring execution time
+        通过测量执行时间来测试数字是否并行处理
         """
         shared_storage = {
             'input_numbers': list(range(5))
@@ -51,14 +51,14 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
         expected = [0, 2, 4, 6, 8]  # Each number doubled
         self.assertEqual(shared_storage['processed_numbers'], expected)
         
-        # Since processing is parallel, total time should be approximately
-        # equal to the delay of a single operation, not delay * number_of_items
+        # 由于处理是并行的，总时间应近似等于
+        # 单个操作的延迟，而不是延迟 * 项目数
         execution_time = end_time - start_time
-        self.assertLess(execution_time, 0.2)  # Should be around 0.1s plus minimal overhead
+        self.assertLess(execution_time, 0.2)  # 应该在 0.1 秒左右，加上最小开销
     
     def test_empty_input(self):
         """
-        Test processing of empty input
+        测试空输入的处理
         """
         shared_storage = {
             'input_numbers': []
@@ -71,7 +71,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
     
     def test_single_item(self):
         """
-        Test processing of a single item
+        测试单个项目的处理
         """
         shared_storage = {
             'input_numbers': [42]
@@ -84,7 +84,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
     
     def test_large_batch(self):
         """
-        Test processing of a large batch of numbers
+        测试处理大量数字
         """
         input_size = 100
         shared_storage = {
@@ -99,7 +99,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
     
     def test_error_handling(self):
         """
-        Test error handling during parallel processing
+        测试并行处理中的错误处理
         """
         class ErrorProcessor(AsyncParallelNumberProcessor):
             async def exec_async(self, item):
@@ -117,7 +117,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
     
     def test_concurrent_execution(self):
         """
-        Test that tasks are actually running concurrently by tracking execution order
+        通过跟踪执行顺序来测试任务是否实际并发运行
         """
         execution_order = []
         
@@ -135,7 +135,7 @@ class TestAsyncParallelBatchNode(unittest.TestCase):
         processor = OrderTrackingProcessor()
         self.loop.run_until_complete(processor.run_async(shared_storage))
         
-        # Odd numbers should finish before even numbers due to shorter delay
+        # 由于延迟较短，奇数应在偶数之前完成
         self.assertLess(execution_order.index(1), execution_order.index(0))
         self.assertLess(execution_order.index(3), execution_order.index(2))
 

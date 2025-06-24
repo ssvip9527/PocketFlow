@@ -12,7 +12,7 @@ class AsyncArrayChunkNode(AsyncBatchNode):
         self.chunk_size = chunk_size
     
     async def prep_async(self, shared_storage):
-        # Get array from shared storage and split into chunks
+        # 从共享存储中获取数组并分割成块
         array = shared_storage.get('input_array', [])
         chunks = []
         for start in range(0, len(array), self.chunk_size):
@@ -21,20 +21,20 @@ class AsyncArrayChunkNode(AsyncBatchNode):
         return chunks
     
     async def exec_async(self, chunk):
-        # Simulate async processing of each chunk
+        # 模拟每个块的异步处理
         await asyncio.sleep(0.01)
         return sum(chunk)
         
     async def post_async(self, shared_storage, prep_result, proc_result):
-        # Store chunk results in shared storage
+        # 将块处理结果存储在共享存储中
         shared_storage['chunk_results'] = proc_result
         return "processed"
 
 class AsyncSumReduceNode(AsyncNode):
     async def prep_async(self, shared_storage):
-        # Get chunk results from shared storage
+        # 从共享存储中获取块处理结果
         chunk_results = shared_storage.get('chunk_results', [])
-        await asyncio.sleep(0.01)  # Simulate async processing
+        await asyncio.sleep(0.01)  # 模拟异步处理
         total = sum(chunk_results)
         shared_storage['total'] = total
         return "reduced"
@@ -42,7 +42,7 @@ class AsyncSumReduceNode(AsyncNode):
 class TestAsyncBatchNode(unittest.TestCase):
     def test_array_chunking(self):
         """
-        Test that the array is correctly split into chunks and processed asynchronously
+        测试数组是否正确地分割成块并异步处理
         """
         shared_storage = {
             'input_array': list(range(25))  # [0,1,2,...,24]

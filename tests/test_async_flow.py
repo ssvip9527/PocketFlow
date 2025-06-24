@@ -8,78 +8,78 @@ from pocketflow import Node, AsyncNode, AsyncFlow
 
 class AsyncNumberNode(AsyncNode):
     """
-    Simple async node that sets 'current' to a given number.
-    Demonstrates overriding .process() (sync) and using
-    post_async() for the async portion.
+    简单的异步节点，将 'current' 设置为给定数字。
+    演示了如何覆盖 .process() (同步) 并使用
+    post_async() 进行异步部分。
     """
     def __init__(self, number):
         super().__init__()
         self.number = number
 
     async def prep_async(self, shared_storage):
-        # Synchronous work is allowed inside an AsyncNode,
-        # but final 'condition' is determined by post_async().
+        # 异步节点内允许同步工作，
+        # 但最终的“条件”由 post_async() 决定。
         shared_storage['current'] = self.number
         return "set_number"
 
     async def post_async(self, shared_storage, prep_result, proc_result):
-        # Possibly do asynchronous tasks here
+        # 可能在此处执行异步任务
         await asyncio.sleep(0.01)
-        # Return a condition for the flow
+        # 返回流程的条件
         return "number_set"
 
 class AsyncIncrementNode(AsyncNode):
     """
-    Demonstrates incrementing the 'current' value asynchronously.
+    演示了异步递增 'current' 值。
     """
     async def prep_async(self, shared_storage):
         shared_storage['current'] = shared_storage.get('current', 0) + 1
         return "incremented"
 
     async def post_async(self, shared_storage, prep_result, proc_result):
-        await asyncio.sleep(0.01)  # simulate async I/O
+        await asyncio.sleep(0.01)  # 模拟异步 I/O
         return "done"
 
 class AsyncSignalNode(AsyncNode):
-    """ An async node that returns a specific signal string from post_async. """
+    """ 一个异步节点，从 post_async 返回特定的信号字符串。 """
     def __init__(self, signal="default_async_signal"):
         super().__init__()
         self.signal = signal
 
     # No prep needed usually if just signaling
     async def prep_async(self, shared_storage):
-        await asyncio.sleep(0.01) # Simulate async work
+        await asyncio.sleep(0.01) # 模拟异步工作
 
     async def post_async(self, shared_storage, prep_result, exec_result):
-        # Store the signal in shared storage for verification
+        # 将信号存储在共享存储中以进行验证
         shared_storage['last_async_signal_emitted'] = self.signal
-        await asyncio.sleep(0.01) # Simulate async work
+        await asyncio.sleep(0.01) # 模拟异步工作
         print(self.signal)
-        return self.signal # Return the specific action string
+        return self.signal # 返回特定的动作字符串
 
 class AsyncPathNode(AsyncNode):
-    """ An async node to indicate which path was taken in the outer flow. """
+    """ 一个异步节点，用于指示在外部流中采取了哪个路径。 """
     def __init__(self, path_id):
         super().__init__()
         self.path_id = path_id
 
     async def prep_async(self, shared_storage):
-        await asyncio.sleep(0.01) # Simulate async work
+        await asyncio.sleep(0.01) # 模拟异步工作
         shared_storage['async_path_taken'] = self.path_id
 
     # post_async implicitly returns None (for default transition out if needed)
     async def post_async(self, shared_storage, prep_result, exec_result):
          await asyncio.sleep(0.01)
-         # Return None by default
+         # 默认返回 None
 
 class TestAsyncNode(unittest.TestCase):
     """
-    Test the AsyncNode (and descendants) in isolation (not in a flow).
+    独立测试 AsyncNode (及其子类) (不在流程中)。
     """
     def test_async_number_node_direct_call(self):
         """
-        Even though AsyncNumberNode is designed for an async flow,
-        we can still test it directly by calling run_async().
+        尽管 AsyncNumberNode 是为异步流设计的，
+        我们仍然可以通过调用 run_async() 直接测试它。
         """
         async def run_node():
             node = AsyncNumberNode(42)
@@ -105,13 +105,13 @@ class TestAsyncNode(unittest.TestCase):
 
 class TestAsyncFlow(unittest.TestCase):
     """
-    Test how AsyncFlow orchestrates multiple async nodes.
+    测试 AsyncFlow 如何编排多个异步节点。
     """
     def test_simple_async_flow(self):
         """
-        Flow:
-          1) AsyncNumberNode(5) -> sets 'current' to 5
-          2) AsyncIncrementNode() -> increments 'current' to 6
+        流程:
+          1) AsyncNumberNode(5) -> 将 'current' 设置为 5
+          2) AsyncIncrementNode() -> 将 'current' 递增到 6
         """
 
         # Create our nodes
@@ -132,17 +132,16 @@ class TestAsyncFlow(unittest.TestCase):
 
     def test_async_flow_branching(self):
         """
-        Demonstrate a branching scenario where we return different
-        conditions. For example, you could have an async node that
-        returns "go_left" or "go_right" in post_async, but here
-        we'll keep it simpler for demonstration.
+        演示一个分支场景，其中我们返回不同的条件。
+        例如，你可以在 post_async 中有一个异步节点，返回 "go_left" 或 "go_right"，
+        但这里为了演示，我们将其保持简单。
         """
 
         class BranchingAsyncNode(AsyncNode):
             def exec(self, data):
                 value = shared_storage.get("value", 0)
                 shared_storage["value"] = value
-                # We'll decide branch based on whether 'value' is positive
+                # 我们将根据 'value' 是否为正来决定分支
                 return None
 
             async def post_async(self, shared_storage, prep_result, proc_result):
@@ -180,29 +179,29 @@ class TestAsyncFlow(unittest.TestCase):
 
     def test_async_composition_with_action_propagation(self):
         """
-        Test AsyncFlow branches based on action from nested AsyncFlow's last node.
+        测试 AsyncFlow 根据嵌套 AsyncFlow 最后一个节点的动作进行分支。
         """
         async def run_test():
             shared_storage = {}
 
-            # 1. Define an inner async flow ending with AsyncSignalNode
-            # Use existing AsyncNumberNode which should return None from post_async implicitly
+            # 1. 定义一个以 AsyncSignalNode 结尾的内部异步流
+            # 使用现有的 AsyncNumberNode，它应该从 post_async 隐式返回 None
             inner_start_node = AsyncNumberNode(200)
             inner_end_node = AsyncSignalNode("async_inner_done") # post_async -> "async_inner_done"
             inner_start_node - "number_set" >> inner_end_node
-            # Inner flow will execute start->end, Flow exec returns "async_inner_done"
+            # 内部流将执行 start->end，Flow exec 返回 "async_inner_done"
             inner_flow = AsyncFlow(start=inner_start_node)
 
-            # 2. Define target async nodes for the outer flow branches
+            # 2. 为外部流分支定义目标异步节点
             path_a_node = AsyncPathNode("AsyncA") # post_async -> None
             path_b_node = AsyncPathNode("AsyncB") # post_async -> None
 
-            # 3. Define the outer async flow starting with the inner async flow
+            # 3. 定义从内部异步流开始的外部异步流
             outer_flow = AsyncFlow(start=inner_flow)
 
-            # 4. Define branches FROM the inner_flow object based on its returned action
-            inner_flow - "async_inner_done" >> path_b_node  # This path should be taken
-            inner_flow - "other_action" >> path_a_node      # This path should NOT be taken
+            # 将外部流链接到根据内部流结果进行分支
+            outer_flow - "async_inner_done" >> path_a_node
+            outer_flow - AsyncFlow.DEFAULT_TRANSITION >> path_b_node # 不应被采用
 
             # 5. Run the outer async flow and capture the last action
             # Execution: inner_start -> inner_end -> path_b

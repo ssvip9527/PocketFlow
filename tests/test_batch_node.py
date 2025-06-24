@@ -11,7 +11,7 @@ class ArrayChunkNode(BatchNode):
         self.chunk_size = chunk_size
     
     def prep(self, shared_storage):
-        # Get array from shared storage and split into chunks
+        # 从共享存储中获取数组并将其分成块
         array = shared_storage.get('input_array', [])
         chunks = []
         for start in range(0, len(array), self.chunk_size):
@@ -20,26 +20,27 @@ class ArrayChunkNode(BatchNode):
         return chunks
     
     def exec(self, chunk):
-        # Process the chunk and return its sum
+        # 处理块并返回其总和
         chunk_sum = sum(chunk)
         return chunk_sum
         
     def post(self, shared_storage, prep_result, proc_result):
-        # Store chunk results in shared storage
+        # 将块结果存储在共享存储中
         shared_storage['chunk_results'] = proc_result
         return "default"
 
 class SumReduceNode(Node):
     def prep(self, shared_storage):
-        # Get chunk results from shared storage and sum them
+        # 从共享存储中获取块结果并求和
         chunk_results = shared_storage.get('chunk_results', [])
         total = sum(chunk_results)
         shared_storage['total'] = total
 
 class TestBatchNode(unittest.TestCase):
+    # 批处理节点测试类
     def test_array_chunking(self):
         """
-        Test that the array is correctly split into chunks
+        测试数组是否正确分块
         """
         shared_storage = {
             'input_array': list(range(25))  # [0,1,2,...,24]
@@ -52,9 +53,9 @@ class TestBatchNode(unittest.TestCase):
         
     def test_map_reduce_sum(self):
         """
-        Test a complete map-reduce pipeline that sums a large array:
-        1. Map: Split array into chunks and sum each chunk
-        2. Reduce: Sum all the chunk sums
+        测试一个完整的 Map-Reduce 管道，用于对大型数组求和：
+        1. Map：将数组分成块并对每个块求和
+        2. Reduce：对所有块的总和求和
         """
         # Create test array: [0,1,2,...,99]
         array = list(range(100))
@@ -79,8 +80,7 @@ class TestBatchNode(unittest.TestCase):
         
     def test_uneven_chunks(self):
         """
-        Test that the map-reduce works correctly with array lengths
-        that don't divide evenly by chunk_size
+        测试 Map-Reduce 在数组长度不能被 chunk_size 整除时是否正常工作
         """
         array = list(range(25))
         expected_sum = sum(array)  # 300
@@ -100,7 +100,7 @@ class TestBatchNode(unittest.TestCase):
 
     def test_custom_chunk_size(self):
         """
-        Test that the map-reduce works with different chunk sizes
+        测试 Map-Reduce 在不同分块大小下是否正常工作
         """
         array = list(range(100))
         expected_sum = sum(array)
@@ -121,7 +121,7 @@ class TestBatchNode(unittest.TestCase):
         
     def test_single_element_chunks(self):
         """
-        Test extreme case where chunk_size=1
+        测试 chunk_size=1 的极端情况
         """
         array = list(range(5))
         expected_sum = sum(array)
@@ -141,7 +141,7 @@ class TestBatchNode(unittest.TestCase):
 
     def test_empty_array(self):
         """
-        Test edge case of empty input array
+        测试空输入数组的边缘情况
         """
         shared_storage = {
             'input_array': []

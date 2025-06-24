@@ -20,7 +20,7 @@ class FallbackNode(Node):
     def exec(self, prep_result):
         self.attempt_count += 1
         if self.should_fail:
-            raise ValueError("Intentional failure")
+            raise ValueError("故意失败")
         return "success"
     
     def exec_fallback(self, prep_result, exc):
@@ -46,11 +46,11 @@ class AsyncFallbackNode(AsyncNode):
     async def exec_async(self, prep_result):
         self.attempt_count += 1
         if self.should_fail:
-            raise ValueError("Intentional async failure")
+            raise ValueError("故意异步失败")
         return "success"
     
     async def exec_fallback_async(self, prep_result, exc):
-        await asyncio.sleep(0.01)  # Simulate async work
+        await asyncio.sleep(0.01)  # 模拟异步工作
         return "async_fallback"
     
     async def post_async(self, shared_storage, prep_result, exec_result):
@@ -60,8 +60,9 @@ class AsyncFallbackNode(AsyncNode):
         })
 
 class TestExecFallback(unittest.TestCase):
+    # 同步执行回退测试类
     def test_successful_execution(self):
-        """Test that exec_fallback is not called when execution succeeds"""
+        """测试执行成功时不会调用 exec_fallback"""
         shared_storage = {}
         node = FallbackNode(should_fail=False)
         result = node.run(shared_storage)
@@ -71,7 +72,7 @@ class TestExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['results'][0]['result'], "success")
 
     def test_fallback_after_failure(self):
-        """Test that exec_fallback is called after all retries are exhausted"""
+        """测试在所有重试耗尽后是否调用 exec_fallback"""
         shared_storage = {}
         node = FallbackNode(should_fail=True, max_retries=2)
         result = node.run(shared_storage)
@@ -81,7 +82,7 @@ class TestExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['results'][0]['result'], "fallback")
 
     def test_fallback_in_flow(self):
-        """Test that fallback works within a Flow"""
+        """测试回退在 Flow 中是否有效"""
         class ResultNode(Node):
             def prep(self, shared_storage):
                 return shared_storage.get('results', [])
@@ -106,7 +107,7 @@ class TestExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['final_result'], [{'attempts': 1, 'result': 'fallback'}] )
 
     def test_no_fallback_implementation(self):
-        """Test that default fallback behavior raises the exception"""
+        """测试默认回退行为是否引发异常"""
         class NoFallbackNode(Node):
             def prep(self, shared_storage):
                 if 'results' not in shared_storage:
@@ -126,7 +127,7 @@ class TestExecFallback(unittest.TestCase):
             node.run(shared_storage)
 
     def test_retry_before_fallback(self):
-        """Test that retries are attempted before calling fallback"""
+        """测试在调用回退之前是否尝试重试"""
         shared_storage = {}
         node = FallbackNode(should_fail=True, max_retries=3)
         node.run(shared_storage)
@@ -136,6 +137,7 @@ class TestExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['results'][0]['result'], "fallback")
 
 class TestAsyncExecFallback(unittest.TestCase):
+    # 异步执行回退测试类
     def setUp(self):
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
@@ -144,7 +146,7 @@ class TestAsyncExecFallback(unittest.TestCase):
         self.loop.close()
 
     def test_async_successful_execution(self):
-        """Test that async exec_fallback is not called when execution succeeds"""
+        """测试异步执行成功时不会调用 exec_fallback"""
         async def run_test():
             shared_storage = {}
             node = AsyncFallbackNode(should_fail=False)
@@ -157,7 +159,7 @@ class TestAsyncExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['results'][0]['result'], "success")
 
     def test_async_fallback_after_failure(self):
-        """Test that async exec_fallback is called after all retries are exhausted"""
+        """测试在所有重试耗尽后是否调用异步 exec_fallback"""
         async def run_test():
             shared_storage = {}
             node = AsyncFallbackNode(should_fail=True, max_retries=2)
@@ -171,7 +173,7 @@ class TestAsyncExecFallback(unittest.TestCase):
         self.assertEqual(shared_storage['results'][0]['result'], "async_fallback")
 
     def test_async_fallback_in_flow(self):
-        """Test that async fallback works within an AsyncFlow"""
+        """测试异步回退在 AsyncFlow 中是否有效"""
         class AsyncResultNode(AsyncNode):
             async def prep_async(self, shared_storage):
                 return shared_storage['results'][-1]['result']  # Get last result

@@ -6,6 +6,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from pocketflow import Node, BatchFlow, Flow
 
 class DataProcessNode(Node):
+    # 数据处理节点：将输入数据乘以2并存储结果
     def prep(self, shared_storage):
         key = self.params.get('key')
         data = shared_storage['input_data'][key]
@@ -14,6 +15,7 @@ class DataProcessNode(Node):
         shared_storage['results'][key] = data * 2
 
 class ErrorProcessNode(Node):
+    # 错误处理节点：模拟处理错误
     def prep(self, shared_storage):
         key = self.params.get('key')
         if key == 'error_key':
@@ -23,11 +25,12 @@ class ErrorProcessNode(Node):
         shared_storage['results'][key] = True
 
 class TestBatchFlow(unittest.TestCase):
+    # 批处理流测试类
     def setUp(self):
         self.process_node = DataProcessNode()
         
     def test_basic_batch_processing(self):
-        """Test basic batch processing with multiple keys"""
+        """测试使用多个键进行基本批处理"""
         class SimpleTestBatchFlow(BatchFlow):
             def prep(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -51,7 +54,7 @@ class TestBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage['results'], expected_results)
 
     def test_empty_input(self):
-        """Test batch processing with empty input dictionary"""
+        """测试空输入字典的批处理"""
         class EmptyTestBatchFlow(BatchFlow):
             def prep(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -66,7 +69,7 @@ class TestBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage.get('results', {}), {})
 
     def test_single_item(self):
-        """Test batch processing with single item"""
+        """测试单项批处理"""
         class SingleItemBatchFlow(BatchFlow):
             def prep(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -86,7 +89,7 @@ class TestBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage['results'], expected_results)
 
     def test_error_handling(self):
-        """Test error handling during batch processing"""
+        """测试批处理中的错误处理"""
         class ErrorTestBatchFlow(BatchFlow):
             def prep(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -105,8 +108,9 @@ class TestBatchFlow(unittest.TestCase):
             flow.run(shared_storage)
 
     def test_nested_flow(self):
-        """Test batch processing with nested flows"""
+        """测试嵌套流的批处理"""
         class InnerNode(Node):
+            # 内部节点：处理内部数据
             def exec(self, prep_result):
                 key = self.params.get('key')
                 if 'intermediate_results' not in shared_storage:
@@ -114,6 +118,7 @@ class TestBatchFlow(unittest.TestCase):
                 shared_storage['intermediate_results'][key] = shared_storage['input_data'][key] + 1
 
         class OuterNode(Node):
+            # 外部节点：处理外部数据
             def exec(self, prep_result):
                 key = self.params.get('key')
                 if 'results' not in shared_storage:
@@ -146,7 +151,7 @@ class TestBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage['results'], expected_results)
 
     def test_custom_parameters(self):
-        """Test batch processing with additional custom parameters"""
+        """测试带附加自定义参数的批处理"""
         class CustomParamNode(Node):
             def exec(self, prep_result):
                 key = self.params.get('key')

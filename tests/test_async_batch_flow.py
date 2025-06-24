@@ -25,15 +25,16 @@ class AsyncErrorNode(AsyncNode):
     async def post_async(self, shared_storage, prep_result, proc_result):
         key = self.params.get('key')
         if key == 'error_key':
-            raise ValueError(f"Async error processing key: {key}")
+            raise ValueError(f"异步处理键时出错: {key}")
         return "processed"
 
 class TestAsyncBatchFlow(unittest.TestCase):
+    # 异步批处理流测试类
     def setUp(self):
         self.process_node = AsyncDataProcessNode()
 
     def test_basic_async_batch_processing(self):
-        """Test basic async batch processing with multiple keys"""
+        """测试带多个键的基础异步批处理"""
         class SimpleTestAsyncBatchFlow(AsyncBatchFlow):
             async def prep_async(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -57,7 +58,7 @@ class TestAsyncBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage['results'], expected_results)
 
     def test_empty_async_batch(self):
-        """Test async batch processing with empty input"""
+        """测试空输入的异步批处理"""
         class EmptyTestAsyncBatchFlow(AsyncBatchFlow):
             async def prep_async(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -72,7 +73,7 @@ class TestAsyncBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage.get('results', {}), {})
 
     def test_async_error_handling(self):
-        """Test error handling during async batch processing"""
+        """测试异步批处理中的错误处理"""
         class ErrorTestAsyncBatchFlow(AsyncBatchFlow):
             async def prep_async(self, shared_storage):
                 return [{'key': k} for k in shared_storage['input_data'].keys()]
@@ -91,7 +92,7 @@ class TestAsyncBatchFlow(unittest.TestCase):
             asyncio.run(flow.run_async(shared_storage))
 
     def test_nested_async_flow(self):
-        """Test async batch processing with nested flows"""
+        """测试带嵌套流的异步批处理"""
         class AsyncInnerNode(AsyncNode):
             async def post_async(self, shared_storage, prep_result, proc_result):
                 key = self.params.get('key')
@@ -136,7 +137,7 @@ class TestAsyncBatchFlow(unittest.TestCase):
         self.assertEqual(shared_storage['results'], expected_results)
 
     def test_custom_async_parameters(self):
-        """Test async batch processing with additional custom parameters"""
+        """测试带额外自定义参数的异步批处理"""
         class CustomParamAsyncNode(AsyncNode):
             async def post_async(self, shared_storage, prep_result, proc_result):
                 key = self.params.get('key')

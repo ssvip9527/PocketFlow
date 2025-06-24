@@ -16,7 +16,7 @@ class AsyncParallelNumberProcessor(AsyncParallelBatchNode):
         return batch
     
     async def exec_async(self, number):
-        await asyncio.sleep(self.delay)  # Simulate async processing
+        await asyncio.sleep(self.delay)  # 模拟异步处理
         return number * 2
         
     async def post_async(self, shared_storage, prep_result, exec_result):
@@ -27,7 +27,7 @@ class AsyncParallelNumberProcessor(AsyncParallelBatchNode):
 
 class AsyncAggregatorNode(AsyncNode):
     async def prep_async(self, shared_storage):
-        # Combine all batch results in order
+        # 按顺序合并所有批处理结果
         all_results = []
         processed = shared_storage.get('processed_numbers', {})
         for i in range(len(processed)):
@@ -52,7 +52,7 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
 
     def test_parallel_batch_flow(self):
         """
-        Test basic parallel batch processing flow with batch IDs
+        测试带批次 ID 的基本并行批处理流
         """
         class TestParallelBatchFlow(AsyncParallelBatchFlow):
             async def prep_async(self, shared_storage):
@@ -93,7 +93,7 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
 
     def test_error_handling(self):
         """
-        Test error handling in parallel batch flow
+        测试并行批处理流中的错误处理
         """
         class ErrorProcessor(AsyncParallelNumberProcessor):
             async def exec_async(self, item):
@@ -120,7 +120,7 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
 
     def test_multiple_batch_sizes(self):
         """
-        Test parallel batch flow with varying batch sizes
+        测试不同批次大小的并行批处理流
         """
         class VaryingBatchFlow(AsyncParallelBatchFlow):
             async def prep_async(self, shared_storage):
@@ -128,10 +128,10 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
 
         shared_storage = {
             'batches': [
-                [1],           # batch_id: 0
-                [2, 3, 4],    # batch_id: 1
-                [5, 6],       # batch_id: 2
-                [7, 8, 9, 10] # batch_id: 3
+                [1],           # 批次 ID: 0
+                [2, 3, 4],    # 批次 ID: 1
+                [5, 6],       # 批次 ID: 2
+                [7, 8, 9, 10] # 批次 ID: 3
             ]
         }
 
@@ -143,7 +143,7 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
         
         self.loop.run_until_complete(flow.run_async(shared_storage))
         
-        # Verify each batch was processed correctly
+        # 验证每个批次是否正确处理
         expected_batch_results = {
             0: [2],                 # [1] * 2
             1: [4, 6, 8],          # [2,3,4] * 2
@@ -152,7 +152,7 @@ class TestAsyncParallelBatchFlow(unittest.TestCase):
         }
         self.assertEqual(shared_storage['processed_numbers'], expected_batch_results)
         
-        # Verify total
+        # 验证总数
         expected_total = sum(num * 2 for batch in shared_storage['batches'] for num in batch)
         self.assertEqual(shared_storage['total'], expected_total)
 
