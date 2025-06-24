@@ -2,9 +2,9 @@ from pocketflow import Flow
 from nodes import EmbeddingNode
 
 def create_embedding_flow():
-    """Create a flow for text embedding"""
-    # Create embedding node
+    """创建文本嵌入的流程"""
+    # 创建嵌入节点
     embedding = EmbeddingNode()
     
-    # Create and return flow
-    return Flow(start=embedding) 
+    # 创建并返回流程
+    return Flow(start=embedding)

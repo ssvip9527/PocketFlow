@@ -2,25 +2,25 @@ import os
 from flow import create_flow
 
 def main():
-    """Run the web search flow"""
+    """运行网络搜索流程"""
     
-    # Get search query from user
+    # 从用户获取搜索查询
     query = input("Enter search query: ")
     if not query:
-        print("Error: Query is required")
+        print("错误：需要查询内容")
         return
         
-    # Initialize shared data
+    # 初始化共享数据
     shared = {
         "query": query,
         "num_results": 5
     }
     
-    # Create and run flow
+    # 创建并运行流程
     flow = create_flow()
     flow.run(shared)
     
-    # Results are in shared["analysis"]
+    # 结果在 shared["analysis"] 中
     
 if __name__ == "__main__":
     main()

@@ -1,74 +1,74 @@
-# PocketFlow Tool: PDF Vision
+# PocketFlow 工具：PDF 视觉
 
-A PocketFlow example project demonstrating PDF processing with OpenAI's Vision API for OCR and text extraction.
+一个 PocketFlow 示例项目，演示了使用 OpenAI 的 Vision API 进行 PDF 处理，实现 OCR 和文本提取。
 
-## Features
+## 功能
 
-- Convert PDF pages to images while maintaining quality and size limits
-- Extract text from scanned documents using GPT-4 Vision API
-- Support for custom extraction prompts
-- Maintain page order and formatting in extracted text
-- Batch processing of multiple PDFs from a directory
+- 将 PDF 页面转换为图像，同时保持质量和尺寸限制
+- 使用 GPT-4 Vision API 从扫描文档中提取文本
+- 支持自定义提取提示
+- 在提取的文本中保持页面顺序和格式
+- 批量处理目录中的多个 PDF 文件
 
-## Installation
+## 安装
 
-1. Clone the repository
-2. Install dependencies:
+1. 克隆仓库
+2. 安装依赖：
    ```bash
    pip install -r requirements.txt
    ```
-3. Set your OpenAI API key as an environment variable:
+3. 将您的 OpenAI API 密钥设置为环境变量：
    ```bash
    export OPENAI_API_KEY=your_api_key_here
    ```
 
-## Usage
+## 使用方法
 
-1. Place your PDF files in the `pdfs` directory
-2. Run the example:
+1. 将您的 PDF 文件放入 `pdfs` 目录
+2. 运行示例：
    ```bash
    python main.py
    ```
-   The script will process all PDF files in the `pdfs` directory and output the extracted text for each one.
+   脚本将处理 `pdfs` 目录中的所有 PDF 文件，并输出每个文件的提取文本。
 
-## Project Structure
+## 项目结构
 
 ```
 pocketflow-tool-pdf-vision/
-├── pdfs/           # Directory for PDF files to process
+├── pdfs/           # 待处理PDF文件目录
 ├── tools/
-│   ├── pdf.py     # PDF to image conversion
-│   └── vision.py  # Vision API integration
+│   ├── pdf.py     # PDF到图像转换
+│   └── vision.py  # Vision API集成
 ├── utils/
-│   └── call_llm.py # OpenAI client config
-├── nodes.py       # PocketFlow nodes
-├── flow.py        # Flow configuration
-└── main.py        # Example usage
+│   └── call_llm.py # OpenAI客户端配置
+├── nodes.py       # PocketFlow节点
+├── flow.py        # 流程配置
+└── main.py        # 示例用法
 ```
 
-## Flow Description
+## 流程说明
 
-1. **LoadPDFNode**: Loads PDF and converts pages to images
-2. **ExtractTextNode**: Processes images with Vision API
-3. **CombineResultsNode**: Combines extracted text from all pages
+1. **LoadPDFNode**：加载PDF并将页面转换为图像
+2. **ExtractTextNode**：使用Vision API处理图像
+3. **CombineResultsNode**：合并所有页面提取的文本
 
-## Customization
+## 自定义
 
-You can customize the extraction by modifying the prompt in `shared`:
+您可以通过修改 `shared` 中的提示来自定义提取：
 
 ```python
 shared = {
     "pdf_path": "your_file.pdf",
-    "extraction_prompt": "Your custom prompt here"
+    "extraction_prompt": "您的自定义提示"
 }
 ```
 
-## Limitations
+## 限制
 
-- Maximum PDF page size: 2000px (configurable in `tools/pdf.py`)
-- Vision API token limit: 1000 tokens per response
-- Image size limit: 20MB per image for Vision API
+- 最大PDF页面尺寸：2000px（可在 `tools/pdf.py` 中配置）
+- Vision API令牌限制：每次响应1000个令牌
+- 图像大小限制：Vision API每个图像20MB
 
-## License
+## 许可证
 
 MIT

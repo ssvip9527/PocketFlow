@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 
-# No need for dotenv if using system environment variables
+# 如果使用系统环境变量，则无需使用 dotenv
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def call_llm(prompt):    
@@ -13,4 +13,4 @@ def call_llm(prompt):
     
 if __name__ == "__main__":
     prompt = "What is the meaning of life?"
-    print(call_llm(prompt)) 
+    print(call_llm(prompt))

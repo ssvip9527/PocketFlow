@@ -3,23 +3,23 @@ from utils.call_llm import client
 from tools.pdf import image_to_base64
 
 def extract_text_from_image(image: Image.Image, prompt: str = None) -> str:
-    """Extract text from image using OpenAI Vision API
+    """使用OpenAI Vision API从图像中提取文本
     
     Args:
-        image (PIL.Image): Image to process
-        prompt (str, optional): Custom prompt for extraction. Defaults to general OCR.
+        image (PIL.Image): 要处理的图像
+        prompt (str, optional): 用于提取的自定义提示。默认为通用OCR。
         
     Returns:
-        str: Extracted text from image
+        str: 从图像中提取的文本
     """
-    # Convert image to base64
+    # 将图像转换为base64
     img_base64 = image_to_base64(image)
     
-    # Default prompt for general OCR
+    # 通用OCR的默认提示
     if prompt is None:
-        prompt = "Please extract all text from this image."
+        prompt = "请从该图像中提取所有文本。"
     
-    # Call Vision API
+    # 调用Vision API
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{
@@ -34,7 +34,7 @@ def extract_text_from_image(image: Image.Image, prompt: str = None) -> str:
     return response.choices[0].message.content
 
 if __name__ == "__main__":
-    # Test vision processing
+    # 测试视觉处理
     test_image = Image.open("example.png")
     result = extract_text_from_image(test_image)
-    print("Extracted text:", result)
+    print("提取的文本:", result)

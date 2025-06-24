@@ -6,45 +6,45 @@ from pathlib import Path
 import os
 
 class ProcessPDFBatchNode(BatchNode):
-    """Node for processing multiple PDFs from a directory"""
+    """用于处理目录中多个PDF的节点"""
     
     def prep(self, shared):
-        # Get PDF directory path
+        # 获取PDF目录路径
         root_dir = Path(__file__).parent
         pdf_dir = root_dir / "pdfs"
         
-        # List all PDFs
+        # 列出所有PDF文件
         pdf_files = []
         for file in os.listdir(pdf_dir):
             if file.lower().endswith('.pdf'):
                 pdf_files.append({
                     "pdf_path": str(pdf_dir / file),
                     "extraction_prompt": shared.get("extraction_prompt", 
-                        "Extract all text from this document, preserving formatting and layout.")
+                        "从该文档中提取所有文本，保留格式和布局。")
                 })
         
         if not pdf_files:
-            print("No PDF files found in 'pdfs' directory!")
+            print("在'pdfs'目录中没有找到PDF文件！")
             return []
             
-        print(f"Found {len(pdf_files)} PDF files")
+        print(f"找到 {len(pdf_files)} 个PDF文件")
         return pdf_files
     
     def exec(self, item):
-        # Create flow for single PDF
+        # 为单个PDF创建流程
         flow = create_single_pdf_flow()
         
-        # Process PDF
-        print(f"\nProcessing: {os.path.basename(item['pdf_path'])}")
+        # 处理PDF
+        print(f"\n正在处理: {os.path.basename(item['pdf_path'])}")
         print("-" * 50)
         
-        # Run flow
+        # 运行流程
         shared = item.copy()
         flow.run(shared)
         
         return {
             "filename": os.path.basename(item["pdf_path"]),
-            "text": shared.get("final_text", "No text extracted")
+            "text": shared.get("final_text", "未提取到文本")
         }
     
     def post(self, shared, prep_res, exec_res_list):
@@ -52,7 +52,7 @@ class ProcessPDFBatchNode(BatchNode):
         return "default"
 
 class LoadPDFNode(Node):
-    """Node for loading and converting a single PDF to images"""
+    """用于加载单个PDF并将其转换为图像的节点"""
     
     def prep(self, shared):
         return shared.get("pdf_path", "")
@@ -65,7 +65,7 @@ class LoadPDFNode(Node):
         return "default"
 
 class ExtractTextNode(Node):
-    """Node for extracting text from images using Vision API"""
+    """使用Vision API从图像中提取文本的节点"""
     
     def prep(self, shared):
         return (
@@ -91,19 +91,19 @@ class ExtractTextNode(Node):
         return "default"
 
 class CombineResultsNode(Node):
-    """Node for combining and formatting extracted text"""
+    """用于组合和格式化提取文本的节点"""
     
     def prep(self, shared):
         return shared.get("extracted_text", [])
         
     def exec(self, results):
-        # Sort by page number
+        # 按页码排序
         sorted_results = sorted(results, key=lambda x: x["page"])
         
-        # Combine text with page numbers
+        # 结合文本和页码
         combined = []
         for result in sorted_results:
-            combined.append(f"=== Page {result['page']} ===\n{result['text']}\n")
+            combined.append(f"=== 第 {result['page']} 页 ===\n{result['text']}\n")
             
         return "\n".join(combined)
         
@@ -112,16 +112,16 @@ class CombineResultsNode(Node):
         return "default"
 
 def create_single_pdf_flow():
-    """Create a flow for processing a single PDF"""
+    """创建用于处理单个PDF的流程"""
     from pocketflow import Flow
     
-    # Create nodes
+    # 创建节点
     load_pdf = LoadPDFNode()
     extract_text = ExtractTextNode()
     combine_results = CombineResultsNode()
     
-    # Connect nodes
+    # 连接节点
     load_pdf >> extract_text >> combine_results
     
-    # Create and return flow
+    # 创建并返回流程
     return Flow(start=load_pdf)

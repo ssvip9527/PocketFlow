@@ -5,14 +5,14 @@ import base64
 from typing import List, Tuple
 
 def pdf_to_images(pdf_path: str, max_size: int = 2000) -> List[Tuple[Image.Image, int]]:
-    """Convert PDF pages to PIL Images with size limit
+    """将PDF页面转换为PIL图像并限制大小
     
     Args:
-        pdf_path (str): Path to PDF file
-        max_size (int): Maximum dimension (width/height) for images
+        pdf_path (str): PDF文件路径
+        max_size (int): 图像的最大尺寸（宽度/高度）
         
     Returns:
-        list: List of tuples (PIL Image, page number)
+        list: (PIL图像, 页码)元组的列表
     """
     doc = fitz.open(pdf_path)
     images = []
@@ -22,10 +22,10 @@ def pdf_to_images(pdf_path: str, max_size: int = 2000) -> List[Tuple[Image.Image
             page = doc[page_num]
             pix = page.get_pixmap()
             
-            # Convert to PIL Image
+            # 转换为PIL图像
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             
-            # Resize if needed while maintaining aspect ratio
+            # 如果需要，在保持宽高比的同时调整大小
             if max(img.size) > max_size:
                 ratio = max_size / max(img.size)
                 new_size = tuple(int(dim * ratio) for dim in img.size)
@@ -39,13 +39,13 @@ def pdf_to_images(pdf_path: str, max_size: int = 2000) -> List[Tuple[Image.Image
     return images
 
 def image_to_base64(image: Image.Image) -> str:
-    """Convert PIL Image to base64 string
+    """将PIL图像转换为base64字符串
     
     Args:
-        image (PIL.Image): Image to convert
+        image (PIL.Image): 要转换的图像
         
     Returns:
-        str: Base64 encoded image string
+        str: Base64编码的图像字符串
     """
     buffer = io.BytesIO()
     image.save(buffer, format="PNG")

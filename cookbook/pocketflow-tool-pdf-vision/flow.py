@@ -2,5 +2,5 @@ from pocketflow import Flow
 from nodes import ProcessPDFBatchNode
 
 def create_vision_flow():
-    """Create a flow for batch PDF processing with Vision API"""
+    """创建用于使用Vision API批量处理PDF的流程"""
     return Flow(start=ProcessPDFBatchNode())

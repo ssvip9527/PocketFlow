@@ -2,16 +2,16 @@ from typing import Dict, List
 from utils.call_llm import call_llm
 
 def analyze_results(query: str, results: List[Dict]) -> Dict:
-    """Analyze search results using LLM
+    """使用LLM分析搜索结果
     
-    Args:
-        query (str): Original search query
-        results (List[Dict]): Search results to analyze
+    参数:
+        query (str): 原始搜索查询
+        results (List[Dict]): 要分析的搜索结果
         
-    Returns:
-        Dict: Analysis including summary and key points
+    返回:
+        Dict: 包含摘要和关键点的分析结果
     """
-    # Format results for prompt
+    # 格式化结果用于提示词
     formatted_results = []
     for i, result in enumerate(results, 1):
         formatted_results.append(f"""
@@ -46,13 +46,13 @@ follow_up_queries:
     
     try:
         response = call_llm(prompt)
-        # Extract YAML between code fences
+        # 从代码块中提取YAML
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         
         import yaml
         analysis = yaml.safe_load(yaml_str)
         
-        # Validate required fields
+        # 验证必填字段
         assert "summary" in analysis
         assert "key_points" in analysis
         assert "follow_up_queries" in analysis
