@@ -22,23 +22,23 @@
 - 使用服务器发送事件(SSE)进行进度流式传输
 - 提供简单的Web界面来测试功能
 
-## Flow Design
+## 流程设计
 
-> Notes for AI:
-> 1. Consider the design patterns of agent, map-reduce, rag, and workflow. Apply them if they fit.
-> 2. Present a concise, high-level description of the workflow.
+> 给AI的提示：
+> 1. 考虑代理、map-reduce、rag和工作流等设计模式，如果适用就采用
+> 2. 提供工作流的高层次简洁描述
 
-### Applicable Design Pattern:
+### 适用的设计模式：
 
-**Workflow Pattern**: Sequential processing of article generation steps with progress reporting at each stage.
+**工作流模式**：按顺序处理文章生成步骤，并在每个阶段报告进度
 
-### Flow High-level Design:
+### 高层次流程设计：
 
-1. **Generate Outline Node**: Creates a structured outline for the article topic
-2. **Write Content Node**: Writes content for each section in the outline  
-3. **Apply Style Node**: Applies conversational styling to the final article
+1. **生成大纲节点**：为文章主题创建结构化大纲
+2. **编写内容节点**：为大纲中的每个部分编写内容
+3. **应用样式节点**：为最终文章应用对话式风格
 
-Each node puts progress updates into an asyncio.Queue for SSE streaming.
+每个节点都将进度更新放入asyncio.Queue中以进行SSE流式传输。
 
 ```mermaid
 flowchart LR
@@ -46,59 +46,59 @@ flowchart LR
     content --> styling[Apply Style]
 ```
 
-## Utility Functions
+## 实用函数
 
-> Notes for AI:
-> 1. Understand the utility function definition thoroughly by reviewing the doc.
-> 2. Include only the necessary utility functions, based on nodes in the flow.
+> 给AI的提示：
+> 1. 通过查阅文档，彻底理解实用函数的定义
+> 2. 仅包含基于流程中节点的必要实用函数
 
-1. **Call LLM** (`utils/call_llm.py`)
-   - *Input*: prompt (str)
-   - *Output*: response (str)
-   - Used by all workflow nodes for LLM tasks
+1. **调用LLM** (`utils/call_llm.py`)
+   - *输入*：提示 (str)
+   - *输出*：响应 (str)
+   - 所有工作流节点都使用此函数执行LLM任务
 
-## Node Design
+## 节点设计
 
-### Shared Store
+### 共享存储
 
-> Notes for AI: Try to minimize data redundancy
+> 给AI的提示：尽量减少数据冗余
 
-The shared store structure is organized as follows:
+共享存储结构如下：
 
 ```python
 shared = {
-    "topic": "user-provided-topic",
-    "sse_queue": asyncio.Queue(),  # For sending SSE updates
-    "sections": ["section1", "section2", "section3"],
-    "draft": "combined-section-content",
-    "final_article": "styled-final-article"
+    "topic": "用户提供的主题",
+    "sse_queue": asyncio.Queue(),  # 用于发送SSE更新
+    "sections": ["第一部分", "第二部分", "第三部分"],
+    "draft": "组合后的内容",
+    "final_article": "风格化后的最终文章"
 }
 ```
 
-### Node Steps
+### 节点步骤
 
-> Notes for AI: Carefully decide whether to use Batch/Async Node/Flow.
+> 给AI的提示：仔细决定是否使用批处理/异步节点/流。
 
-1. **Generate Outline Node**
-   - *Purpose*: Create a structured outline with 3 main sections using YAML output
-   - *Type*: Regular Node (synchronous LLM call)
-   - *Steps*:
-     - *prep*: Read "topic" from shared store
-     - *exec*: Call LLM to generate YAML outline, parse and validate structure
-     - *post*: Write "sections" to shared store, put progress update in sse_queue
+1. **生成大纲节点**
+   - *目的*：使用YAML输出创建包含3个主要部分的结构化大纲
+   - *类型*：常规节点（同步LLM调用）
+   - *步骤*：
+     - *prep*：从共享存储中读取“topic”
+     - *exec*：调用LLM生成YAML大纲，解析并验证结构
+     - *post*：将“sections”写入共享存储，将进度更新放入sse_queue
 
-2. **Write Content Node**
-   - *Purpose*: Generate concise content for each outline section
-   - *Type*: BatchNode (processes each section independently)
-   - *Steps*:
-     - *prep*: Read "sections" from shared store (returns list of sections)
-     - *exec*: For one section, call LLM to write 100-word content
-     - *post*: Combine all section content into "draft", put progress update in sse_queue
+2. **编写内容节点**
+   - *目的*：为每个大纲部分生成简洁的内容
+   - *类型*：批处理节点（独立处理每个部分）
+   - *步骤*：
+     - *prep*：从共享存储中读取“sections”（返回部分列表）
+     - *exec*：对于一个部分，调用LLM编写100字内容
+     - *post*：将所有部分内容组合成“draft”，将进度更新放入sse_queue
 
-3. **Apply Style Node**
-   - *Purpose*: Apply conversational, engaging style to the combined content
-   - *Type*: Regular Node (single LLM call for styling)
-   - *Steps*:
-     - *prep*: Read "draft" from shared store
-     - *exec*: Call LLM to rewrite in conversational style
-     - *post*: Write "final_article" to shared store, put completion update in sse_queue
+3. **应用样式节点**
+   - *目的*：将对话式、引人入胜的风格应用于组合内容
+   - *类型*：常规节点（单个LLM调用进行样式设置）
+   - *步骤*：
+     - *prep*：从共享存储中读取“draft”
+     - *exec*：调用LLM以对话式风格重写
+     - *post*：将“final_article”写入共享存储，将完成更新放入sse_queue

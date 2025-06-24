@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article Generator</title>
+    <title>文章生成器</title>
     <style>
         * {
             margin: 0;
@@ -152,27 +152,27 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">✨ Article AI</div>
-        <p class="subtitle">Generate engaging articles with AI assistance</p>
+        <div class="logo">✨ AI文章助手</div>
+        <p class="subtitle">借助AI生成引人入胜的文章</p>
         
         <form id="articleForm" action="/start-job" method="post">
             <div class="form-group">
-                <label for="topic">What would you like to write about?</label>
-                <input type="text" id="topic" name="topic" placeholder="Enter your topic here..." required>
+                <label for="topic">您想写什么主题？</label>
+                <input type="text" id="topic" name="topic" placeholder="在此输入您的主题..." required>
             </div>
             
-            <button type="submit" class="submit-btn">Generate Article</button>
+            <button type="submit" class="submit-btn">生成文章</button>
         </form>
 
         <div class="example-topics">
-            <h3>Popular Topics</h3>
+            <h3>热门主题</h3>
             <div class="topic-tags">
-                <span class="topic-tag" onclick="setTopic('AI Safety')">AI Safety</span>
-                <span class="topic-tag" onclick="setTopic('Climate Change')">Climate Change</span>
-                <span class="topic-tag" onclick="setTopic('Space Exploration')">Space Exploration</span>
-                <span class="topic-tag" onclick="setTopic('Renewable Energy')">Renewable Energy</span>
-                <span class="topic-tag" onclick="setTopic('Mental Health')">Mental Health</span>
-                <span class="topic-tag" onclick="setTopic('Future of Work')">Future of Work</span>
+                <span class="topic-tag" onclick="setTopic('AI安全')">AI安全</span>
+                <span class="topic-tag" onclick="setTopic('气候变化')">气候变化</span>
+                <span class="topic-tag" onclick="setTopic('太空探索')">太空探索</span>
+                <span class="topic-tag" onclick="setTopic('可再生能源')">可再生能源</span>
+                <span class="topic-tag" onclick="setTopic('心理健康')">心理健康</span>
+                <span class="topic-tag" onclick="setTopic('工作的未来')">工作的未来</span>
             </div>
         </div>
     </div>
@@ -189,7 +189,7 @@
             const originalText = submitBtn.textContent;
             
             // Show loading state
-            submitBtn.textContent = 'Starting...';
+            submitBtn.textContent = '启动中...';
             submitBtn.disabled = true;
             
             try {
