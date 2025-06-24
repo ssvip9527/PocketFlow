@@ -1,41 +1,41 @@
 # PocketFlow Command-Line Joke Generator (Human-in-the-Loop Example)
 
-A simple, interactive command-line application that generates jokes based on user-provided topics and direct human feedback. This serves as a clear example of a Human-in-the-Loop (HITL) workflow orchestrated by PocketFlow.
+一个简单、交互式的命令行应用程序，根据用户提供的主题和直接的人工反馈生成笑话。这作为由 PocketFlow 编排的人机协作 (HITL) 工作流的一个清晰示例。
 
-## Features
+## 特性
 
-- **Interactive Joke Generation**: Ask for jokes on any topic.
-- **Human-in-the-Loop Feedback**: Dislike a joke? Your feedback directly influences the next generation attempt.
-- **Minimalist Design**: A straightforward example of using PocketFlow for HITL tasks.
-- **Powered by LLMs**: (Uses Anthropic Claude via an API call for joke generation).
+- **交互式笑话生成**：询问任何主题的笑话。
+- **人机协作反馈**：不喜欢一个笑话？您的反馈直接影响下一次生成尝试。
+- **极简设计**：使用 PocketFlow 进行 HITL 任务的直接示例。
+- **由 LLM 提供支持**：（通过 API 调用 Anthropic Claude 进行笑话生成）。
 
-## Getting Started
+## 入门
 
-This project is part of the PocketFlow cookbook examples. It's assumed you have already cloned the [PocketFlow repository](https://github.com/the-pocket/PocketFlow) and are in the `cookbook/pocketflow-cli-hitl` directory.
+该项目是 PocketFlow 食谱示例的一部分。假设您已经克隆了 [PocketFlow 仓库](https://github.com/the-pocket/PocketFlow) 并且位于 `cookbook/pocketflow-cli-hitl` 目录中。
 
-1.  **Install required dependencies**:
+1.  **安装所需依赖**：
     ```bash
     pip install -r requirements.txt
     ```
 
-2.  **Set up your Anthropic API key**:
-    The application uses Anthropic Claude to generate jokes. You need to set your API key as an environment variable.
+2.  **设置您的 Anthropic API 密钥**：
+    该应用程序使用 Anthropic Claude 生成笑话。您需要将您的 API 密钥设置为环境变量。
     ```bash
     export ANTHROPIC_API_KEY="your-anthropic-api-key-here"
     ```
-    You can test if your `call_llm.py` utility is working by running it directly:
+    您可以通过直接运行 `call_llm.py` 实用程序来测试它是否正常工作：
     ```bash
     python utils/call_llm.py
     ```
 
-3.  **Run the Joke Generator**:
+3.  **运行笑话生成器**：
     ```bash
     python main.py
     ```
 
-## How It Works
+## 工作原理
 
-The system uses a simple PocketFlow workflow:
+该系统使用一个简单的 PocketFlow 工作流：
 
 ```mermaid
 flowchart TD
@@ -45,36 +45,36 @@ flowchart TD
     GetFeedback -- "Disapprove" --> GenerateJoke
 ```
 
-1.  **GetTopicNode**: Prompts the user to enter a topic for the joke.
-2.  **GenerateJokeNode**: Sends the topic (and any previously disliked jokes as context) to an LLM to generate a new joke.
-3.  **GetFeedbackNode**: Shows the joke to the user and asks if they liked it.
-    *   If **yes** (approved), the application ends.
-    *   If **no** (disapproved), the disliked joke is recorded, and the flow loops back to `GenerateJokeNode` to try again.
+1.  **GetTopicNode**：提示用户输入笑话的主题。
+2.  **GenerateJokeNode**：将主题（以及任何先前不喜欢的笑话作为上下文）发送给 LLM 以生成新笑话。
+3.  **GetFeedbackNode**：向用户展示笑话并询问他们是否喜欢。
+    *   如果**是**（批准），应用程序结束。
+    *   如果**否**（不批准），则记录不喜欢的笑话，并且流程循环回 `GenerateJokeNode` 再次尝试。
 
-## Sample Output
+## 示例输出
 
-Here's an example of an interaction with the Joke Generator:
+以下是与笑话生成器交互的示例：
 
 ```
-Welcome to the Command-Line Joke Generator!
-What topic would you like a joke about? Pocket Flow: 100-line LLM framework
+欢迎使用命令行笑话生成器！
+您想听什么主题的笑话？ Pocket Flow：100 行 LLM 框架
 
-Joke: Pocket Flow: Finally, an LLM framework that fits in your pocket! Too bad your model still needs a data center.
-Did you like this joke? (yes/no): no
-Okay, let me try another one.
+笑话：Pocket Flow：终于，一个可以装进口袋的 LLM 框架！可惜你的模型仍然需要一个数据中心。
+您喜欢这个笑话吗？(是/否): 否
+好的，我再试一个。
 
-Joke: Pocket Flow: A 100-line LLM framework where 99 lines are imports and the last line is `print("TODO: implement intelligence")`.
-Did you like this joke? (yes/no): yes
-Great! Glad you liked it.
+笑话：Pocket Flow：一个 100 行的 LLM 框架，其中 99 行是导入，最后一行是 `print("TODO: implement intelligence")`。
+您喜欢这个笑话吗？(是/否): 是
+太棒了！很高兴您喜欢它。
 
-Thanks for using the Joke Generator!
+感谢使用笑话生成器！
 ```
 
-## Files
+## 文件
 
--   [`main.py`](./main.py): Entry point for the application.
--   [`flow.py`](./flow.py): Defines the PocketFlow graph and node connections.
--   [`nodes.py`](./nodes.py): Contains the definitions for `GetTopicNode`, `GenerateJokeNode`, and `GetFeedbackNode`.
--   [`utils/call_llm.py`](./utils/call_llm.py): Utility function to interact with the LLM (Anthropic Claude).
--   [`requirements.txt`](./requirements.txt): Lists project dependencies.
--   [`docs/design.md`](./docs/design.md): The design document for this application.
+-   [`main.py`](./main.py)：应用程序的入口点。
+-   [`flow.py`](./flow.py)：定义 PocketFlow 图和节点连接。
+-   [`nodes.py`](./nodes.py)：包含 `GetTopicNode`、`GenerateJokeNode` 和 `GetFeedbackNode` 的定义。
+-   [`utils/call_llm.py`](./utils/call_llm.py)：与 LLM (Anthropic Claude) 交互的实用函数。
+-   [`requirements.txt`](./requirements.txt)：列出项目依赖项。
+-   [`docs/design.md`](./docs/design.md)：此应用程序的设计文档。

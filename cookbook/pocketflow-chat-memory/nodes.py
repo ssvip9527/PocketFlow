@@ -5,7 +5,7 @@ from utils.get_embedding import get_embedding
 
 class GetUserQuestionNode(Node):
     def prep(self, shared):
-        """Initialize messages if first run"""
+        """如果首次运行，则初始化消息"""
         if "messages" not in shared:
             shared["messages"] = []
             print("Welcome to the interactive chat! Type 'exit' to end the conversation.")
@@ -13,107 +13,108 @@ class GetUserQuestionNode(Node):
         return None
     
     def exec(self, _):
-        """Get user input interactively"""
-        # Get interactive input from user
+        """交互式获取用户输入。"""
+        # 从用户获取交互式输入
         user_input = input("\nYou: ")
             
-        # Check if user wants to exit
+        # 检查用户是否想退出
         if user_input.lower() == 'exit':
             return None
             
         return user_input
     
     def post(self, shared, prep_res, exec_res):
-        # If exec_res is None, the user wants to exit
+        # 如果 exec_res 为 None，则用户想要退出
         if exec_res is None:
-            print("\nGoodbye!")
-            return None  # End the conversation
+            print("\n再见！")
+            return None  # 结束对话
             
-        # Add user message to current messages
+        # 将用户消息添加到当前消息中
         shared["messages"].append({"role": "user", "content": exec_res})
         
         return "retrieve"
 
 class AnswerNode(Node):
     def prep(self, shared):
-        """Prepare context for the LLM"""
+        """为 LLM 准备上下文"""
         if not shared.get("messages"):
             return None
             
-        # 1. Get the last 3 conversation pairs (or fewer if not available)
+        # 1. 获取最近 3 对对话（如果不足则获取所有可用对话）
         recent_messages = shared["messages"][-6:] if len(shared["messages"]) > 6 else shared["messages"]
         
-        # 2. Add the retrieved relevant conversation if available
+        # 2. 如果有检索到的相关对话，则添加它
         context = []
         if shared.get("retrieved_conversation"):
-            # Add a system message to indicate this is a relevant past conversation
+            # 添加系统消息以指示这是相关的历史对话
             context.append({
                 "role": "system", 
-                "content": "The following is a relevant past conversation that may help with the current query:"
+                "content": "以下是可能有助于当前查询的相关历史对话："
             })
             context.extend(shared["retrieved_conversation"])
             context.append({
                 "role": "system", 
-                "content": "Now continue the current conversation:"
+                "content": "现在继续当前对话："
             })
         
-        # 3. Add the recent messages
+        # 3. 添加最近的消息
         context.extend(recent_messages)
         
         return context
     
     def exec(self, messages):
-        """Generate a response using the LLM"""
+        """使用 LLM 生成响应"""
         if messages is None:
             return None
         
-        # Call LLM with the context
+        # 使用上下文调用 LLM
         response = call_llm(messages)
         return response
     
     def post(self, shared, prep_res, exec_res):
-        """Process the LLM response"""
+        """处理 LLM 响应"""
         if prep_res is None or exec_res is None:
-            return None  # End the conversation
+            return None  # 结束对话
         
-        # Print the assistant's response
-        print(f"\nAssistant: {exec_res}")
+        # 打印助手的响应
+        print(f"\n助手: {exec_res}")
         
-        # Add assistant message to history
+        # 将助手消息添加到历史记录
         shared["messages"].append({"role": "assistant", "content": exec_res})
         
-        # If we have more than 6 messages (3 conversation pairs), archive the oldest pair
+        # 如果我们有超过 6 条消息（3 对对话），则归档最旧的一对
         if len(shared["messages"]) > 6:
             return "embed"
         
-        # We only end if the user explicitly typed 'exit'
-        # Even if last_question is set, we continue in interactive mode
+        # 只有当用户明确输入 'exit' 时才结束
+        # 即使设置了 last_question，我们也会在交互模式下继续
         return "question"
 
 class EmbedNode(Node):
+    """嵌入对话的节点。"""
     def prep(self, shared):
-        """Extract the oldest conversation pair for embedding"""
+        """提取最旧的对话对进行嵌入"""
         if len(shared["messages"]) <= 6:
             return None
             
-        # Extract the oldest user-assistant pair
+        # 提取最旧的用户-助手对话对
         oldest_pair = shared["messages"][:2]
-        # Remove them from current messages
+        # 从当前消息中移除它们
         shared["messages"] = shared["messages"][2:]
         
         return oldest_pair
     
     def exec(self, conversation):
-        """Embed a conversation"""
+        """嵌入对话"""
         if not conversation:
             return None
             
-        # Combine user and assistant messages into a single text for embedding
+        # 将用户和助手消息合并为单个文本进行嵌入
         user_msg = next((msg for msg in conversation if msg["role"] == "user"), {"content": ""})
         assistant_msg = next((msg for msg in conversation if msg["role"] == "assistant"), {"content": ""})
         combined = f"User: {user_msg['content']} Assistant: {assistant_msg['content']}"
         
-        # Generate embedding
+        # 生成嵌入
         embedding = get_embedding(combined)
         
         return {
@@ -122,37 +123,38 @@ class EmbedNode(Node):
         }
     
     def post(self, shared, prep_res, exec_res):
-        """Store the embedding and add to index"""
+        """存储嵌入并添加到索引"""
         if not exec_res:
-            # If there's nothing to embed, just continue with the next question
+            # 如果没有要嵌入的内容，则继续下一个问题
             return "question"
             
-        # Initialize vector index if not exist
+        # 如果不存在，则初始化向量索引
         if "vector_index" not in shared:
             shared["vector_index"] = create_index()
-            shared["vector_items"] = []  # Track items separately
+            shared["vector_items"] = []  # 单独跟踪项目
             
-        # Add the embedding to the index and store the conversation
+        # 将嵌入添加到索引并存储对话
         position = add_vector(shared["vector_index"], exec_res["embedding"])
         shared["vector_items"].append(exec_res["conversation"])
         
-        print(f"✅ Added conversation to index at position {position}")
-        print(f"✅ Index now contains {len(shared['vector_items'])} conversations")
+        print(f"✅ 已将对话添加到索引位置 {position}")
+        print(f"✅ 索引现在包含 {len(shared['vector_items'])} 个对话")
         
-        # Continue with the next question
+        # 继续下一个问题
         return "question"
 
 class RetrieveNode(Node):
+    """检索相关对话的节点。"""
     def prep(self, shared):
-        """Get the current query for retrieval"""
+        """获取当前查询以进行检索"""
         if not shared.get("messages"):
             return None
             
-        # Get the latest user message for searching
+        # 获取最新的用户消息进行搜索
         latest_user_msg = next((msg for msg in reversed(shared["messages"]) 
                                 if msg["role"] == "user"), {"content": ""})
         
-        # Check if we have a vector index with items
+        # 检查我们是否有带有项目的向量索引
         if ("vector_index" not in shared or 
             "vector_items" not in shared or 
             len(shared["vector_items"]) == 0):
@@ -165,7 +167,7 @@ class RetrieveNode(Node):
         }
     
     def exec(self, inputs):
-        """Find the most relevant past conversation"""
+        """查找最相关的历史对话"""
         if not inputs:
             return None
             
@@ -173,18 +175,18 @@ class RetrieveNode(Node):
         vector_index = inputs["vector_index"]
         vector_items = inputs["vector_items"]
         
-        print(f"🔍 Finding relevant conversation for: {query[:30]}...")
+        print(f"🔍 正在查找与以下内容相关的对话：{query[:30]}...")
         
-        # Create embedding for the query
+        # 为查询创建嵌入
         query_embedding = get_embedding(query)
         
-        # Search for the most similar conversation
+        # 搜索最相似的对话
         indices, distances = search_vectors(vector_index, query_embedding, k=1)
         
         if not indices:
             return None
             
-        # Get the corresponding conversation
+        # 获取相应的对话
         conversation = vector_items[indices[0]]
         
         return {
@@ -193,11 +195,12 @@ class RetrieveNode(Node):
         }
     
     def post(self, shared, prep_res, exec_res):
-        """Store the retrieved conversation"""
+        """存储检索到的对话"""
         if exec_res is not None:
             shared["retrieved_conversation"] = exec_res["conversation"]
-            print(f"📄 Retrieved conversation (distance: {exec_res['distance']:.4f})")
+            print(f"📄 已检索到对话（距离：{exec_res['distance']:.4f}）")
         else:
+            shared["retrieved_conversation"] = None
             shared["retrieved_conversation"] = None
         
         return "answer"

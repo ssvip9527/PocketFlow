@@ -1,8 +1,8 @@
 from flow import create_joke_flow
 
 def main():
-    """Main function to run the joke generator application."""
-    print("Welcome to the Command-Line Joke Generator!")
+    """运行笑话生成器应用程序的主函数。"""
+    print("欢迎使用命令行笑话生成器！")
 
     shared = {
         "topic": None,
@@ -14,7 +14,7 @@ def main():
     joke_flow = create_joke_flow()
     joke_flow.run(shared)
 
-    print("\nThanks for using the Joke Generator!")
+    print("\n感谢使用笑话生成器！")
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -1,25 +1,25 @@
 from flow import chat_flow
 
 def run_chat_memory_demo():
-    """
+    """运行一个带有记忆检索的交互式聊天界面。
     Run an interactive chat interface with memory retrieval.
     
-    Features:
-    1. Maintains a window of the 3 most recent conversation pairs
-    2. Archives older conversations with embeddings
-    3. Retrieves 1 relevant past conversation when needed
-    4. Total context to LLM: 3 recent pairs + 1 retrieved pair
+    功能：
+    1. 维护最近 3 对对话的窗口
+    2. 使用嵌入归档旧对话
+    3. 在需要时检索 1 个相关的旧对话
+    4. LLM 的总上下文：3 个最近的对话对 + 1 个检索到的对话对
     """
     
     print("=" * 50)
-    print("PocketFlow Chat with Memory")
+    print("PocketFlow 记忆聊天")
     print("=" * 50)
-    print("This chat keeps your 3 most recent conversations")
-    print("and brings back relevant past conversations when helpful")
-    print("Type 'exit' to end the conversation")
+    print("此聊天会保留您最近的 3 次对话")
+    print("并在有帮助时带回相关的历史对话")
+    print("输入 'exit' 结束对话")
     print("=" * 50)
     
-    # Run the chat flow
+    # 运行聊天流程
     chat_flow.run({})
 
 if __name__ == "__main__":

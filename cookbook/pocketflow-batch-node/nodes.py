@@ -2,19 +2,19 @@ import pandas as pd
 from pocketflow import BatchNode
 
 class CSVProcessor(BatchNode):
-    """BatchNode that processes a large CSV file in chunks."""
+    """BatchNode，用于分块处理大型 CSV 文件。"""
     
     def __init__(self, chunk_size=1000):
-        """Initialize with chunk size."""
+        """使用分块大小进行初始化。"""
         super().__init__()
         self.chunk_size = chunk_size
     
     def prep(self, shared):
-        """Split CSV file into chunks.
+        """将 CSV 文件分割成块。
         
-        Returns an iterator of DataFrames, each containing chunk_size rows.
+        返回一个 DataFrame 迭代器，每个 DataFrame 包含 chunk_size 行。
         """
-        # Read CSV in chunks
+        # 分块读取 CSV
         chunks = pd.read_csv(
             shared["input_file"],
             chunksize=self.chunk_size
@@ -22,13 +22,13 @@ class CSVProcessor(BatchNode):
         return chunks
     
     def exec(self, chunk):
-        """Process a single chunk of the CSV.
+        """处理 CSV 的单个块。
         
         Args:
-            chunk: pandas DataFrame containing chunk_size rows
+            chunk: 包含 chunk_size 行的 pandas DataFrame
             
         Returns:
-            dict: Statistics for this chunk
+            dict: 此块的统计信息
         """
         return {
             "total_sales": chunk["amount"].sum(),
@@ -37,21 +37,21 @@ class CSVProcessor(BatchNode):
         }
     
     def post(self, shared, prep_res, exec_res_list):
-        """Combine results from all chunks.
+        """合并所有块的结果。
         
         Args:
-            prep_res: Original chunks iterator
-            exec_res_list: List of results from each chunk
+            prep_res: 原始块迭代器
+            exec_res_list: 每个块的结果列表
             
         Returns:
-            str: Action to take next
+            str: 下一步要执行的操作
         """
-        # Combine statistics from all chunks
+        # 合并所有块的统计信息
         total_sales = sum(res["total_sales"] for res in exec_res_list)
         total_transactions = sum(res["num_transactions"] for res in exec_res_list)
         total_amount = sum(res["total_amount"] for res in exec_res_list)
         
-        # Calculate final statistics
+        # 计算最终统计信息
         shared["statistics"] = {
             "total_sales": total_sales,
             "average_sale": total_amount / total_transactions,

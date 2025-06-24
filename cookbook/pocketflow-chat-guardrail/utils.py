@@ -13,8 +13,8 @@ def call_llm(messages):
     return response.choices[0].message.content
 
 if __name__ == "__main__":
-    # Test the LLM call
-    messages = [{"role": "user", "content": "In a few words, what's the meaning of life?"}]
+    # 测试 LLM 调用
+    messages = [{"role": "user", "content": "用几个词概括生命的意义是什么？"}]
     response = call_llm(messages)
-    print(f"Prompt: {messages[0]['content']}")
-    print(f"Response: {response}")
+    print(f"提示: {messages[0]['content']}")
+    print(f"响应: {response}")

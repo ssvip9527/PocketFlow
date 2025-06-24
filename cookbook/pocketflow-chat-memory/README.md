@@ -1,30 +1,30 @@
 # PocketFlow Chat with Memory
 
-A chat application with memory retrieval using PocketFlow. This example maintains a sliding window of recent conversations while retrieving relevant past conversations based on context. 
+一个使用 PocketFlow 实现记忆检索的聊天应用。此示例维护一个最近对话的滑动窗口，同时根据上下文检索相关的历史对话。
 
-This implementation is based directly on the tutorial: [Build AI Agent Memory From Scratch — Tutorial For Dummies](https://zacharyhuang.substack.com/p/build-ai-agent-memory-from-scratch).
+此实现直接基于教程：[从零开始构建 AI 代理记忆 — 傻瓜式教程](https://zacharyhuang.substack.com/p/build-ai-agent-memory-from-scratch)。
 
-## Features
+## 特性
 
-- Maintains a window of 3 most recent conversation pairs
-- Archives older conversations with embeddings
-- Uses vector similarity to retrieve the most relevant past conversation
-- Combines recent context (3 pairs) with retrieved context (1 pair) for better responses
+- 维护一个包含 3 对最新对话的窗口
+- 使用嵌入归档旧对话
+- 使用向量相似度检索最相关的历史对话
+- 结合最新上下文（3 对）和检索到的上下文（1 对）以获得更好的响应
 
-## Run It
+## 运行
 
-1. Make sure your OpenAI API key is set:
+1. 确保您的 OpenAI API 密钥已设置：
     ```bash
     export OPENAI_API_KEY="your-api-key-here"
     ```
 
-2. Install requirements and run the application:
+2. 安装依赖并运行应用程序：
     ```bash
     pip install -r requirements.txt
     python main.py
     ```
     
-## How It Works
+## 工作原理
 
 ```mermaid
 flowchart LR
@@ -35,73 +35,73 @@ flowchart LR
     Embed -->|question| Question
 ```
 
-The chat application uses:
-- Four specialized nodes:
-  - `GetUserQuestionNode`: Handles interactive user input
-  - `RetrieveNode`: Finds relevant past conversations using vector similarity
-  - `AnswerNode`: Generates responses using both recent and retrieved context
-  - `EmbedNode`: Archives older conversations with embeddings
-- A sliding window approach that maintains only the 3 most recent conversation pairs in active context
+聊天应用程序使用：
+- 四个专门的节点：
+  - `GetUserQuestionNode`：处理交互式用户输入
+  - `RetrieveNode`：使用向量相似度查找相关的历史对话
+  - `AnswerNode`：使用最新和检索到的上下文生成响应
+  - `EmbedNode`：使用嵌入归档旧对话
+- 一种滑动窗口方法，仅在活动上下文中维护 3 对最新对话
 
-## Files
+## 文件
 
-- [`nodes.py`](./nodes.py): Four node implementations with clear separation of concerns
-- [`flow.py`](./flow.py): Chat flow structure definition
-- [`main.py`](./main.py): Entry point for running the demo
-- [`utils/`](./utils/): Utility functions for embeddings, LLM calls, and vector operations
+- [`nodes.py`](./nodes.py)：四个节点实现，职责分离清晰
+- [`flow.py`](./flow.py)：聊天流程结构定义
+- [`main.py`](./main.py)：运行演示的入口点
+- [`utils/`](./utils/)：用于嵌入、LLM 调用和向量操作的实用函数
 
 
-## Example Output
+## 示例输出
 
 ```
 ==================================================
 PocketFlow Chat with Memory
 ==================================================
-This chat keeps your 3 most recent conversations
-and brings back relevant past conversations when helpful
-Type 'exit' to end the conversation
+此聊天保留您最近的 3 次对话
+并在需要时带回相关的历史对话
+输入 'exit' 结束对话
 ==================================================
-Welcome to the interactive chat! Type 'exit' to end the conversation.
+欢迎来到交互式聊天！输入 'exit' 结束对话。
 
-You: remember, my cat name is Whiskers and she only drinks from running water taps
+你：记住，我的猫叫 Whiskers，她只喝流动的水龙头里的水
 
-Assistant: Got it! Whiskers only drinks from running water taps. If you have any questions or need advice related to her, feel free to ask!
+助手：明白了！Whiskers 只喝流动水龙头里的水。如果您有任何关于她的问题或需要建议，请随时提问！
 
-You: remember, I have a peanut allergy but I can eat almonds and cashews without problems
+你：记住，我对花生过敏，但吃杏仁和腰果没问题
 
-Assistant: Understood! You have a peanut allergy but can safely eat almonds and cashews. If you need any assistance or information related to your dietary preferences or restrictions, just let me know!
+助手：明白了！您对花生过敏，但可以安全食用杏仁和腰果。如果您需要任何与您的饮食偏好或限制相关的帮助或信息，请告诉我！
 
-You: remember, my anniversary is June 17th and I always forget to buy a gift until the last minute
+你：记住，我的周年纪念日是 6 月 17 日，我总是直到最后一刻才记得买礼物
 
-Assistant: Got it! Your anniversary is on June 17th, and you often remember to buy a gift at the last minute. If you'd like, I can help you brainstorm gift ideas or set reminders as the date approaches!
+助手：明白了！您的周年纪念日是 6 月 17 日，您经常在最后一刻才想起买礼物。如果您愿意，我可以帮助您集思广益寻找礼物创意或在日期临近时设置提醒！
 
-You: remember, I lived in Portugal for 3 years when I was a child and still speak some Portuguese
+你：记住，我小时候在葡萄牙住了 3 年，现在还会说一些葡萄牙语
 
-Assistant: That's great to know! You lived in Portugal for three years during your childhood and still speak some Portuguese. If you ever want to practice or need help with anything related to Portuguese language or culture, feel free to ask!
-✅ Added conversation to index at position 0
-✅ Index now contains 1 conversations
+助手：很高兴知道！您小时候在葡萄牙住了三年，现在还会说一些葡萄牙语。如果您想练习或需要任何与葡萄牙语或文化相关的帮助，请随时提问！
+✅ 对话已添加到索引位置 0
+✅ 索引现在包含 1 条对话
 
-You: remember, my favorite dessert is tiramisu but only if it's made with real mascarpone cheese
-🔍 Finding relevant conversation for: remember, my favorite dessert ...
-📄 Retrieved conversation (distance: 0.5008)
+你：记住，我最喜欢的甜点是提拉米苏，但前提是它必须用真正的马斯卡彭芝士制作
+🔍 正在查找相关对话：记住，我最喜欢的甜点 ...
+📄 已检索到对话（距离：0.5008）
 
-Assistant: Got it! Your favorite dessert is tiramisu, but only when it's made with real mascarpone cheese. If you ever need recommendations or recipes, just let me know!
-✅ Added conversation to index at position 1
-✅ Index now contains 2 conversations
+助手：明白了！您最喜欢的甜点是提拉米苏，但前提是它必须用真正的马斯卡彭芝士制作。如果您需要任何推荐或食谱，请告诉我！
+✅ 对话已添加到索引位置 1
+✅ 索引现在包含 2 条对话
 
-You: remember, I collect vintage mechanical watches and my most valuable one is a 1965 Omega Seamaster
-🔍 Finding relevant conversation for: remember, I collect vintage me...
-📄 Retrieved conversation (distance: 0.5374)
+你：记住，我收藏老式机械表，我最有价值的是一块 1965 年的欧米茄海马表
+🔍 正在查找相关对话：记住，我收藏老式机械表...
+📄 已检索到对话（距离：0.5374）
 
-Assistant: Got it! You collect vintage mechanical watches, and your most valuable piece is a 1965 Omega Seamaster. If you have questions about watches or need assistance with your collection, feel free to reach out!
-✅ Added conversation to index at position 2
-✅ Index now contains 3 conversations
+助手：明白了！您收藏老式机械表，您最有价值的是一块 1965 年的欧米茄海马表。如果您有关于手表的问题或需要收藏方面的帮助，请随时联系！
+✅ 对话已添加到索引位置 2
+✅ 索引现在包含 3 条对话
 
-You: what's my cat name?
-🔍 Finding relevant conversation for: what's my cat name?...
-📄 Retrieved conversation (distance: 0.3643)
+你：我的猫叫什么名字？
+🔍 正在查找相关对话：我的猫叫什么名字？...
+📄 已检索到对话（距离：0.3643）
 
-Assistant: Your cat's name is Whiskers.
-✅ Added conversation to index at position 3
-✅ Index now contains 4 conversations
+助手：您的猫叫 Whiskers。
+✅ 对话已添加到索引位置 3
+✅ 索引现在包含 4 条对话
 ```

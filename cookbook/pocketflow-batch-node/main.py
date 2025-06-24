@@ -2,17 +2,17 @@ import os
 from flow import create_flow
 
 def main():
-    """Run the batch processing example."""
-    # Create data directory if it doesn't exist
+    """运行批处理示例。"""
+    # 如果数据目录不存在，则创建它
     os.makedirs("data", exist_ok=True)
     
-    # Create sample CSV if it doesn't exist
+    # 如果示例 CSV 文件不存在，则创建它
     if not os.path.exists("data/sales.csv"):
-        print("Creating sample sales.csv...")
+        print("正在创建示例 sales.csv...")
         import pandas as pd
         import numpy as np
         
-        # Generate sample data
+        # 生成示例数据
         np.random.seed(42)
         n_rows = 10000
         df = pd.DataFrame({
@@ -22,13 +22,13 @@ def main():
         })
         df.to_csv("data/sales.csv", index=False)
     
-    # Initialize shared store
+    # 初始化共享存储
     shared = {
         "input_file": "data/sales.csv"
     }
     
-    # Create and run flow
-    print(f"Processing sales.csv in chunks...")
+    # 创建并运行流程
+    print(f"正在分块处理 sales.csv...")
     flow = create_flow()
     flow.run(shared)
 

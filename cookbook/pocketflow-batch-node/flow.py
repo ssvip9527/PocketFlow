@@ -2,29 +2,29 @@ from pocketflow import Flow, Node
 from nodes import CSVProcessor
 
 class ShowStats(Node):
-    """Node to display the final statistics."""
+    """用于显示最终统计信息的节点。"""
     
     def prep(self, shared):
-        """Get statistics from shared store."""
+        """从共享存储中获取统计信息。"""
         return shared["statistics"]
     
     def post(self, shared, prep_res, exec_res):
-        """Display the statistics."""
+        """显示统计信息。"""
         stats = prep_res
-        print("\nFinal Statistics:")
-        print(f"- Total Sales: ${stats['total_sales']:,.2f}")
-        print(f"- Average Sale: ${stats['average_sale']:,.2f}")
-        print(f"- Total Transactions: {stats['total_transactions']:,}\n")
+        print("\n最终统计数据:")
+        print(f"- 总销售额: ${stats['total_sales']:,.2f}")
+        print(f"- 平均销售额: ${stats['average_sale']:,.2f}")
+        print(f"- 总交易量: {stats['total_transactions']:,}\n")
         return "end"
 
 def create_flow():
-    """Create and return the processing flow."""
-    # Create nodes
+    """创建并返回处理流程。"""
+    # 创建节点
     processor = CSVProcessor(chunk_size=1000)
     show_stats = ShowStats()
     
-    # Connect nodes
+    # 连接节点
     processor - "show_stats" >> show_stats
     
-    # Create and return flow
-    return Flow(start=processor) 
+    # 创建并返回流程
+    return Flow(start=processor)

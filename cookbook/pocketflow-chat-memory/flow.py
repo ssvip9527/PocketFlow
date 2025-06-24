@@ -2,32 +2,32 @@ from pocketflow import Flow
 from nodes import GetUserQuestionNode, RetrieveNode, AnswerNode, EmbedNode
 
 def create_chat_flow():
-    # Create the nodes
+    # 创建节点
     question_node = GetUserQuestionNode()
     retrieve_node = RetrieveNode()
     answer_node = AnswerNode()
     embed_node = EmbedNode()
     
-    # Connect the flow:
-    # 1. Start with getting a question
-    # 2. Retrieve relevant conversations
-    # 3. Generate an answer
-    # 4. Optionally embed old conversations
-    # 5. Loop back to get the next question
+    # 连接流程：
+    # 1. 从获取问题开始
+    # 2. 检索相关对话
+    # 3. 生成答案
+    # 4. 可选地嵌入旧对话
+    # 5. 循环回到获取下一个问题
 
-    # Main flow path
+    # 主流程路径
     question_node - "retrieve" >> retrieve_node
     retrieve_node - "answer" >> answer_node
     
-    # When we need to embed old conversations
+    # 当我们需要嵌入旧对话时
     answer_node - "embed" >> embed_node
     
-    # Loop back for next question
+    # 循环回到下一个问题
     answer_node - "question" >> question_node
     embed_node - "question" >> question_node
     
-    # Create the flow starting with question node
+    # 创建从问题节点开始的流程
     return Flow(start=question_node)
 
-# Initialize the flow
-chat_flow = create_chat_flow() 
+# 初始化流程
+chat_flow = create_chat_flow()
