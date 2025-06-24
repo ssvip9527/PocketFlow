@@ -2,46 +2,46 @@ from typing import Dict, List
 from utils.call_llm import call_llm
 
 def analyze_content(content: Dict) -> Dict:
-    """Analyze webpage content using LLM
+    """使用 LLM 分析网页内容
     
     Args:
-        content (Dict): Webpage content with url, title and text
+        content (Dict): 包含 url、title 和 text 的网页内容
         
     Returns:
-        Dict: Analysis results including summary and topics
+        Dict: 分析结果，包括摘要和主题
     """
     prompt = f"""
-Analyze this webpage content:
+分析此网页内容：
 
-Title: {content['title']}
+标题: {content['title']}
 URL: {content['url']}
-Content: {content['text'][:2000]}  # Limit content length
+内容: {content['text'][:2000]}  # 限制内容长度
 
-Please provide:
-1. A brief summary (2-3 sentences)
-2. Main topics/keywords (up to 5)
-3. Content type (article, product page, etc)
+请提供：
+1. 简要摘要（2-3 句话）
+2. 主要主题/关键词（最多 5 个）
+3. 内容类型（文章、产品页面等）
 
-Output in YAML format:
+以 YAML 格式输出：
 ```yaml
 summary: >
-    brief summary here
+    此处填写简要摘要
 topics:
-    - topic 1
-    - topic 2
-content_type: type here
+    - 主题 1
+    - 主题 2
+content_type: 此处填写类型
 ```
 """
     
     try:
         response = call_llm(prompt)
-        # Extract YAML between code fences
+        # 提取代码块之间的 YAML
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         
         import yaml
         analysis = yaml.safe_load(yaml_str)
         
-        # Validate required fields
+        # 验证必填字段
         assert "summary" in analysis
         assert "topics" in analysis
         assert "content_type" in analysis
@@ -50,21 +50,21 @@ content_type: type here
         return analysis
         
     except Exception as e:
-        print(f"Error analyzing content: {str(e)}")
+        print(f"分析内容时出错: {str(e)}")
         return {
-            "summary": "Error analyzing content",
+            "summary": "分析内容时出错",
             "topics": [],
-            "content_type": "unknown"
+            "content_type": "未知"
         }
 
 def analyze_site(crawl_results: List[Dict]) -> List[Dict]:
-    """Analyze all crawled pages
+    """分析所有抓取的页面
     
     Args:
-        crawl_results (List[Dict]): List of crawled page contents
+        crawl_results (List[Dict]): 抓取到的页面内容列表
         
     Returns:
-        List[Dict]: Original content with added analysis
+        List[Dict]: 包含分析结果的原始内容
     """
     analyzed_results = []
     

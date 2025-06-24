@@ -2,25 +2,25 @@ import os
 from flow import create_flow
 
 def main():
-    """Run the web crawler flow"""
+    """运行网页爬虫流程"""
     
-    # Get website URL from user
-    url = input("Enter website URL to crawl (e.g., https://example.com): ")
+    # 从用户获取网站 URL
+    url = input("请输入要爬取的网站 URL (例如: https://example.com): ")
     if not url:
-        print("Error: URL is required")
+        print("错误: URL 是必需的")
         return
         
-    # Initialize shared data
+    # 初始化共享数据
     shared = {
         "base_url": url,
         "max_pages": 1
     }
     
-    # Create and run flow
+    # 创建并运行流程
     flow = create_flow()
     flow.run(shared)
     
-    # Results are in shared["report"]
+    # 结果在 shared["report"] 中
     
 if __name__ == "__main__":
     main()

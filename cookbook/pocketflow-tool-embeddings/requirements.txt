@@ -1,5 +1,5 @@
 openai>=1.0.0
 numpy>=1.24.0
-faiss-cpu>=1.7.0
-python-dotenv>=1.0.0
-pocketflow>=0.1.0 
+faiss-cpu>=1.7.0  # 用于高效相似性搜索
+python-dotenv>=1.0.0 # 用于从.env文件加载环境变量
+pocketflow>=0.1.0

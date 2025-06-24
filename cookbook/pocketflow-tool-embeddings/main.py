@@ -1,22 +1,22 @@
 from flow import create_embedding_flow
 
 def main():
-    # Create the flow
+    # 创建流程
     flow = create_embedding_flow()
     
-    # Example text
-    text = "What's the meaning of life?"
+    # 示例文本
+    text = "生命的意义是什么？"
     
-    # Prepare shared data
+    # 准备共享数据
     shared = {"text": text}
     
-    # Run the flow
+    # 运行流程
     flow.run(shared)
     
-    # Print results
-    print("Text:", text)
-    print("Embedding dimension:", len(shared["embedding"]))
-    print("First 5 values:", shared["embedding"][:5])
+    # 打印结果
+    print("文本:", text)
+    print("嵌入维度:", len(shared["embedding"]))
+    print("前5个值:", shared["embedding"][:5])
 
 if __name__ == "__main__":
     main()

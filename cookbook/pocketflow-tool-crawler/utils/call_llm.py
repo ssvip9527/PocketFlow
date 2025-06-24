@@ -1,17 +1,17 @@
 from openai import OpenAI
 import os
 
-# Initialize OpenAI client
+# 初始化 OpenAI 客户端
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def call_llm(prompt: str) -> str:
-    """Call OpenAI API to analyze text
+    """调用 OpenAI API 分析文本
     
-    Args:
-        prompt (str): Input prompt for the model
+    参数:
+        prompt (str): 模型的输入提示
         
-    Returns:
-        str: Model response
+    返回:
+        str: 模型响应
     """
     try:
         response = client.chat.completions.create(
@@ -21,10 +21,10 @@ def call_llm(prompt: str) -> str:
         return response.choices[0].message.content
         
     except Exception as e:
-        print(f"Error calling LLM API: {str(e)}")
+        print(f"调用 LLM API 时出错: {str(e)}")
         return ""
 
 if __name__ == "__main__":
-    # Test LLM call
+    # 测试 LLM 调用
     response = call_llm("What is web crawling?")
-    print("Response:", response)
+    print("响应:", response)

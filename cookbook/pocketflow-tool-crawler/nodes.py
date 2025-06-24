@@ -4,10 +4,10 @@ from tools.parser import analyze_site
 from typing import List, Dict
 
 class CrawlWebsiteNode(Node):
-    """Node to crawl a website and extract content"""
+    """用于抓取网站并提取内容的节点"""
     
     def prep(self, shared):
-        return shared.get("base_url"), shared.get("max_pages", 10)
+        return shared.get("base_url"), shared.get("max_pages", 10) # 默认最大页面数为10
         
     def exec(self, inputs):
         base_url, max_pages = inputs
@@ -22,11 +22,11 @@ class CrawlWebsiteNode(Node):
         return "default"
 
 class AnalyzeContentBatchNode(BatchNode):
-    """Node to analyze crawled content in batches"""
+    """用于批量分析爬取内容的节点"""
     
     def prep(self, shared):
         results = shared.get("crawl_results", [])
-        # Process in batches of 5 pages
+        # 以5页为一批次处理
         batch_size = 5
         return [results[i:i+batch_size] for i in range(0, len(results), batch_size)]
         
@@ -34,7 +34,7 @@ class AnalyzeContentBatchNode(BatchNode):
         return analyze_site(batch)
         
     def post(self, shared, prep_res, exec_res_list):
-        # Flatten results from all batches
+        # 合并所有批次的结果
         all_results = []
         for batch_results in exec_res_list:
             all_results.extend(batch_results)
@@ -43,33 +43,33 @@ class AnalyzeContentBatchNode(BatchNode):
         return "default"
 
 class GenerateReportNode(Node):
-    """Node to generate a summary report of the analysis"""
+    """用于生成分析摘要报告的节点"""
     
     def prep(self, shared):
         return shared.get("analyzed_results", [])
         
     def exec(self, results):
         if not results:
-            return "No results to report"
+            return "没有可报告的结果"
             
         report = []
-        report.append(f"Analysis Report\n")
-        report.append(f"Total pages analyzed: {len(results)}\n")
+        report.append(f"分析报告\n")
+        report.append(f"分析页面总数: {len(results)}\n")
         
         for page in results:
-            report.append(f"\nPage: {page['url']}")
-            report.append(f"Title: {page['title']}")
+            report.append(f"\n页面: {page['url']}")
+            report.append(f"标题: {page['title']}")
             
             analysis = page.get("analysis", {})
-            report.append(f"Summary: {analysis.get('summary', 'N/A')}")
-            report.append(f"Topics: {', '.join(analysis.get('topics', []))}")
-            report.append(f"Content Type: {analysis.get('content_type', 'unknown')}")
+            report.append(f"摘要: {analysis.get('summary', 'N/A')}")
+            report.append(f"主题: {', '.join(analysis.get('topics', []))}")
+            report.append(f"内容类型: {analysis.get('content_type', 'unknown')}")
             report.append("-" * 80)
             
         return "\n".join(report)
         
     def post(self, shared, prep_res, exec_res):
         shared["report"] = exec_res
-        print("\nReport generated:")
+        print("\n报告已生成:")
         print(exec_res)
         return "default"

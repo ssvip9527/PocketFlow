@@ -2,14 +2,14 @@ import sqlite3
 from typing import List, Tuple, Any
 
 def execute_sql(query: str, params: Tuple = None) -> List[Tuple[Any, ...]]:
-    """Execute a SQL query and return results
+    """执行 SQL 查询并返回结果
     
     Args:
-        query (str): SQL query to execute
-        params (tuple, optional): Query parameters to prevent SQL injection
+        query (str): 要执行的 SQL 查询
+        params (tuple, optional): 用于防止 SQL 注入的查询参数
         
     Returns:
-        list: Query results as a list of tuples
+        list: 查询结果，以元组列表形式返回
     """
     conn = sqlite3.connect("example.db")
     try:
@@ -25,7 +25,7 @@ def execute_sql(query: str, params: Tuple = None) -> List[Tuple[Any, ...]]:
         conn.close()
 
 def init_db():
-    """Initialize database with example table"""
+    """使用示例表初始化数据库"""
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS tasks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

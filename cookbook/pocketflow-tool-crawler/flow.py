@@ -2,18 +2,18 @@ from pocketflow import Flow
 from nodes import CrawlWebsiteNode, AnalyzeContentBatchNode, GenerateReportNode
 
 def create_flow() -> Flow:
-    """Create and configure the crawling flow
+    """创建并配置爬取流程
     
-    Returns:
-        Flow: Configured flow ready to run
+    返回:
+        Flow: 配置好的可运行流程
     """
-    # Create nodes
+    # 创建节点
     crawl = CrawlWebsiteNode()
     analyze = AnalyzeContentBatchNode()
     report = GenerateReportNode()
     
-    # Connect nodes
+    # 连接节点
     crawl >> analyze >> report
     
-    # Create flow starting with crawl
+    # 创建从爬取开始的流程
     return Flow(start=crawl)
