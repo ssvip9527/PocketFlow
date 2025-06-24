@@ -1,6 +1,6 @@
-# PocketFlow FastAPI Background Jobs with Real-time Progress
+# 使用 FastAPI 后台任务和实时进度更新的 PocketFlow
 
-A web application demonstrating PocketFlow workflows running as FastAPI background jobs with real-time progress updates via Server-Sent Events (SSE).
+一个演示 PocketFlow 工作流作为 FastAPI 后台任务运行，并通过服务器发送事件 (SSE) 提供实时进度更新的 Web 应用程序。
 
 <p align="center">
   <img 
@@ -8,74 +8,74 @@ A web application demonstrating PocketFlow workflows running as FastAPI backgrou
   />
 </p>
 
-## Features
+## 特性
 
-- **Modern Web UI**: Clean interface with real-time progress visualization
-- **Background Processing**: Non-blocking article generation using FastAPI BackgroundTasks
-- **Server-Sent Events**: Real-time progress streaming without polling
-- **Granular Progress**: Section-by-section updates during content generation
-- **PocketFlow Integration**: Three-node workflow (Outline → Content → Style)
+- **现代 Web UI**：简洁的界面，实时进度可视化
+- **后台处理**：使用 FastAPI BackgroundTasks 进行非阻塞文章生成
+- **服务器发送事件 (SSE)**：无需轮询的实时进度流
+- **精细进度**：内容生成期间逐节更新
+- **PocketFlow 集成**：三节点工作流（大纲 → 内容 → 样式）
 
-## How to Run
+## 如何运行
 
-1. Install Dependencies:
+1. 安装依赖：
    ```bash
    pip install -r requirements.txt
    ```
 
-2. Set your OpenAI API key:
+2. 设置您的 OpenAI API 密钥：
    ```bash
    export OPENAI_API_KEY=your_api_key_here
    ```
 
-3. Run the FastAPI Server:
+3. 运行 FastAPI 服务器：
    ```bash
    python main.py
    ```
 
-4. Access the Web UI:
-   Open your browser and navigate to `http://localhost:8000`.
+4. 访问 Web UI：
+   打开浏览器并导航到 `http://localhost:8000`。
 
-5. Use the Application:
-   - Enter an article topic or click suggested topics
-   - Click "Generate Article" to start background processing
-   - Watch real-time progress updates with step indicators
-   - Copy the final article when complete
+5. 使用应用程序：
+   - 输入文章主题或点击建议主题
+   - 点击“生成文章”开始后台处理
+   - 观看带有步骤指示器的实时进度更新
+   - 完成后复制最终文章
 
-## How It Works
+## 工作原理
 
-The application uses PocketFlow to define a three-step article generation workflow. FastAPI handles web requests and manages real-time SSE communication for progress updates.
+该应用程序使用 PocketFlow 定义了一个三步文章生成工作流。FastAPI 处理 Web 请求并管理实时 SSE 通信以进行进度更新。
 
-**PocketFlow Workflow:**
+**PocketFlow 工作流：**
 
 ```mermaid
 flowchart LR
-    A[Generate Outline] --> B[Write Content]
-    B --> C[Apply Style]
+    A[生成大纲] --> B[撰写内容]
+    B --> C[应用样式]
 ```
 
-1. **`GenerateOutline`**: Creates structured outline with up to 3 sections
-2. **`WriteContent` (BatchNode)**: Writes content for each section individually, sending progress updates
-3. **`ApplyStyle`**: Polishes the article with conversational tone
+1. **`GenerateOutline`**：创建包含最多 3 个部分的结构化大纲
+2. **`WriteContent` (BatchNode)**：为每个部分单独撰写内容，并发送进度更新
+3. **`ApplyStyle`**：以对话式语气润色文章
 
-**FastAPI & SSE Integration:**
+**FastAPI 与 SSE 集成：**
 
-- The `/start-job` endpoint creates a unique job, initializes an SSE queue, and schedules the workflow using `BackgroundTasks`
-- Nodes send progress updates to the job-specific `sse_queue` during execution
-- The `/progress/{job_id}` endpoint streams real-time updates to the client via Server-Sent Events
-- The web UI displays progress with animated bars, step indicators, and detailed status messages
+- `/start-job` 端点创建一个唯一任务，初始化一个 SSE 队列，并使用 `BackgroundTasks` 调度工作流
+- 节点在执行期间向特定任务的 `sse_queue` 发送进度更新
+- `/progress/{job_id}` 端点通过服务器发送事件 (Server-Sent Events) 向客户端流式传输实时更新
+- Web UI 显示带有动画条、步骤指示器和详细状态消息的进度
 
-**Progress Updates:**
-- 33%: Outline generation complete
-- 33-66%: Content writing (individual section updates)
-- 66-100%: Style application
-- 100%: Article ready
+**进度更新：**
+- 33%：大纲生成完成
+- 33-66%：内容撰写（各部分独立更新）
+- 66-100%：样式应用
+- 100%：文章准备就绪
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): FastAPI application with background jobs and SSE endpoints
-- [`flow.py`](./flow.py): PocketFlow workflow definition connecting the three nodes
-- [`nodes.py`](./nodes.py): Workflow nodes (GenerateOutline, WriteContent BatchNode, ApplyStyle)
-- [`utils/call_llm.py`](./utils/call_llm.py): OpenAI LLM utility function
-- [`static/index.html`](./static/index.html): Modern job submission form with topic suggestions
-- [`static/progress.html`](./static/progress.html): Real-time progress monitoring with animations
+- [`main.py`](./main.py)：带有后台任务和 SSE 端点的 FastAPI 应用程序
+- [`flow.py`](./flow.py)：连接三个节点的 PocketFlow 工作流定义
+- [`nodes.py`](./nodes.py)：工作流节点（GenerateOutline、WriteContent BatchNode、ApplyStyle）
+- [`utils/call_llm.py`](./utils/call_llm.py)：OpenAI LLM 实用函数
+- [`static/index.html`](./static/index.html)：带有主题建议的现代任务提交表单
+- [`static/progress.html`](./static/progress.html)：实时进度监控与动画

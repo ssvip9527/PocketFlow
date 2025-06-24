@@ -28,7 +28,7 @@ sections:
         sections = exec_res["sections"]
         shared["sections"] = sections
         
-        # Send progress update via SSE queue
+        # 通过 SSE 队列发送进度更新
         progress_msg = {"step": "outline", "progress": 33, "data": {"sections": sections}}
         shared["sse_queue"].put_nowait(progress_msg)
         
@@ -36,7 +36,7 @@ sections:
 
 class WriteContent(BatchNode):
     def prep(self, shared):
-        # Store sections and sse_queue for use in exec
+        # 存储 sections 和 sse_queue 以供 exec 使用
         self.sections = shared.get("sections", [])
         self.sse_queue = shared["sse_queue"]
         return self.sections
@@ -55,12 +55,12 @@ Requirements:
 """
         content = call_llm(prompt)
         
-        # Send progress update for this section
+        # 为此部分发送进度更新
         current_section_index = self.sections.index(section) if section in self.sections else 0
         total_sections = len(self.sections)
         
-        # Progress from 33% (after outline) to 66% (before styling)
-        # Each section contributes (66-33)/total_sections = 33/total_sections percent
+        # 进度从 33%（大纲后）到 66%（样式前）
+        # 每个部分贡献 (66-33)/total_sections = 33/total_sections 百分比
         section_progress = 33 + ((current_section_index + 1) * 33 // total_sections)
         
         progress_msg = {
@@ -102,7 +102,7 @@ Make it:
     def post(self, shared, prep_res, exec_res):
         shared["final_article"] = exec_res
         
-        # Send completion update via SSE queue
+        # 通过 SSE 队列发送完成更新
         progress_msg = {"step": "complete", "progress": 100, "data": {"final_article": exec_res}}
         shared["sse_queue"].put_nowait(progress_msg)
         

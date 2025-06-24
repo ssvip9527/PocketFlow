@@ -3,17 +3,17 @@ from nodes import GenerateOutline, WriteContent, ApplyStyle
 
 def create_article_flow():
     """
-    Create and configure the article writing workflow
+    创建并配置文章写作工作流
     """
-    # Create node instances
+    # 创建节点实例
     outline_node = GenerateOutline()
     content_node = WriteContent()
     style_node = ApplyStyle()
     
-    # Connect nodes in sequence
+    # 按顺序连接节点
     outline_node >> content_node >> style_node
     
-    # Create flow starting with outline node
+    # 创建以大纲节点开始的工作流
     article_flow = Flow(start=outline_node)
     
-    return article_flow 
+    return article_flow
