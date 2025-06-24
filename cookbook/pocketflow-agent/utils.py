@@ -13,7 +13,7 @@ def call_llm(prompt):
 
 def search_web_duckduckgo(query):
     results = DDGS().text(query, max_results=5)
-    # Convert results to a string
+    # 将结果转换为字符串
     results_str = "\n\n".join([f"Title: {r['title']}\nURL: {r['href']}\nSnippet: {r['body']}" for r in results])
     return results_str
 
@@ -35,18 +35,18 @@ def search_web_brave(query):
         results = data['web']['results']
         results_str = "\n\n".join([f"Title: {r['title']}\nURL: {r['url']}\nDescription: {r['description']}" for r in results])     
     else:
-        print(f"Request failed with status code: {response.status_code}")
+        print(f"请求失败，状态码: {response.status_code}")
     return results_str
     
 if __name__ == "__main__":
-    print("## Testing call_llm")
-    prompt = "In a few words, what is the meaning of life?"
-    print(f"## Prompt: {prompt}")
+    print("## 测试 call_llm")
+    prompt = "用几句话概括，生命的意义是什么？"
+    print(f"## 提示: {prompt}")
     response = call_llm(prompt)
-    print(f"## Response: {response}")
+    print(f"## 响应: {response}")
 
-    print("## Testing search_web")
-    query = "Who won the Nobel Prize in Physics 2024?"
-    print(f"## Query: {query}")
+    print("## 测试 search_web")
+    query = "谁获得了2024年诺贝尔物理学奖？"
+    print(f"## 查询: {query}")
     results = search_web(query)
-    print(f"## Results: {results}")
+    print(f"## 结果: {results}")

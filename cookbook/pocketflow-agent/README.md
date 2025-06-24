@@ -1,52 +1,52 @@
-# Research Agent
+# 研究代理
 
-This project demonstrates a simple yet powerful LLM-powered research agent. This implementation is based directly on the tutorial: [LLM Agents are simply Graph — Tutorial For Dummies](https://zacharyhuang.substack.com/p/llm-agent-internal-as-a-graph-tutorial).
+本项目展示了一个简单而强大的由LLM驱动的研究代理。此实现直接基于教程：[LLM Agents are simply Graph — Tutorial For Dummies](https://zacharyhuang.substack.com/p/llm-agent-internal-as-a-graph-tutorial)。
 
-👉 Run the tutorial in your browser: [Try Google Colab Notebook](
+👉 在浏览器中运行教程：[尝试 Google Colab Notebook](
 https://colab.research.google.com/github/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-agent/demo.ipynb)
 
-## Features
+## 特性
 
-- Performs web searches to gather information
-- Makes decisions about when to search vs. when to answer
-- Generates comprehensive answers based on research findings
+- 执行网络搜索以收集信息
+- 决定何时搜索以及何时回答
+- 根据研究结果生成全面的答案
 
-## Getting Started
+## 入门
 
-1. Install the packages you need with this simple command:
+1. 使用此简单命令安装所需的包：
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Let's get your OpenAI API key ready:
+2. 准备好您的OpenAI API密钥：
 
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-3. Let's do a quick check to make sure your API key is working properly:
+3. 快速检查您的API密钥是否正常工作：
 
 ```bash
 python utils.py
 ```
 
-This will test both the LLM call and web search features. If you see responses, you're good to go!
+这将测试LLM调用和网络搜索功能。如果您看到响应，就可以开始了！
 
-4. Try out the agent with the default question (about Nobel Prize winners):
+4. 使用默认问题（关于诺贝尔奖得主）尝试代理：
 
 ```bash
 python main.py
 ```
 
-5. Got a burning question? Ask anything you want by using the `--` prefix:
+5. 有一个紧迫的问题？使用 `--` 前缀提出您想问的任何问题：
 
 ```bash
-python main.py --"What is quantum computing?"
+python main.py --"什么是量子计算？"
 ```
 
-## How It Works?
+## 工作原理？
 
-The magic happens through a simple but powerful graph structure with three main parts:
+其魔力通过一个简单而强大的图结构实现，包含三个主要部分：
 
 ```mermaid
 graph TD
@@ -55,13 +55,13 @@ graph TD
     B -->|"decide"| A
 ```
 
-Here's what each part does:
-1. **DecideAction**: The brain that figures out whether to search or answer
-2. **SearchWeb**: The researcher that goes out and finds information
-3. **AnswerQuestion**: The writer that crafts the final answer
+每个部分的作用如下：
+1. **DecideAction**：决定是搜索还是回答的大脑
+2. **SearchWeb**：负责外出查找信息的研究员
+3. **AnswerQuestion**：负责撰写最终答案的作者
 
-Here's what's in each file:
-- [`main.py`](./main.py): The starting point - runs the whole show!
-- [`flow.py`](./flow.py): Connects everything together into a smart agent
-- [`nodes.py`](./nodes.py): The building blocks that make decisions and take actions
-- [`utils.py`](./utils.py): Helper functions for talking to the LLM and searching the web
+每个文件中的内容：
+- [`main.py`](./main.py)：起点 - 运行整个流程！
+- [`flow.py`](./flow.py)：将所有内容连接成一个智能代理
+- [`nodes.py`](./nodes.py)：构成决策和执行动作的构建块
+- [`utils.py`](./utils.py)：用于与LLM对话和网络搜索的辅助函数

@@ -9,7 +9,7 @@ class TranslateTextNode(BatchNode):
         languages = shared.get("languages", ["Chinese", "Spanish", "Japanese", "German", 
                               "Russian", "Portuguese", "French", "Korean"])
         
-        # Create batches for each language translation
+        # 为每种语言翻译创建批次
         return [(text, lang) for lang in languages]
 
     def exec(self, data_tuple):
@@ -30,15 +30,15 @@ Translated:"""
         return {"language": language, "translation": result}
 
     def post(self, shared, prep_res, exec_res_list):
-        # Create output directory if it doesn't exist
+        # 如果输出目录不存在，则创建它
         output_dir = shared.get("output_dir", "translations")
         os.makedirs(output_dir, exist_ok=True)
         
-        # Write each translation to a file
+        # 将每个翻译写入文件
         for result in exec_res_list:
             language, translation = result["language"], result["translation"]
             
-            # Write to file
+            # 写入文件
             filename = os.path.join(output_dir, f"README_{language.upper()}.md")
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(translation)
@@ -46,18 +46,18 @@ Translated:"""
             print(f"Saved translation to {filename}")
 
 if __name__ == "__main__":
-    # read the text from ../../README.md
+    # 从 ../../README.md 读取文本
     with open("../../README.md", "r") as f:
         text = f.read()
     
-    # Default settings
+    # 默认设置
     shared = {
         "text": text,
         "languages": ["Chinese", "Spanish", "Japanese", "German", "Russian", "Portuguese", "French", "Korean"],
         "output_dir": "translations"
     }
 
-    # --- Time Measurement Start ---
+    # --- 时间测量开始 ---
     print(f"Starting sequential translation into {len(shared['languages'])} languages...")
     start_time = time.perf_counter()
 
@@ -66,11 +66,11 @@ if __name__ == "__main__":
     flow = Flow(start=translate_node)
     flow.run(shared)
 
-    # --- Time Measurement End ---
+    # --- 时间测量结束 ---
     end_time = time.perf_counter()
     duration = end_time - start_time
 
-    print(f"\nTotal sequential translation time: {duration:.4f} seconds") # Print duration
+    print(f"\n总顺序翻译时间: {duration:.4f} 秒") # 打印持续时间
     print("\n=== Translation Complete ===")
     print(f"Translations saved to: {shared['output_dir']}")
     print("============================")

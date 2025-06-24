@@ -1,49 +1,49 @@
 # Batch Translation Process
 
-This project demonstrates a batch processing implementation that enables LLMs to translate documents into multiple languages simultaneously. It's designed to efficiently handle the translation of markdown files while preserving formatting.
+本项目演示了批处理实现，使LLM能够同时将文档翻译成多种语言。它旨在高效处理Markdown文件的翻译，同时保留格式。
 
-## Features
+## 特性
 
-- Translates markdown content into multiple languages in parallel
-- Saves translated files to specified output directory
+- 并行翻译Markdown内容到多种语言
+- 将翻译后的文件保存到指定的输出目录
 
-## Getting Started
+## 开始使用
 
-1. Install the required packages:
+1. 安装所需软件包:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Set up your API key:
+2. 设置您的API密钥:
 ```bash
 export ANTHROPIC_API_KEY="your-api-key-here"
 ```
 
-3. Run the translation process:
+3. 运行翻译过程:
 ```bash
 python main.py
 ```
 
-## How It Works
+## 工作原理
 
-The implementation uses a `TranslateTextNode` that processes batches of translation requests:
+该实现使用`TranslateTextNode`来处理批量的翻译请求:
 
 ```mermaid
 flowchart LR
     batch[TranslateTextNode]
 ```
 
-The `TranslateTextNode`:
-1. Prepares batches for multiple language translations
-2. Executes translations in parallel using the model
-3. Saves the translated content to individual files
-4. Maintains the original markdown structure
+`TranslateTextNode`:
+1. 为多种语言翻译准备批次
+2. 使用模型并行执行翻译
+3. 将翻译后的内容保存到单独的文件
+4. 保持原始Markdown结构
 
-This approach demonstrates how PocketFlow can efficiently process multiple related tasks in parallel.
+这种方法展示了PocketFlow如何高效地并行处理多个相关任务。
 
-## Example Output
+## 示例输出
 
-When you run the translation process, you'll see output similar to this:
+当您运行翻译过程时，您将看到类似以下的输出:
 
 ```
 Translated Chinese text
@@ -68,10 +68,10 @@ Translations saved to: translations
 ============================
 ```
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Implementation of the batch translation node
-- [`utils.py`](./utils.py): Simple wrapper for calling the Anthropic model
-- [`requirements.txt`](./requirements.txt): Project dependencies
+- [`main.py`](./main.py): 批处理翻译节点的实现
+- [`utils.py`](./utils.py): 调用Anthropic模型的简单封装
+- [`requirements.txt`](./requirements.txt): 项目依赖
 
-The translations are saved to the `translations` directory, with each file named according to the target language.
+翻译文件保存到`translations`目录，每个文件根据目标语言命名。
