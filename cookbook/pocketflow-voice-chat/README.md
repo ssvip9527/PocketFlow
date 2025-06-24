@@ -1,86 +1,86 @@
 # PocketFlow Voice Chat
 
-This project demonstrates a voice-based interactive chat application built with PocketFlow. Users can speak their queries, and the system will respond with spoken answers from an LLM, maintaining conversation history.
+该项目演示了一个使用 PocketFlow 构建的基于语音的交互式聊天应用程序。用户可以语音提问，系统将通过 LLM 的语音回答进行响应，并维护对话历史记录。
 
-- Check out the [Substack Post Tutorial](https://pocketflow.substack.com/p/build-your-own-voice-chatbot-from) for more!
+- 查看 [Substack 教程文章](https://pocketflow.substack.com/p/build-your-own-voice-chatbot-from) 了解更多信息！
 
 
-## Features
+## 功能
 
--   **Voice Activity Detection (VAD)**: Automatically detects when the user starts and stops speaking.
--   **Speech-to-Text (STT)**: Converts spoken audio into text using OpenAI.
--   **LLM Interaction**: Processes the transcribed text with an LLM (e.g., GPT-4o), maintaining conversation history.
--   **Text-to-Speech (TTS)**: Converts the LLM's text response back into audible speech using OpenAI.
--   **Continuous Conversation**: Loops back to listen for the next user query after responding, allowing for an ongoing dialogue.
+-   **语音活动检测 (VAD)**：自动检测用户何时开始和停止说话。
+-   **语音转文本 (STT)**：使用 OpenAI 将语音转换为文本。
+-   **LLM 交互**：使用 LLM（例如 GPT-4o）处理转录文本，并维护对话历史记录。
+-   **文本转语音 (TTS)**：使用 OpenAI 将 LLM 的文本响应转换回可听语音。
+-   **持续对话**：响应后循环返回以监听下一个用户查询，从而实现持续对话。
 
-## How to Run
+## 如何运行
 
-1.  **Set your OpenAI API key**:
+1.  **设置您的 OpenAI API 密钥**：
     ```bash
     export OPENAI_API_KEY="your-api-key-here"
     ```
-    Ensure this environment variable is set, as the utility scripts for STT, LLM, and TTS rely on it.
-    You can test individual utility functions (e.g., `python utils/call_llm.py`, `python utils/text_to_speech.py`) to help verify your API key and setup.
+    确保已设置此环境变量，因为 STT、LLM 和 TTS 的实用脚本都依赖于它。
+    您可以测试单个实用函数（例如 `python utils/call_llm.py`、`python utils/text_to_speech.py`）以帮助验证您的 API 密钥和设置。
 
-2.  **Install dependencies**:
-    Make sure you have Python installed. Then, install the required libraries using pip:
+2.  **安装依赖项**：
+    确保您已安装 Python。然后，使用 pip 安装所需的库：
     ```bash
     pip install -r requirements.txt
     ```
-    This will install libraries such as `openai`, `pocketflow`, `sounddevice`, `numpy`, `scipy`, and `soundfile`.
+    这将安装 `openai`、`pocketflow`、`sounddevice`、`numpy`、`scipy` 和 `soundfile` 等库。
 
-    **Note for Linux users**: `sounddevice` may require PortAudio. If you encounter issues, you might need to install it first:
+    **Linux 用户注意事项**：`sounddevice` 可能需要 PortAudio。如果遇到问题，您可能需要先安装它：
     ```bash
     sudo apt-get update && sudo apt-get install -y portaudio19-dev
     ```
 
-3.  **Run the application**:
+3.  **运行应用程序**：
     ```bash
     python main.py
     ```
-    Follow the console prompts. The application will start listening when you see "Listening for your query...".
+    按照控制台提示操作。当您看到“正在聆听您的查询...”时，应用程序将开始监听。
 
-## How It Works
+## 工作原理
 
-The application uses a PocketFlow workflow to manage the conversation steps:
+该应用程序使用 PocketFlow 工作流来管理对话步骤：
 
 ```mermaid
 flowchart TD
-    CaptureAudio[Capture Audio] --> SpeechToText[Speech to Text]
-    SpeechToText --> QueryLLM[Query LLM]
-    QueryLLM --> TextToSpeech[Text to Speech & Play]
-    TextToSpeech -- "Next Turn" --> CaptureAudio
+    CaptureAudio[捕获音频] --> SpeechToText[语音转文本]
+    SpeechToText --> QueryLLM[查询 LLM]
+    QueryLLM --> TextToSpeech[文本转语音并播放]
+    TextToSpeech -- "下一轮" --> CaptureAudio
 ```
 
-Here's what each node in the flow does:
+以下是流程中每个节点的作用：
 
-1.  **`CaptureAudioNode`**: Records audio from the user's microphone. It uses Voice Activity Detection (VAD) to start recording when speech is detected and stop when silence is detected.
-2.  **`SpeechToTextNode`**: Takes the recorded audio data, converts it to a suitable format, and sends it to OpenAI's STT API (gpt-4o-transcribe) to get the transcribed text.
-3.  **`QueryLLMNode`**: Takes the transcribed text from the user, along with the existing conversation history, and sends it to an LLM (OpenAI's GPT-4o model) to generate an intelligent response.
-4.  **`TextToSpeechNode`**: Receives the text response from the LLM, converts it into audio using OpenAI's TTS API (gpt-4o-mini-tts), and plays the audio back to the user. If the conversation is set to continue, it transitions back to the `CaptureAudioNode`.
+1.  **`CaptureAudioNode`**：从用户麦克风录制音频。它使用语音活动检测 (VAD) 在检测到语音时开始录制，并在检测到静音时停止录制。
+2.  **`SpeechToTextNode`**：获取录制的音频数据，将其转换为合适的格式，并将其发送到 OpenAI 的 STT API (gpt-4o-transcribe) 以获取转录文本。
+3.  **`QueryLLMNode`**：获取用户的转录文本以及现有对话历史记录，并将其发送到 LLM（OpenAI 的 GPT-4o 模型）以生成智能响应。
+4.  **`TextToSpeechNode`**：接收来自 LLM 的文本响应，使用 OpenAI 的 TTS API (gpt-4o-mini-tts) 将其转换为音频，并将音频播放给用户。如果对话设置为继续，它将转换回 `CaptureAudioNode`。
 
-## Example Interaction
+## 示例交互
 
-When you run `main.py`:
+当您运行 `main.py` 时：
 
-1.  The console will display:
+1.  控制台将显示：
     ```
-    Starting PocketFlow Voice Chat...
-    Speak your query after 'Listening for your query...' appears.
+    正在启动 PocketFlow 语音聊天...
+    在出现 '正在聆听您的查询...' 后说出您的查询。
     ...
     ```
-2.  When you see `Listening for your query...`, speak clearly into your microphone.
-3.  After you stop speaking, the console will show updates:
+2.  当您看到 `正在聆听您的查询...` 时，请对着麦克风清晰地说话。
+3.  停止说话后，控制台将显示更新：
     ```
-    Audio captured (X.XXs), proceeding to STT.
-    Converting speech to text...
-    User: [Your transcribed query will appear here]
-    Sending query to LLM...
-    LLM: [The LLM's response text will appear here]
-    Converting LLM response to speech...
-    Playing LLM response...
+    音频已捕获 (X.XXs)，正在进行 STT。
+    正在将语音转换为文本...
+    用户: [您的转录查询将显示在此处]
+    正在向 LLM 发送查询...
+    LLM: [LLM 的响应文本将显示在此处]
+    正在将 LLM 响应转换为语音...
+    正在播放 LLM 响应...
     ```
-4.  You will hear the LLM's response spoken aloud.
-5.  The application will then loop back, and you'll see `Listening for your query...` again, ready for your next input.
+4.  您将听到 LLM 的响应语音。
+5.  应用程序将循环返回，您将再次看到 `正在聆听您的查询...`，准备好您的下一个输入。
 
-The conversation continues in this manner. To stop the application, you typically need to interrupt it (e.g., Ctrl+C in the terminal), as it's designed to loop continuously.
+对话将以这种方式继续。要停止应用程序，您通常需要中断它（例如，在终端中按 Ctrl+C），因为它被设计为连续循环。

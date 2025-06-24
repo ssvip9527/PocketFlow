@@ -1,131 +1,131 @@
 # PocketFlow Visualization
 
-This directory contains tools for visualizing PocketFlow workflow graphs using interactive D3.js visualizations.
+本目录包含使用交互式 D3.js 可视化工具来展示 PocketFlow 工作流图的工具。
 
-## Overview
+## 概述
 
-The visualization tools allow you to:
+可视化工具允许您：
 
-1. View PocketFlow nodes and flows as an interactive graph
-2. See how different flows connect to each other
-3. Understand the relationships between nodes within flows
+1. 将 PocketFlow 节点和工作流以交互式图表形式查看
+2. 查看不同工作流之间的连接方式
+3. 理解节点在工作流内的关系
 
-## Features
+## 功能
 
-- **Interactive Graph**: Nodes can be dragged to reorganize the layout
-- **Group Visualization**: Flows are displayed as groups with dashed borders
-- **Inter-Group Links**: Connections between flows are shown as dashed lines connecting group boundaries
-- **Action Labels**: Edge labels show the actions that trigger transitions between nodes
+- **交互式图表**：可拖动节点重新组织布局
+- **分组可视化**：工作流以虚线边框的分组形式显示
+- **组间连接**：工作流之间的连接以连接组边界的虚线显示
+- **动作标签**：边标签显示触发节点转换的动作
 
-## Requirements
+## 要求
 
-- Python 3.6 or higher
-- Modern web browser (Chrome, Firefox, Edge) for viewing the visualizations
+- Python 3.6 或更高版本
+- 现代网页浏览器（Chrome、Firefox、Edge）用于查看可视化效果
 
 ## Usage
 
-### 1. Basic Visualization
+### 1. 基本可视化
 
-To visualize a PocketFlow graph, you can use the `visualize_flow` function in `visualize.py`:
+要可视化 PocketFlow 图，您可以使用 `visualize.py` 中的 `visualize_flow` 函数：
 
 ```python
 from visualize import visualize_flow
 from your_flow_module import your_flow
 
-# Generate visualization
-visualize_flow(your_flow, "Your Flow Name")
+# 生成可视化
+visualize_flow(your_flow, "您的流程名称")
 ```
 
-This will:
-1. Print a Mermaid diagram to the console
-2. Generate a D3.js visualization in the `./viz` directory
+这将：
+1. 在控制台打印 Mermaid 图表
+2. 在 `./viz` 目录中生成 D3.js 可视化文件
 
-### 2. Running the Example
+### 2. 运行示例
 
-The included example shows an order processing pipeline with payment, inventory, and shipping flows:
+随附的示例展示了一个包含支付、库存和发货流程的订单处理管道：
 
 ```bash
-# Navigate to the directory
+# 导航到目录
 cd cookbook/pocketflow-minimal-flow2flow
 
-# Run the visualization script
+# 运行可视化脚本
 python visualize.py
 ```
 
-This will generate visualization files in the `./viz` directory.
+这将在 `./viz` 目录中生成可视化文件。
 
-### 3. Viewing the Visualization
+### 3. 查看可视化
 
-After running the script:
+运行脚本后：
 
-1. Host with 
+1. 托管方式：
    ```
    cd ./viz/
    ```
 
-2. Interact with the visualization:
-   - **Drag nodes** to reorganize
-   - **Hover over nodes** to see node names
-   - **Observe connections** between nodes and flows
+2. 与可视化交互：
+   - **拖动节点**以重新组织布局
+   - **悬停在节点上**以查看节点名称
+   - **观察节点和流程之间的连接**
 
-## Customizing the Visualization
+## 自定义可视化
 
-### Adjusting Layout Parameters
+### 调整布局参数
 
-You can adjust the force simulation parameters in `visualize.py` to change how nodes and groups are positioned:
+您可以调整 `visualize.py` 中的力模拟参数，以改变节点和组的定位方式：
 
 ```javascript
-// Create a force simulation
+// 创建力模拟
 const simulation = d3.forceSimulation(data.nodes)
-    // Controls the distance between connected nodes
+    // 控制连接节点之间的距离
     .force("link", d3.forceLink(data.links).id(d => d.id).distance(100))
-    // Controls how nodes repel each other - lower values bring nodes closer
+    // 控制节点之间的排斥力——值越低，节点越靠近
     .force("charge", d3.forceManyBody().strength(-30))
-    // Centers the entire graph in the SVG
+    // 将整个图表居中于 SVG
     .force("center", d3.forceCenter(width / 2, height / 2))
-    // Prevents nodes from overlapping - acts like a minimum distance
+    // 防止节点重叠——作用类似于最小距离
     .force("collide", d3.forceCollide().radius(50));
 ```
 
-### Styling
+### 样式
 
-Adjust the CSS styles in the HTML template inside `create_d3_visualization` function to change colors, shapes, and other visual properties.
+调整 `create_d3_visualization` 函数中 HTML 模板内的 CSS 样式，以更改颜色、形状和其他视觉属性。
 
-## How It Works
+## 工作原理
 
-The visualization process consists of three main steps:
+可视化过程包括三个主要步骤：
 
-1. **Flow to JSON Conversion**: The `flow_to_json` function traverses the PocketFlow graph and converts it to a structure with nodes, links, and group information.
+1. **流程到 JSON 转换**：`flow_to_json` 函数遍历 PocketFlow 图，并将其转换为包含节点、链接和组信息的结构。
 
-2. **D3.js Visualization**: The JSON data is used to create an interactive D3.js visualization with:
-   - Nodes represented as circles
-   - Flows represented as dashed rectangles containing nodes
-   - Links showing connections within and between flows
+2. **D3.js 可视化**：JSON 数据用于创建交互式 D3.js 可视化，其中：
+   - 节点表示为圆形
+   - 流程表示为包含节点的虚线矩形
+   - 链接显示流程内部和流程之间的连接
 
-3. **Group Boundary Connections**: The visualization calculates intersection points with group boundaries to ensure inter-group links connect at the borders rather than centers.
+3. **组边界连接**：可视化计算与组边界的交点，以确保组间链接连接在边界而不是中心。
 
-## Extending the Visualization
+## 扩展可视化
 
-You can extend the visualization tools by:
+您可以通过以下方式扩展可视化工具：
 
-1. Adding new node shapes
-2. Implementing additional layout algorithms
-3. Adding tooltips with more detailed information
-4. Creating animation for flow execution
+1. 添加新的节点形状
+2. 实现额外的布局算法
+3. 添加包含更详细信息的工具提示
+4. 创建流程执行动画
 
-## Troubleshooting
+## 故障排除
 
-If you encounter any issues:
+如果您遇到任何问题：
 
-- Make sure your flow objects are properly constructed with nodes connected correctly
-- Check the browser console for any JavaScript errors
-- Verify that the generated JSON data structure matches what you expect
+- 确保您的流程对象已正确构建，节点连接正确
+- 检查浏览器控制台是否有任何 JavaScript 错误
+- 验证生成的 JSON 数据结构是否与您预期的一致
 
-## Example Output
+## 示例输出
 
-The visualization displays:
-- Payment processing flow nodes
-- Inventory management flow nodes
-- Shipping flow nodes
-- Group boundaries around each flow
-- Connections between flows (Payment → Inventory → Shipping)
+可视化显示：
+- 支付处理流程节点
+- 库存管理流程节点
+- 发货流程节点
+- 每个流程周围的组边界
+- 流程之间的连接（支付 → 库存 → 发货）

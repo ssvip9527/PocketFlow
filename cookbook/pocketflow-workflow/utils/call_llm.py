@@ -9,6 +9,6 @@ def call_llm(prompt):
     )
     return r.choices[0].message.content
 
-# Example usage
+# 示例用法
 if __name__ == "__main__":
     print(call_llm("Tell me a short joke")) 

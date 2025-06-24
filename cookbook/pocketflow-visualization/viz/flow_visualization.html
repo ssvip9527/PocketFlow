@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PocketFlow: Flow Visualization</title>
+    <title>PocketFlow: 流程可视化</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
@@ -15,12 +15,14 @@
             width: 100vw;
             height: 100vh;
         }
+        /* 链接路径样式 */
         .links path {
             fill: none;
             stroke: #999;
             stroke-opacity: 0.6;
             stroke-width: 1.5px;
         }
+        /* 组链接路径样式 */
         .group-links path {
             fill: none;
             stroke: #333;
@@ -28,25 +30,30 @@
             stroke-width: 2px;
             stroke-dasharray: 5,5;
         }
+        /* 节点圆圈样式 */
         .nodes circle {
             stroke: #fff;
             stroke-width: 1.5px;
         }
+        /* 节点标签样式 */
         .node-labels {
             font-size: 12px;
             pointer-events: none;
         }
+        /* 链接标签样式 */
         .link-labels {
             font-size: 10px;
             fill: #666;
             pointer-events: none;
         }
+        /* 组链接标签样式 */
         .group-link-labels {
             font-size: 11px;
             font-weight: bold;
             fill: #333;
             pointer-events: none;
         }
+        /* 组容器样式 */
         .group-container {
             stroke: #333;
             stroke-width: 1.5px;
@@ -55,6 +62,7 @@
             rx: 10;
             ry: 10;
         }
+        /* 组标签样式 */
         .group-label {
             font-size: 14px;
             font-weight: bold;
@@ -65,17 +73,17 @@
 <body>
     <svg id="graph"></svg>
     <script>
-        // Load data from file
+        // 从文件加载数据
         d3.json("flow_visualization.json").then(data => {
             const svg = d3.select("#graph");
             const width = window.innerWidth;
             const height = window.innerHeight;
             
-            // Define arrow markers for links
+            // 为链接定义箭头标记
             svg.append("defs").append("marker")
                 .attr("id", "arrowhead")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 25) // Position the arrow away from the target node
+                .attr("refX", 25) // 将箭头定位在远离目标节点的位置
                 .attr("refY", 0)
                 .attr("orient", "auto")
                 .attr("markerWidth", 6)
@@ -85,11 +93,11 @@
                 .attr("d", "M 0,-5 L 10,0 L 0,5")
                 .attr("fill", "#999");
                 
-            // Define thicker arrow markers for group links
+            // 为组链接定义更粗的箭头标记
             svg.append("defs").append("marker")
                 .attr("id", "group-arrowhead")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 3) // Position at the boundary of the group
+                .attr("refX", 3) // 定位在组的边界
                 .attr("refY", 0)
                 .attr("orient", "auto")
                 .attr("markerWidth", 8)
@@ -99,16 +107,16 @@
                 .attr("d", "M 0,-5 L 10,0 L 0,5")
                 .attr("fill", "#333");
             
-            // Color scale for node groups
+            // 节点组的颜色比例尺
             const color = d3.scaleOrdinal(d3.schemeCategory10);
             
-            // Process the data to identify groups
+            // 处理数据以识别组
             const groups = {};
             data.nodes.forEach(node => {
                 if (node.group > 0) {
                     if (!groups[node.group]) {
-                        // Use the flow name instead of generic "Group X"
-                        const flowName = data.flows && data.flows[node.group] ? data.flows[node.group] : `Flow ${node.group}`;
+                        // 使用流名称而不是通用的“组 X”
+                        const flowName = data.flows && data.flows[node.group] ? data.flows[node.group] : `流 ${node.group}`;
                         groups[node.group] = {
                             id: node.group,
                             name: flowName,
@@ -123,26 +131,26 @@
                 }
             });
             
-            // Create a force simulation
+            // 创建力模拟
             const simulation = d3.forceSimulation(data.nodes)
-                // Controls the distance between connected nodes
+                // 控制连接节点之间的距离
                 .force("link", d3.forceLink(data.links).id(d => d.id).distance(100))
-                // Controls how nodes repel each other - lower values bring nodes closer
+                // 控制节点如何相互排斥 - 较低的值使节点更靠近
                 .force("charge", d3.forceManyBody().strength(-30))
-                // Centers the entire graph in the SVG
+                // 将整个图居中在 SVG 中
                 .force("center", d3.forceCenter(width / 2, height / 2))
-                // Prevents nodes from overlapping - acts like a minimum distance
+                // 防止节点重叠 - 作用类似于最小距离
                 .force("collide", d3.forceCollide().radius(50));
             
-            // Group forces - create a force to keep nodes in the same group closer together
-            // This creates the effect of nodes clustering within their group boxes
+            // 组力 - 创建一个力以使同一组中的节点更靠近
+            // 这会产生节点在其组框内聚集的效果
             const groupForce = alpha => {
                 for (let i = 0; i < data.nodes.length; i++) {
                     const node = data.nodes[i];
                     if (node.group > 0) {
                         const group = groups[node.group];
                         if (group && group.nodes.length > 1) {
-                            // Calculate center of group
+                            // 计算组中心
                             let centerX = 0, centerY = 0;
                             group.nodes.forEach(n => {
                                 centerX += n.x || 0;
@@ -151,8 +159,8 @@
                             centerX /= group.nodes.length;
                             centerY /= group.nodes.length;
                             
-                            // Move nodes toward center
-                            const k = alpha * 0.3; // Increased from 0.1 to 0.3
+                            // 将节点移向中心
+                            const k = alpha * 0.3; // 从 0.1 增加到 0.3
                             node.vx += (centerX - node.x) * k;
                             node.vy += (centerY - node.y) * k;
                         }
@@ -160,15 +168,15 @@
                 }
             };
             
-            // Additional force to position groups in a more organized layout (like in the image)
-            // This arranges the groups horizontally/vertically based on their connections
+            // 额外的力，用于以更组织化的布局（如图像中）定位组
+            // 这会根据它们的连接水平/垂直排列组
             const groupLayoutForce = alpha => {
-                // Get group centers
+                // 获取组中心
                 const groupCenters = Object.values(groups).map(g => {
                     return { id: g.id, cx: 0, cy: 0 };
                 });
                 
-                // Calculate current center positions
+                // 计算当前中心位置
                 Object.values(groups).forEach(g => {
                     if (g.nodes.length > 0) {
                         let cx = 0, cy = 0;
@@ -185,23 +193,23 @@
                     }
                 });
                 
-                // Apply forces to position groups
+                // 应用力来定位组
                 const k = alpha * 0.05;
                 
-                // Try to position groups in a more structured way
-                // Adjust these values to change the overall layout
+                // 尝试以更结构化的方式定位组
+                // 调整这些值以改变整体布局
                 for (let i = 0; i < data.group_links.length; i++) {
                     const link = data.group_links[i];
                     const source = groupCenters.find(g => g.id === link.source);
                     const target = groupCenters.find(g => g.id === link.target);
                     
                     if (source && target) {
-                        // Add a horizontal force to align groups
-                        const desiredDx = 300; // Desired horizontal distance between linked groups
+                        // 添加水平力以对齐组
+                        const desiredDx = 300; // 链接组之间所需的水平距离
                         const dx = target.cx - source.cx;
                         const diff = desiredDx - Math.abs(dx);
                         
-                        // Apply forces to group nodes
+                        // 将力应用于组节点
                         groups[source.id].nodes.forEach(n => {
                             if (dx > 0) {
                                 n.vx -= diff * k;
@@ -224,7 +232,7 @@
             simulation.force("group", groupForce);
             simulation.force("groupLayout", groupLayoutForce);
             
-            // Create links with arrow paths instead of lines
+            // 使用箭头路径而不是线条创建链接
             const link = svg.append("g")
                 .attr("class", "links")
                 .selectAll("path")
@@ -233,9 +241,9 @@
                 .append("path")
                 .attr("stroke-width", 2)
                 .attr("stroke", "#999")
-                .attr("marker-end", "url(#arrowhead)");  // Add the arrowhead marker
+                .attr("marker-end", "url(#arrowhead)");  // 添加箭头标记
             
-            // Create group containers (drawn before nodes)
+            // 创建组容器（在节点之前绘制）
             const groupContainers = svg.append("g")
                 .attr("class", "groups")
                 .selectAll("rect")
@@ -245,7 +253,7 @@
                 .attr("class", "group-container")
                 .attr("fill", d => d3.color(color(d.id)).copy({opacity: 0.2}));
             
-            // Create group links between flows
+            // 创建流之间的组链接
             const groupLink = svg.append("g")
                 .attr("class", "group-links")
                 .selectAll("path")
@@ -256,7 +264,7 @@
                 .attr("stroke", "#333")
                 .attr("marker-end", "url(#group-arrowhead)");
                 
-            // Create group link labels
+            // 创建组链接标签
             const groupLinkLabel = svg.append("g")
                 .attr("class", "group-link-labels")
                 .selectAll("text")
@@ -268,7 +276,7 @@
                 .attr("font-weight", "bold")
                 .attr("fill", "#333");
             
-            // Create group labels
+            // 创建组标签
             const groupLabels = svg.append("g")
                 .attr("class", "group-labels")
                 .selectAll("text")
@@ -276,10 +284,10 @@
                 .enter()
                 .append("text")
                 .attr("class", "group-label")
-                .text(d => d.name)  // Now using the proper flow name
+                .text(d => d.name)  // 现在使用正确的流名称
                 .attr("fill", d => d3.color(color(d.id)).darker());
             
-            // Create link labels
+            // 创建链接标签
             const linkLabel = svg.append("g")
                 .attr("class", "link-labels")
                 .selectAll("text")
@@ -290,7 +298,7 @@
                 .attr("font-size", "10px")
                 .attr("fill", "#666");
             
-            // Create nodes
+            // 创建节点
             const node = svg.append("g")
                 .attr("class", "nodes")
                 .selectAll("circle")
@@ -304,7 +312,7 @@
                     .on("drag", dragged)
                     .on("end", dragended));
             
-            // Create node labels
+            // 创建节点标签
             const nodeLabel = svg.append("g")
                 .attr("class", "node-labels")
                 .selectAll("text")
@@ -315,54 +323,54 @@
                 .attr("text-anchor", "middle")
                 .attr("dy", 25);
             
-            // Add tooltip on hover
+            // 悬停时添加工具提示
             node.append("title")
                 .text(d => d.name);
             
-            // Update positions on each tick
+            // 每次tick更新位置
             simulation.on("tick", () => {
-                // Update links with straight lines
+                // 使用直线更新链接
                 link.attr("d", d => {
                     return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`;
                 });
                 
-                // Update nodes
+                // 更新节点
                 node
                     .attr("cx", d => d.x)
                     .attr("cy", d => d.y);
                 
-                // Update node labels
+                // 更新节点标签
                 nodeLabel
                     .attr("x", d => d.x)
                     .attr("y", d => d.y);
                 
-                // Position link labels at midpoint
+                // 将链接标签定位在中点
                 linkLabel
                     .attr("x", d => (d.source.x + d.target.x) / 2)
                     .attr("y", d => (d.source.y + d.target.y) / 2);
                 
-                // Update group containers
+                // 更新组容器
                 groupContainers.each(function(d) {
-                    // If there are nodes in this group
+                    // 如果此组中有节点
                     if (d.nodes.length > 0) {
                         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
                         
-                        // Find the bounding box for all nodes in the group
+                        // 查找组中所有节点的边界框
                         d.nodes.forEach(n => {
                             minX = Math.min(minX, n.x - 30);
                             minY = Math.min(minY, n.y - 30);
                             maxX = Math.max(maxX, n.x + 30);
-                            maxY = Math.max(maxY, n.y + 40); // Extra space for labels
+                            maxY = Math.max(maxY, n.y + 40); // 标签的额外空间
                         });
                         
-                        // Add padding
+                        // 添加填充
                         const padding = 20;
                         minX -= padding;
                         minY -= padding;
                         maxX += padding;
                         maxY += padding;
                         
-                        // Save group dimensions
+                        // 保存组尺寸
                         d.x = minX;
                         d.y = minY;
                         d.width = maxX - minX;
@@ -370,81 +378,81 @@
                         d.centerX = minX + d.width / 2;
                         d.centerY = minY + d.height / 2;
                         
-                        // Set position and size of the group container
+                        // 设置组容器的位置和大小
                         d3.select(this)
                             .attr("x", minX)
                             .attr("y", minY)
                             .attr("width", d.width)
                             .attr("height", d.height);
                         
-                        // Update group label position (top-left of group)
+                        // 更新组标签位置（组的左上角）
                         groupLabels.filter(g => g.id === d.id)
                             .attr("x", minX + 10)
                             .attr("y", minY + 20);
                     }
                 });
                 
-                // Update group links between flows
+                // 更新流之间的组链接
                 groupLink.attr("d", d => {
                     const sourceGroup = groups[d.source];
                     const targetGroup = groups[d.target];
                     
                     if (!sourceGroup || !targetGroup) return "";
                     
-                    // Find intersection points with group boundaries
-                    // This ensures links connect to the group's border rather than its center
+                    // 查找与组边界的交点
+                    // 这确保链接连接到组的边界而不是其中心
                     
-                    // Calculate centers of groups
+                    // 计算组的中心
                     const sx = sourceGroup.centerX;
                     const sy = sourceGroup.centerY;
                     const tx = targetGroup.centerX;
                     const ty = targetGroup.centerY;
                     
-                    // Calculate angle between centers - used to find intersection points
+                    // 计算中心之间的角度 - 用于查找交点
                     const angle = Math.atan2(ty - sy, tx - sx);
                     
-                    // Calculate intersection points with source group borders
-                    // We cast a ray from center in the direction of the target
+                    // 计算与源组边界的交点
+                    // 我们从中心向目标方向投射一条射线
                     let sourceX, sourceY;
                     const cosA = Math.cos(angle);
                     const sinA = Math.sin(angle);
                     
-                    // Check intersection with horizontal borders (top and bottom)
+                    // 检查与水平边界（顶部和底部）的交点
                     const ts_top = (sourceGroup.y - sy) / sinA;
                     const ts_bottom = (sourceGroup.y + sourceGroup.height - sy) / sinA;
                     
-                    // Check intersection with vertical borders (left and right)
+                    // 检查与垂直边界（左侧和右侧）的交点
                     const ts_left = (sourceGroup.x - sx) / cosA;
                     const ts_right = (sourceGroup.x + sourceGroup.width - sx) / cosA;
                     
-                    // Use the closest positive intersection (first hit with the boundary)
+                    // 使用最近的正交点（与边界的第一次命中）
                     let t_source = Infinity;
                     if (ts_top > 0) t_source = Math.min(t_source, ts_top);
                     if (ts_bottom > 0) t_source = Math.min(t_source, ts_bottom);
                     if (ts_left > 0) t_source = Math.min(t_source, ts_left);
                     if (ts_right > 0) t_source = Math.min(t_source, ts_right);
                     
-                    // Target group: Find intersection in the opposite direction
-                    // We cast a ray from target center toward the source
+                    // 目标组：在相反方向查找交点
+                    // 我们从目标中心向源投射一条射线
                     let targetX, targetY;
                     const oppositeAngle = angle + Math.PI;
                     const cosOpp = Math.cos(oppositeAngle);
                     const sinOpp = Math.sin(oppositeAngle);
                     
-                    // Check intersections for target group
+                    // 检查目标组的交点
                     const tt_top = (targetGroup.y - ty) / sinOpp;
                     const tt_bottom = (targetGroup.y + targetGroup.height - ty) / sinOpp;
                     const tt_left = (targetGroup.x - tx) / cosOpp;
                     const tt_right = (targetGroup.x + targetGroup.width - tx) / cosOpp;
                     
-                    // Use the closest positive intersection
+                    // 使用最近的正交点
                     let t_target = Infinity;
                     if (tt_top > 0) t_target = Math.min(t_target, tt_top);
                     if (tt_bottom > 0) t_target = Math.min(t_target, tt_bottom);
                     if (tt_left > 0) t_target = Math.min(t_target, tt_left);
                     if (tt_right > 0) t_target = Math.min(t_target, tt_right);
                     
-                    // Calculate actual border points using parametric equation:
+                    // 使用参数方程计算实际边界点：
                     // point = center + t * direction
                     if (t_source !== Infinity) {
                         sourceX = sx + cosA * t_source;
@@ -462,11 +470,11 @@
                         targetY = ty;
                     }
                     
-                    // Create a straight line between the border points
+                    // 在边界点之间创建一条直线
                     return `M${sourceX},${sourceY} L${targetX},${targetY}`;
                 });
                 
-                // Update group link labels
+                // 更新组链接标签
                 groupLinkLabel.attr("x", d => {
                     const sourceGroup = groups[d.source];
                     const targetGroup = groups[d.target];
@@ -481,7 +489,7 @@
                 });
             });
             
-            // Drag functions
+            // 拖动函数
             function dragstarted(event, d) {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
                 d.fx = d.x;

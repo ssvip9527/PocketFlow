@@ -59,23 +59,23 @@ def build_mermaid(start):
 
 
 def flow_to_json(start):
-    """Convert a flow to JSON format suitable for D3.js visualization.
+    """将流程转换为适合 D3.js 可视化的 JSON 格式。
 
-    This function walks through the flow graph and builds a structure with:
-    - nodes: All non-Flow nodes with their group memberships
-    - links: Connections between nodes within the same group
-    - group_links: Connections between different groups (for inter-flow connections)
-    - flows: Flow information for group labeling
+    此函数遍历流程图并构建一个包含以下内容的结构：
+    - nodes: 所有非流程节点及其组归属
+    - links: 同一组内节点之间的连接
+    - group_links: 不同组之间的连接（用于流程间连接）
+    - flows: 用于组标签的流程信息
 
-    Returns:
-        dict: A JSON-serializable dictionary with 'nodes' and 'links' arrays.
+    返回：
+        dict: 包含 'nodes' 和 'links' 数组的 JSON 序列化字典。
     """
     nodes = []
     links = []
-    group_links = []  # For connections between groups (Flow to Flow)
+    group_links = []  # 用于组之间的连接（流程到流程）
     ids = {}
     node_types = {}
-    flow_nodes = {}  # Keep track of flow nodes
+    flow_nodes = {}  # 跟踪流程节点
     ctr = 1
 
     def get_id(n):
@@ -84,46 +84,46 @@ def flow_to_json(start):
             ids[n] = ctr
             node_types[ctr] = type(n).__name__
             if isinstance(n, Flow):
-                flow_nodes[ctr] = n  # Store flow reference
+                flow_nodes[ctr] = n  # 存储流程引用
             ctr += 1
         return ids[n]
 
     def walk(node, parent=None, group=None, parent_group=None, action=None):
-        """Recursively walk the flow graph to build the visualization data.
+        """递归遍历流程图以构建可视化数据。
 
-        Args:
-            node: Current node being processed
-            parent: ID of the parent node that connects to this node
-            group: Group (Flow) ID this node belongs to
-            parent_group: Group ID of the parent node
-            action: Action label on the edge from parent to this node
+        参数：
+            node: 当前正在处理的节点
+            parent: 连接到此节点的父节点 ID
+            group: 此节点所属的组（流程）ID
+            parent_group: 父节点的组 ID
+            action: 从父节点到此节点的边上的动作标签
         """
         node_id = get_id(node)
 
-        # Add node if not already in nodes list and not a Flow
+        # 如果节点不在节点列表中且不是流程，则添加节点
         if not any(n["id"] == node_id for n in nodes) and not isinstance(node, Flow):
             node_data = {
                 "id": node_id,
                 "name": node_types[node_id],
-                "group": group or 0,  # Default group
+                "group": group or 0,  # 默认组
             }
             nodes.append(node_data)
 
-        # Add link from parent if exists
+        # 如果存在父节点，则添加来自父节点的链接
         if parent and not isinstance(node, Flow):
             links.append(
                 {"source": parent, "target": node_id, "action": action or "default"}
             )
 
-        # Process different types of nodes
+        # 处理不同类型的节点
         if isinstance(node, Flow):
-            # This is a Flow node - it becomes a group container
-            flow_group = node_id  # Use flow's ID as group for contained nodes
+            # 这是一个流程节点 - 它成为一个组容器
+            flow_group = node_id  # 使用流程的 ID 作为包含节点的组
 
-            # Add a group-to-group link if this flow has a parent group
-            # This creates connections between nested flows
+            # 如果此流程有父组，则添加组到组的链接
+            # 这会创建嵌套流程之间的连接
             if parent_group is not None and parent_group != flow_group:
-                # Check if this link already exists
+                # 检查此链接是否已存在
                 if not any(
                     l["source"] == parent_group and l["target"] == flow_group
                     for l in group_links
@@ -137,10 +137,10 @@ def flow_to_json(start):
                     )
 
             if node.start_node:
-                # Process the start node of this flow
+                # 处理此流程的起始节点
                 walk(node.start_node, parent, flow_group, parent_group, action)
 
-                # Process successors of the flow's start node
+                # 处理流程起始节点的后继节点
                 for next_action, nxt in node.successors.items():
                     walk(
                         nxt,
@@ -150,22 +150,22 @@ def flow_to_json(start):
                         next_action,
                     )
         else:
-            # Process successors for regular nodes
+            # 处理常规节点的后继节点
             for next_action, nxt in node.successors.items():
                 if isinstance(nxt, Flow):
-                    # This node connects to a flow - track the group relationship
+                    # 此节点连接到流程 - 跟踪组关系
                     flow_group_id = get_id(nxt)
                     walk(nxt, node_id, None, group, next_action)
                 else:
-                    # Regular node-to-node connection
+                    # 常规节点到节点的连接
                     walk(nxt, node_id, group, parent_group, next_action)
 
-    # Start the traversal
+    # 开始遍历
     walk(start)
 
-    # Post-processing: Generate group links based on node connections between different groups
-    # This ensures that when nodes in different groups are connected, we show a group-to-group
-    # link rather than a direct node-to-node link
+    # 后处理：根据不同组之间的节点连接生成组链接
+    # 这确保当不同组中的节点连接时，我们显示组到组的链接
+    # 而不是直接的节点到节点的链接
     node_groups = {n["id"]: n["group"] for n in nodes}
     filtered_links = []
 
@@ -175,10 +175,10 @@ def flow_to_json(start):
         source_group = node_groups.get(source_id, 0)
         target_group = node_groups.get(target_id, 0)
 
-        # If source and target are in different groups and both groups are valid
+        # 如果源和目标在不同的组中且两个组都有效
         if source_group != target_group and source_group > 0 and target_group > 0:
-            # Add to group links if not already there
-            # This creates the dashed lines connecting group boxes
+            # 如果组链接中不存在，则添加
+            # 这会创建连接组框的虚线
             if not any(
                 gl["source"] == source_group and gl["target"] == target_group
                 for gl in group_links
@@ -190,14 +190,14 @@ def flow_to_json(start):
                         "action": link["action"],
                     }
                 )
-            # Skip adding this link to filtered_links - we don't want direct node connections across groups
+            # 跳过将此链接添加到 filtered_links - 我们不希望跨组的直接节点连接
         else:
-            # Keep links within the same group
+            # 保留同一组内的链接
             filtered_links.append(link)
 
     return {
         "nodes": nodes,
-        "links": filtered_links,  # Use filtered links instead of all links
+        "links": filtered_links,  # 使用过滤后的链接而不是所有链接
         "group_links": group_links,
         "flows": {str(k): v.__class__.__name__ for k, v in flow_nodes.items()},
     }

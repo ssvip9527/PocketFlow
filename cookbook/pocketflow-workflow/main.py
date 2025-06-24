@@ -2,22 +2,22 @@ from flow import create_article_flow
 
 def run_flow(topic="AI Safety"):
     """
-    Run the article writing workflow with a specific topic
+    运行文章写作工作流，指定主题
     
-    Args:
-        topic (str): The topic for the article
+    参数：
+        topic (str)：文章的主题
     """
-    # Initialize shared data with the topic
+    # 使用主题初始化共享数据
     shared = {"topic": topic}
     
-    # Print starting message
+    # 打印开始消息
     print(f"\n=== Starting Article Workflow on Topic: {topic} ===\n")
     
-    # Run the flow
+    # 运行流
     flow = create_article_flow()
     flow.run(shared)
     
-    # Output summary
+    # 输出总结
     print("\n=== Workflow Completed ===\n")
     print(f"Topic: {shared['topic']}")
     print(f"Outline Length: {len(shared['outline'])} characters")
@@ -29,8 +29,8 @@ def run_flow(topic="AI Safety"):
 if __name__ == "__main__":
     import sys
     
-    # Get topic from command line if provided
-    topic = "AI Safety"  # Default topic
+    # 如果提供了命令行参数，则从命令行获取主题
+    topic = "AI Safety"  # 默认主题
     if len(sys.argv) > 1:
         topic = " ".join(sys.argv[1:])
     
