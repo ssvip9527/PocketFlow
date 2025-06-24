@@ -13,8 +13,8 @@ def call_llm(prompt):
     return response.content[0].text
 
 if __name__ == "__main__":
-    print("## Testing call_llm")
-    prompt = "In a few words, what is the meaning of life?"
-    print(f"## Prompt: {prompt}")
+    print("## 测试 call_llm")
+    prompt = "用几句话概括，生命的意义是什么？"
+    print(f"## 提示: {prompt}")
     response = call_llm(prompt)
-    print(f"## Response: {response}")
+    print(f"## 响应: {response}")

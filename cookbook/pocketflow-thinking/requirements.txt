@@ -1,2 +1,2 @@
 pocketflow>=0.0.1
-anthropic>=0.15.0   # For Claude API access 
+anthropic>=0.15.0   # 用于访问 Claude API

@@ -1,151 +1,151 @@
 # Chain-of-Thought
 
-This project demonstrates an implementation that orchestrates a Chain-of-Thought process, enabling LLMs to solve complex reasoning problems by thinking step-by-step. It's designed to improve problem-solving accuracy through deliberate, structured reasoning managed externally.
+本项目演示了一个编排思维链过程的实现，使大型语言模型（LLM）能够通过逐步思考来解决复杂的推理问题。它旨在通过外部管理的、有意的、结构化的推理来提高问题解决的准确性。
 
-This implementation is based on: [Build Chain-of-Thought From Scratch - Tutorial for Dummies](https://zacharyhuang.substack.com/p/build-chain-of-thought-from-scratch).
+此实现基于：[从零开始构建思维链 - 傻瓜教程](https://zacharyhuang.substack.com/p/build-chain-of-thought-from-scratch)。
 
-## Features
+## 特性
 
-- Improves model reasoning on complex problems.
-- Leverages capable instruction-following models (e.g., Claude 3.7 Sonnet, GPT-4 series) to perform structured Chain-of-Thought reasoning.
-- Solves problems that direct prompting often fails on by breaking them down systematically.
-- Provides detailed reasoning traces, including step-by-step evaluation and planning, for verification.
+- 提高模型在复杂问题上的推理能力。
+- 利用强大的指令遵循模型（例如，Claude 3.7 Sonnet、GPT-4 系列）执行结构化思维链推理。
+- 通过系统地分解问题，解决直接提示通常无法解决的问题。
+- 提供详细的推理轨迹，包括逐步评估和规划，以便进行验证。
 
-## Getting Started
+## 快速开始
 
-1.  **Install Packages:**
+1.  **安装依赖包：**
     ```bash
     pip install -r requirements.txt
     ```
 
-2.  **Set API Key:**
+2.  **设置 API 密钥：**
     ```bash
     export ANTHROPIC_API_KEY="your-api-key-here"
     ```
 
-3.  **Verify API Key (Optional):**
-    Run a quick check to ensure your key and environment are set up correctly.
+3.  **验证 API 密钥（可选）：**
+    运行快速检查以确保您的密钥和环境设置正确。
     ```bash
     python utils.py
     ```
 
-4.  **Run Default Example:**
-    Execute the main script to see the process in action with the default Jane Street problem.
+4.  **运行默认示例：**
+    执行主脚本，查看默认的 Jane Street 问题处理过程。
     ```bash
     python main.py
     ```
-    The default question is:
+    默认问题是：
     > You keep rolling a fair die until you roll three, four, five in that order consecutively on three rolls. What is the probability that you roll the die an odd number of times?
 
-5.  **Run Custom Problem:**
-    Provide your own reasoning problem using the `--` argument.
+5.  **运行自定义问题：**
+    使用 `--` 参数提供您自己的推理问题。
     ```bash
     python main.py --"Your complex reasoning problem here"
     ```
 
-## How It Works
+## 工作原理
 
-The implementation uses a self-looping PocketFlow node (`ChainOfThoughtNode`) that guides an LLM through a structured problem-solving process:
+该实现使用一个自循环的 PocketFlow 节点（`ChainOfThoughtNode`），它引导 LLM 完成结构化的问题解决过程：
 
 ```mermaid
 flowchart LR
     cot[ChainOfThoughtNode] -->|"continue"| cot
 ```
 
-In each loop (thought step), the node directs the LLM to:
-1.  Evaluate the previous thought's reasoning and results.
-2.  Execute the next pending step according to a maintained plan.
-3.  Update the plan, marking the step done (with results) or noting issues.
-4.  Refine the plan if steps need breaking down or errors require correction.
-5.  Decide if further thinking (`next_thought_needed`) is required based on the plan state.
+在每个循环（思考步骤）中，节点指导 LLM 执行以下操作：
+1.  评估前一个思考的推理和结果。
+2.  根据维护的计划执行下一个待处理步骤。
+3.  更新计划，将步骤标记为已完成（带结果）或记录问题。
+4.  如果步骤需要分解或错误需要纠正，则完善计划。
+5.  根据计划状态决定是否需要进一步思考（`next_thought_needed`）。
 
-This external orchestration enforces a systematic approach, helping models tackle problems that are difficult with a single prompt.
+这种外部编排强制执行系统方法，帮助模型解决单个提示难以处理的问题。
 
-## Comparison with Different Approaches
+## 与不同方法的比较
 
--   **Standard Prompting**: Techniques like asking the model to "think step by step" within a single prompt can help, but the reasoning might lack depth or structure, and the model can easily lose track or make unrecoverable errors.
--   **Native Extended Thinking Modes**: Some models (like Claude 3.7, GPT-o1, etc.) offer dedicated modes or features explicitly for extended reasoning, often yielding strong results directly via API calls.
--   **This Implementation**: Demonstrates how to orchestrate a structured Chain-of-Thought process using standard LLMs (even those without a specific native 'extended thinking' mode), managing the steps, planning, and evaluation externally via prompt engineering and flow control.
+-   **标准提示**: 像在单个提示中要求模型“逐步思考”这样的技术可能会有所帮助，但推理可能缺乏深度或结构，并且模型很容易迷失方向或犯下无法恢复的错误。
+-   **原生扩展思维模式**: 一些模型（如 Claude 3.7、GPT-o1 等）提供专门用于扩展推理的模式或功能，通常通过 API 调用直接产生强大的结果。
+-   **本实现**: 演示了如何使用标准 LLM（即使是没有特定原生“扩展思维”模式的 LLM）编排结构化思维链过程，通过提示工程和流程控制在外部管理步骤、规划和评估。
 
-## Example Thinking Process
+## 思考过程示例
 
-Let's try out this challenging [Jane Street Quant Trading Interview Question](https://www.youtube.com/watch?v=gQJTkuEVPrU):
+让我们尝试一下这个具有挑战性的 [Jane Street 量化交易面试问题](https://www.youtube.com/watch?v=gQJTkuEVPrU)：
 
-> **Problem**: You keep rolling a fair die until you roll three, four, five in that order consecutively on three rolls. What is the probability that you roll the die an odd number of times?
+> **问题**：你不断掷一个公平的骰子，直到连续三次掷出三、四、五。你掷骰子的次数是奇数的概率是多少？
 
-This problem demonstrates why structured Chain-of-Thought is valuable:
+这个问题展示了为什么结构化思维链很有价值：
 
--   **Standard models (single prompt)**: Often get the wrong answer or provide flawed reasoning.
--   **Models using native thinking modes**: Can find the correct answer (216/431 ≈ 0.5012), though performance and reasoning clarity may vary.
--   **This implementation (orchestrating a capable LLM)**: Can guide the model towards the correct answer by enforcing a step-by-step plan, evaluation, and refinement loop.
+-   **标准模型（单个提示）**：通常会得到错误的答案或提供有缺陷的推理。
+-   **使用原生思维模式的模型**：可以找到正确答案（216/431 ≈ 0.5012），尽管性能和推理清晰度可能有所不同。
+-   **本实现（编排一个有能力的 LLM）**：可以通过强制执行逐步计划、评估和完善循环来引导模型得出正确答案。
 
-For comparison:
--   [Claude 3.7 Sonnet (single prompt)](https://claude.ai/share/da139326-42fe-42d9-9d7b-35870daa5c1b): Wrong answer
--   [Claude 3.7 Sonnet (using built-in thinking)](https://claude.ai/share/6f4140ed-f33c-4949-8778-a57719498e40): Correct answer after 3m, 45s
--   [GPT-o1 (using built-in thinking)](https://chatgpt.com/share/67fee0fd-2600-8000-bcdf-76e40a986ee4): Correct answer after 2m, 0s
--   [GPT-o1 pro (using built-in thinking)](https://chatgpt.com/share/67fee11b-530c-8000-92d1-609b6ca49c9c): Correct answer after 4m, 24s
+比较：
+-   [Claude 3.7 Sonnet（单个提示）](https://claude.ai/share/da139326-42fe-42d9-9d7b-35870daa5c1b)：错误答案
+-   [Claude 3.7 Sonnet（使用内置思维）](https://claude.ai/share/6f4140ed-f33c-4949-8778-a57719498e40)：3 分 45 秒后得到正确答案
+-   [GPT-o1（使用内置思维）](https://chatgpt.com/share/67fee0fd-2600-8000-bcdf-76e40a986ee4)：2 分钟后得到正确答案
+-   [GPT-o1 pro（使用内置思维）](https://chatgpt.com/share/67fee11b-530c-8000-92d1-609b6ca49c9c)：4 分 24 秒后得到正确答案
 
-Below is an example output trace showing how **this implementation guides Claude 3.7 Sonnet** through the problem-solving process:
+下面是一个输出跟踪示例，展示了**本实现如何引导 Claude 3.7 Sonnet** 完成问题解决过程：
 
-> **Note:** Even with structured thinking orchestration, models don't always get the right answer, especially on very complex or novel problems. However, this approach significantly improves the robustness of the reasoning process and provides a traceable path for verification and debugging.
+> **注意**：即使有结构化思维编排，模型也并非总能得到正确答案，尤其是在非常复杂或新颖的问题上。然而，这种方法显著提高了推理过程的鲁棒性，并为验证和调试提供了可追溯的路径。
 
 ```
-🤔 Processing question: You keep rolling a fair die until you roll three, four, five in that order consecutively on three rolls. What is the probability that you roll the die an odd number of times?
+🤔 正在处理问题：你不断掷一个公平的骰子，直到连续三次掷出三、四、五。你掷骰子的次数是奇数的概率是多少？
 
-Thought 1:
-  Let me think through this problem by setting up a clear approach.
+思考 1：
+  让我通过建立一个清晰的方法来思考这个问题。
 
-  We need to find the probability that the total number of die rolls will be odd, given we stop when we roll "3,4,5" consecutively in that order.
+  我们需要找到掷骰子总次数为奇数的概率，前提是我们连续掷出“3,4,5”后停止。
 
-  This is a problem about a stochastic process that ends when a specific pattern occurs. To solve it, I'll:
-  1. Set up a Markov chain model to track progress toward the target sequence
-  2. Calculate expected lengths and probabilities for different outcomes
-  3. Determine if the total number of rolls has equal probability of being odd vs. even
+  这是一个关于随机过程的问题，当特定模式出现时结束。为了解决它，我将：
+  1. 建立一个马尔可夫链模型来跟踪目标序列的进展
+  2. 计算不同结果的预期长度和概率
+  3. 确定掷骰子总次数是奇数还是偶数的概率是否相等
 
-  First, I need to understand what states we can be in while rolling the die:
-  - State 0: Haven't rolled any of the sequence yet
-  - State 1: Just rolled a 3, waiting for 4
-  - State 2: Rolled 3 followed by 4, waiting for 5
-  - State 3: Success! Rolled the full "3,4,5" sequence
+  首先，我需要了解掷骰子时可能处于哪些状态：
+  - 状态 0：尚未掷出任何序列
+  - 状态 1：刚掷出 3，等待 4
+  - 状态 2：掷出 3 接着 4，等待 5
+  - 状态 3：成功！掷出完整的“3,4,5”序列
 
-  When the die is rolled, we transition between these states with certain probabilities. Each state depends only on the previous 0-2 rolls, making this a Markov process.
+  当骰子掷出时，我们以一定的概率在这些状态之间转换。每个状态仅取决于前 0-2 次掷骰，这使其成为一个马尔可夫过程。
 
-Current Plan Status:
-    - [Done] Understand the problem structure: Identified that we need the probability of an odd number of total rolls until getting '3,4,5' consecutively. Set up a Markov chain with states representing progress toward target sequence.
-    - [Pending] Set up the Markov model with transition probabilities
-      - [Pending] Define relevant states in the Markov chain
-      - [Pending] Calculate transition probabilities between states
-    - [Pending] Calculate generating functions for the process
-    - [Pending] Determine probability of odd number of rolls
-      - [Pending] Extract coefficient information from generating function
-      - [Pending] Compute final probability value
-    - [Pending] Verify solution with alternative approach
-    - [Pending] Conclusion
+当前计划状态：
+    - [完成] 理解问题结构：确定我们需要直到连续掷出“3,4,5”为止，总掷骰子次数为奇数的概率。建立一个马尔可夫链，其状态表示向目标序列的进展。
+    - [待定] 建立具有转移概率的马尔可夫模型
+      - [待定] 定义马尔可夫链中的相关状态
+      - [待定] 计算状态之间的转移概率
+    - [待定] 计算过程的生成函数
+    - [待定] 确定掷骰子次数为奇数的概率
+      - [待定] 从生成函数中提取系数信息
+      - [待定] 计算最终概率值
+    - [待定] 用替代方法验证解决方案
+    - [待定] 结论
 --------------------------------------------------
 
-Thought 2:
-  Evaluation of Thought 1: Correct. The approach of using a Markov chain to model this problem is appropriate. Identifying the states (0: no part of sequence, 1: just rolled 3, 2: rolled 3,4, 3: success with 3,4,5) correctly captures the progression toward our target sequence.
+思考 2：
+  思考 1 的评估：正确。使用马尔可夫链来建模这个问题是合适的。正确识别状态（0：无序列部分，1：刚掷出 3，2：掷出 3,4，3：成功掷出 3,4,5）捕获了向目标序列的进展。
 
-  I'll now set up the Markov model with transition probabilities. Each state represents our progress toward the target sequence "3,4,5".
+  我现在将建立具有转移概率的马尔可夫模型。每个状态代表我们向目标序列“3,4,5”的进展。
 
-  State 0: Haven't rolled any relevant part of the sequence yet
-  - If we roll a 3: Move to State 1 (probability 1/6)
-  - If we roll anything else: Stay in State 0 (probability 5/6)
+  状态 0：尚未掷出序列的任何相关部分
+  - 如果掷出 3：转移到状态 1（概率 1/6）
+  - 如果掷出其他：停留在状态 0（概率 5/6）
 
-  State 1: Just rolled a 3, waiting for a 4
-  - If we roll a 4: Move to State 2 (probability 1/6)
-  - If we roll a 3: Stay in State 1 (probability 1/6)
-  - If we roll anything else: Return to State 0 (probability 4/6)
+  状态 1：刚掷出 3，等待 4
+  - 如果掷出 4：转移到状态 2（概率 1/6）
+  - 如果掷出 3：停留在状态 1（概率 1/6）
+  - 如果掷出其他：返回状态 0（概率 4/6）
 
-  State 2: Rolled 3 followed by 4, waiting for a 5
-  - If we roll a 5: Move to State 3 (success - probability 1/6)
-  - If we roll a 3: Move to State 1 (probability 1/6)
-  - If we roll anything else: Return to State 0 (probability 4/6)
+  状态 2：掷出 3 接着 4，等待 5
+  - 如果掷出 5：转移到状态 3（成功 - 概率 1/6）
+  - 如果掷出 3：转移到状态 1（概率 1/6）
+  - 如果掷出其他：返回状态 0（概率 4/6）
 
-  State 3: Success! Rolled the sequence "3,4,5"
-  - This is an absorbing state; once we reach it, we stop rolling.
+  状态 3：成功！掷出序列“3,4,5”
+  - 这是一个吸收状态；一旦我们到达它，我们就停止掷骰子。
 
-  These transition probabilities can be represented as a matrix:
+  这些转移概率可以表示为矩阵：
   P = [
       [5/6, 1/6, 0,   0  ],
       [4/6, 1/6, 1/6, 0  ],
@@ -153,50 +153,50 @@ Thought 2:
       [0,   0,   0,   1  ]
   ]
 
-  This completes the setup of the Markov model with transition probabilities.
+  这完成了具有转移概率的马尔可夫模型的设置。
 
-Current Plan Status:
-    - [Done] Understand the problem structure: Identified that we need the probability of an odd number of total rolls until getting '3,4,5' consecutively. Set up a Markov chain with states representing progress toward target sequence.
-    - [Done] Set up the Markov model with transition probabilities: Defined 4 states (0: no sequence, 1: just rolled 3, 2: rolled 3,4, 3: success with 3,4,5) and calculated transition probabilities between all states in matrix form.
-    - [Pending] Calculate generating functions for the process
-      - [Pending] Set up generating function equations for each state
-      - [Pending] Solve the system of equations to find generating functions
-    - [Pending] Determine probability of odd number of rolls
-      - [Pending] Extract coefficient information from generating function
-      - [Pending] Compute final probability value
-    - [Pending] Verify solution with alternative approach
-    - [Pending] Conclusion
+当前计划状态：
+    - [完成] 理解问题结构：确定我们需要直到连续掷出“3,4,5”为止，总掷骰子次数为奇数的概率。建立一个马尔可夫链，其状态表示向目标序列的进展。
+    - [完成] 建立具有转移概率的马尔可夫模型：定义了 4 个状态（0：无序列，1：刚掷出 3，2：掷出 3,4，3：成功掷出 3,4,5）并计算了所有状态之间的转移概率矩阵形式。
+    - [待定] 计算过程的生成函数
+      - [待定] 为每个状态建立生成函数方程
+      - [待定] 求解方程组以找到生成函数
+    - [待定] 确定掷骰子次数为奇数的概率
+      - [待定] 从生成函数中提取系数信息
+      - [待定] 计算最终概率值
+    - [待定] 用替代方法验证解决方案
+    - [待定] 结论
 --------------------------------------------------
 
-Thought 3:
-  Evaluation of Thought 2: Correct. The Markov chain setup with the four states and the transition probability matrix accurately represents our problem. Now I'll proceed to calculating the generating functions for this process.
+思考 3：
+  思考 2 的评估：正确。具有四个状态和转移概率矩阵的马尔可夫链设置准确地表示了我们的问题。现在我将继续计算此过程的生成函数。
 
-  To calculate the generating functions, I'll use the variable z to represent a single die roll. For each state, the generating function gives us information about the number of rolls until we reach our success state.
+  为了计算生成函数，我将使用变量 z 来表示单次掷骰。对于每个状态，生成函数为我们提供了有关直到我们达到成功状态的掷骰次数的信息。
 
-  Let G₀(z), G₁(z), G₂(z), and G₃(z) be the generating functions for reaching the success state (State 3) when starting from State 0, 1, 2, and 3 respectively.
+  设 G₀(z)、G₁(z)、G₂(z) 和 G₃(z) 分别是从状态 0、1、2 和 3 开始达到成功状态（状态 3）的生成函数。
 
-  G₃(z) = 1 (since we're already in the success state)
+  G₃(z) = 1（因为我们已经处于成功状态）
 
-  For the other states, we can write equations based on the first roll and subsequent state:
+  对于其他状态，我们可以根据第一次掷骰和后续状态编写方程：
 
   G₀(z) = z·(5/6·G₀(z) + 1/6·G₁(z))
-  This means: we roll once (factor z), then with probability 5/6 we stay in State 0, or with probability 1/6 we move to State 1.
+  这意味着：我们掷骰一次（因子 z），然后以 5/6 的概率停留在状态 0，或者以 1/6 的概率转移到状态 1。
 
   G₁(z) = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6·G₂(z))
-  When in State 1, we roll once (factor z), then either move to State 0, stay in State 1, or advance to State 2.
+  当处于状态 1 时，我们掷骰一次（因子 z），然后要么转移到状态 0，要么停留在状态 1，要么前进到状态 2。
 
   G₂(z) = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6·G₃(z))
       = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6·1)
       = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6)
 
-  Now I can solve this system of equations for G₀(z):
+  现在我可以求解这个方程组以得到 G₀(z)：
 
-  From G₀(z) = z·(5/6·G₀(z) + 1/6·G₁(z)):
+  从 G₀(z) = z·(5/6·G₀(z) + 1/6·G₁(z))：
   G₀(z) - 5z/6·G₀(z) = z/6·G₁(z)
   G₀(z)(1 - 5z/6) = z/6·G₁(z)
   G₀(z) = (z/6·G₁(z))/(1 - 5z/6) ... (1)
 
-  From G₁(z) = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6·G₂(z)):
+  从 G₁(z) = z·(4/6·G₀(z) + 1/6·G₁(z) + 1/6·G₂(z))：
   G₁(z) - z/6·G₁(z) = 4z/6·G₀(z) + z/6·G₂(z)
   G₁(z)(1 - z/6) = 4z/6·G₀(z) + z/6·G₂(z) ... (2)
 
