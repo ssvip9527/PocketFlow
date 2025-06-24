@@ -6,7 +6,7 @@ def main():
     
     query = """I need to understand the latest developments in artificial intelligence"""
     
-    # Create shared data
+    # 创建共享数据
     shared = {
         "query": query,
         "thoughts": [],
@@ -14,16 +14,16 @@ def main():
         "current_thought_number": 0
     }
     
-    # Create and run flow
+    # 创建并运行流
     tao_flow = create_tao_flow()
     tao_flow.run(shared)
     
-    # Print final result
+    # 打印最终结果
     if "final_answer" in shared:
-        print("\nFinal Answer:")
+        print("\n最终答案:")
         print(shared["final_answer"])
     else:
-        print("\nFlow did not produce a final answer")
+        print("\n流未产生最终答案")
 
 if __name__ == "__main__":
     main()

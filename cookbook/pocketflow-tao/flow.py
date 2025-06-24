@@ -5,35 +5,35 @@ from nodes import ThinkNode, ActionNode, ObserveNode, EndNode
 
 def create_tao_flow():
     """
-    Create a Thought-Action-Observation loop flow
+    创建一个思维-行动-观察循环流
     
-    How the flow works:
-    1. ThinkNode decides the next action
-    2. ActionNode executes the action
-    3. ObserveNode observes the action result
-    4. Return to ThinkNode to continue thinking, or end the flow
+    流的工作原理：
+    1. ThinkNode决定下一步行动
+    2. ActionNode执行行动
+    3. ObserveNode观察行动结果
+    4. 返回到ThinkNode继续思考，或结束流
     
-    Returns:
-        Flow: Complete TAO loop flow
+    返回：
+        Flow: 完整的TAO循环流
     """
-    # Create node instances
+    # 创建节点实例
     think = ThinkNode()
     action = ActionNode()
     observe = ObserveNode()
     end = EndNode()
     
-    # Connect nodes
-    # If ThinkNode returns "action", go to ActionNode
+    # 连接节点
+    # 如果ThinkNode返回"action"，则转到ActionNode
     think - "action" >> action
     
-    # If ThinkNode returns "end", end the flow
+    # 如果ThinkNode返回"end"，则结束流
     think - "end" >> end
     
-    # After ActionNode completes, go to ObserveNode
+    # 在ActionNode完成后，转到ObserveNode
     action - "observe" >> observe
     
-    # After ObserveNode completes, return to ThinkNode
+    # 在ObserveNode完成后，返回到ThinkNode
     observe - "think" >> think
     
-    # Create and return flow, starting from ThinkNode
+    # 创建并返回流，从ThinkNode开始
     return Flow(start=think)
