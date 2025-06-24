@@ -1,17 +1,17 @@
-# PocketFlow Communication Example
+# PocketFlow 通信示例
 
-This example demonstrates the [Communication](https://the-pocket.github.io/PocketFlow/communication.html) concept in PocketFlow, specifically focusing on the Shared Store pattern.
+本示例演示了 PocketFlow 中的 [通信](https://the-pocket.github.io/PocketFlow/communication.html) 概念，特别关注共享存储模式。
 
-## Overview
+## 概述
 
-The example implements a simple word counter that shows how nodes can communicate using a shared store. It demonstrates:
+本示例实现了一个简单的单词计数器，展示了节点如何使用共享存储进行通信。它演示了：
 
-- How to initialize and structure a shared store
-- How nodes can read from and write to the shared store
-- How to maintain state across multiple node executions
-- Best practices for shared store usage
+- 如何初始化和构建共享存储
+- 节点如何从共享存储中读取和写入
+- 如何在多个节点执行中维护状态
+- 共享存储使用的最佳实践
 
-## Project Structure
+## 项目结构
 
 ```
 pocketflow-communication/
@@ -22,31 +22,31 @@ pocketflow-communication/
 └── nodes.py
 ```
 
-## Installation
+## 安装
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+## 用法
 
 ```bash
 python main.py
 ```
 
-Enter text when prompted. The program will:
-1. Count words in the text
-2. Store statistics in the shared store
-3. Display running statistics (total texts, total words, average)
+出现提示时输入文本。程序将：
+1. 统计文本中的单词
+2. 将统计信息存储在共享存储中
+3. 显示运行统计信息（总文本数、总单词数、平均值）
 
-Enter 'q' to quit.
+输入 'q' 退出。
 
-## How it Works
+## 工作原理
 
-The example uses three nodes:
+本示例使用三个节点：
 
-1. `TextInput`: Reads user input and initializes the shared store
-2. `WordCounter`: Counts words and updates statistics in the shared store
-3. `ShowStats`: Displays statistics from the shared store
+1. `TextInput`: 读取用户输入并初始化共享存储
+2. `WordCounter`: 统计单词并更新共享存储中的统计信息
+3. `ShowStats`: 显示共享存储中的统计信息
 
-This demonstrates how nodes can share and maintain state using the shared store pattern. 
+这演示了节点如何使用共享存储模式共享和维护状态。

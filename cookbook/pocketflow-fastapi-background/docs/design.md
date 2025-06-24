@@ -2,25 +2,25 @@
 
 > Please DON'T remove notes for AI
 
-## Requirements
+## 需求
 
-> Notes for AI: Keep it simple and clear.
-> If the requirements are abstract, write concrete user stories
+> 给AI的提示：保持简单清晰
+> 如果需求比较抽象，请编写具体的用户故事
 
-**User Story**: As a user, I want to submit an article topic via a web API and receive real-time progress updates while the article is being generated in the background, so I can see the workflow progress without blocking the UI.
+**用户故事**：作为一个用户，我想通过Web API提交文章主题，并在文章生成过程中接收实时进度更新，这样我可以在不阻塞UI的情况下查看工作流进度。
 
-**Core Requirements**:
-1. Submit article topic via REST API endpoint
-2. Start background job for article generation workflow
-3. Receive real-time progress updates via Server-Sent Events (SSE)
-4. Get final article result when workflow completes
-5. Handle multiple concurrent requests
+**核心需求**：
+1. 通过REST API端点提交文章主题
+2. 启动文章生成工作流的后台任务
+3. 通过服务器发送事件(SSE)接收实时进度更新
+4. 在工作流完成时获取最终文章结果
+5. 处理多个并发请求
 
-**Technical Requirements**:
-- FastAPI web server with REST endpoints
-- Background task processing using asyncio
-- Server-Sent Events for progress streaming
-- Simple web interface to test the functionality
+**技术要求**：
+- 使用FastAPI搭建Web服务器并提供REST端点
+- 使用asyncio进行后台任务处理
+- 使用服务器发送事件(SSE)进行进度流式传输
+- 提供简单的Web界面来测试功能
 
 ## Flow Design
 

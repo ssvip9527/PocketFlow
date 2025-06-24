@@ -13,7 +13,7 @@ def execute_python(function_code, input):
             exec(function_code, namespace)
             
             if "run_code" not in namespace:
-                return None, "Function 'run_code' not found"
+                return None, "未找到函数 'run_code'"
             
             run_code = namespace["run_code"]
             
@@ -27,10 +27,10 @@ def execute_python(function_code, input):
             return result, None
                 
     except Exception as e:
-        return None, f"{type(e).__name__}: {str(e)}"
+        return None, f"执行错误: {type(e).__name__}: {str(e)}"
 
 if __name__ == "__main__":
-    # Test 1: Working function
+    # 测试 1: 正常工作的函数
     function_code = """
 def run_code(nums, target):
     for i in range(len(nums)):
@@ -42,15 +42,15 @@ def run_code(nums, target):
     
     input = {"nums": [2, 7, 11, 15], "target": 9}
     output, error = execute_python(function_code, input)
-    print(f"Output: {output}")
-    print(f"Error: {error}")
+    print(f"输出: {output}")
+    print(f"错误: {error}")
     
-    # Test 2: Function with error
+    # 测试 2: 带有错误的函数
     broken_function_code = """
 def run_code(nums, target):
-    return nums[100]  # Index error
+    return nums[100]  # 索引错误
 """
     
     output2, error2 = execute_python(broken_function_code, input)
-    print(f"Output: {output2}")
-    print(f"Error: {error2}") 
+    print(f"输出: {output2}")
+    print(f"错误: {error2}")

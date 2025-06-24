@@ -8,21 +8,21 @@ class GenerateTestCases(Node):
         return shared["problem"]
 
     def exec(self, problem):
-        prompt = f"""Generate 5-7 test cases for this coding problem:
+        prompt = f"""为这个编码问题生成5-7个测试用例：
 
 {problem}
 
-Output in this YAML format with reasoning:
+以包含推理的YAML格式输出：
 ```yaml
 reasoning: |
-    The input parameters should be: param1 as a string, and param2 as a number.
-    To test the function, I will consider basic cases, edge cases, and corner cases.
-    For this problem, I need to test...
+    输入参数应为：param1作为字符串，param2作为数字。
+    为了测试函数，我将考虑基本情况、边界情况和极端情况。
+    对于这个问题，我需要测试...
 test_cases:
-  - name: "Basic case"
+  - name: "基本情况"
     input: {{param1: value1, param2: value2}}
     expected: result1
-  - name: "Edge case - empty"
+  - name: "边缘情况 - 空"
     input: {{param1: value3, param2: value4}}
     expected: result2
 ```"""
@@ -30,28 +30,28 @@ test_cases:
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         result = yaml.safe_load(yaml_str)
         
-        # Validation asserts
-        assert "test_cases" in result, "Result must have 'test_cases' field"
-        assert isinstance(result["test_cases"], list), "test_cases must be a list"
+        # 验证断言
+        assert "test_cases" in result, "结果必须包含 'test_cases' 字段"
+        assert isinstance(result["test_cases"], list), "'test_cases' 必须是列表"
         
         for i, test_case in enumerate(result["test_cases"]):
-            assert "name" in test_case, f"Test case {i} missing 'name' field"
-            assert isinstance(test_case["name"], str), f"Test case {i} 'name' must be string"
-            assert "input" in test_case, f"Test case {i} missing 'input' field"
-            assert isinstance(test_case["input"], dict), f"Test case {i} 'input' must be dict"
-            assert "expected" in test_case, f"Test case {i} missing 'expected' field"
+            assert "name" in test_case, f"测试用例 {i} 缺少 'name' 字段"
+            assert isinstance(test_case["name"], str), f"测试用例 {i} 的 'name' 必须是字符串"
+            assert "input" in test_case, f"测试用例 {i} 缺少 'input' 字段"
+            assert isinstance(test_case["input"], dict), f"测试用例 {i} 的 'input' 必须是字典"
+            assert "expected" in test_case, f"测试用例 {i} 缺少 'expected' 字段"
         
         return result
 
     def post(self, shared, prep_res, exec_res):
         shared["test_cases"] = exec_res["test_cases"]
         
-        # Print all generated test cases
-        print(f"\n=== Generated {len(exec_res['test_cases'])} Test Cases ===")
+        # 打印所有生成的测试用例
+        print(f"\n=== 生成的 {len(exec_res['test_cases'])} 个测试用例 ===")
         for i, test_case in enumerate(exec_res["test_cases"], 1):
             print(f"{i}. {test_case['name']}")
-            print(f"   input: {test_case['input']}")
-            print(f"   expected: {test_case['expected']}")
+            print(f"   输入: {test_case['input']}")
+            print(f"   预期: {test_case['expected']}")
 
 class ImplementFunction(Node):
     def prep(self, shared):
@@ -60,55 +60,55 @@ class ImplementFunction(Node):
     def exec(self, inputs):
         problem, test_cases = inputs
         
-        # Format test cases nicely for the prompt
+        # 为提示信息格式化测试用例
         formatted_tests = ""
         for i, test in enumerate(test_cases, 1):
             formatted_tests += f"{i}. {test['name']}\n"
-            formatted_tests += f"   input: {test['input']}\n"
-            formatted_tests += f"   expected: {test['expected']}\n\n"
+            formatted_tests += f"   输入: {test['input']}\n"
+            formatted_tests += f"   预期: {test['expected']}\n\n"
         
-        prompt = f"""Implement a solution for this problem:
+        prompt = f"""为这个问题实现一个解决方案：
 
 {problem}
 
-Test cases to consider:
+要考虑的测试用例：
 {formatted_tests}
 
-IMPORTANT: The function name must be exactly "run_code"
+重要提示：函数名称必须是 "run_code"
 
-Output in this YAML format:
+以YAML格式输出：
 ```yaml
 reasoning: |
-    To implement this function, I will...
-    My approach is...
+    为了实现这个函数，我将...
+    我的方法是...
 function_code: |
     def run_code(...):
-        # your implementation
+        # 你的实现
         return result
 ```"""
         response = call_llm(prompt)
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         result = yaml.safe_load(yaml_str)
         
-        # Validation asserts
-        assert "function_code" in result, "Result must have 'function_code' field"
-        assert isinstance(result["function_code"], str), "function_code must be string"
-        assert "def run_code" in result["function_code"], "Function must be named 'run_code'"
+        # 验证断言
+        assert "function_code" in result, "结果必须包含 'function_code' 字段"
+        assert isinstance(result["function_code"], str), "'function_code' 必须是字符串"
+        assert "def run_code" in result["function_code"], "函数名称必须是 'run_code'"
         
         return result["function_code"]
 
     def post(self, shared, prep_res, exec_res):
         shared["function_code"] = exec_res
         
-        # Print the implemented function
-        print(f"\n=== Implemented Function ===")
+        # 打印已实现的函数
+        print(f"\n=== 已实现的函数 ===")
         print(exec_res)
 
 class RunTests(BatchNode):
     def prep(self, shared):
         function_code = shared["function_code"]
         test_cases = shared["test_cases"]
-        # Return list of tuples (function_code, test_case)
+        # 返回元组列表 (function_code, test_case)
         return [(function_code, test_case) for test_case in test_cases]
 
     def exec(self, test_data):
@@ -138,22 +138,22 @@ class RunTests(BatchNode):
         all_passed = all(result["passed"] for result in exec_res_list)
         shared["iteration_count"] = shared.get("iteration_count", 0) + 1
         
-        # Print test results
+        # 打印测试结果
         passed_count = len([r for r in exec_res_list if r["passed"]])
         total_count = len(exec_res_list)
-        print(f"\n=== Test Results: {passed_count}/{total_count} Passed ===")
+        print(f"\n=== 测试结果：{passed_count}/{total_count} 通过 ===")
         
         failed_tests = [r for r in exec_res_list if not r["passed"]]
         if failed_tests:
-            print("Failed tests:")
+            print("失败的测试：")
             for i, result in enumerate(failed_tests, 1):
                 test_case = result['test_case']
                 print(f"{i}. {test_case['name']}:")
                 if result['error']:
-                    print(f"   error: {result['error']}")
+                    print(f"   错误: {result['error']}")
                 else:
-                    print(f"   output: {result['actual']}")
-                print(f"   expected: {result['expected']}")
+                    print(f"   输出: {result['actual']}")
+                print(f"   预期: {result['expected']}")
         
         if all_passed:
             return "success"
@@ -173,23 +173,23 @@ class Revise(Node):
         }
 
     def exec(self, inputs):
-        # Format current test cases nicely
+        # 格式化当前测试用例
         formatted_tests = ""
         for i, test in enumerate(inputs['test_cases'], 1):
             formatted_tests += f"{i}. {test['name']}\n"
-            formatted_tests += f"   input: {test['input']}\n"
-            formatted_tests += f"   expected: {test['expected']}\n\n"
+            formatted_tests += f"   输入: {test['input']}\n"
+            formatted_tests += f"   预期: {test['expected']}\n\n"
         
-        # Format failed tests nicely
+        # 格式化失败的测试用例
         formatted_failures = ""
         for i, result in enumerate(inputs['failed_tests'], 1):
             test_case = result['test_case']
             formatted_failures += f"{i}. {test_case['name']}:\n"
             if result['error']:
-                formatted_failures += f"   error: {result['error']}\n"
+                formatted_failures += f"   错误: {result['error']}\n"
             else:
-                formatted_failures += f"   output: {result['actual']}\n"
-            formatted_failures += f"   expected: {result['expected']}\n\n"
+                formatted_failures += f"   输出: {result['actual']}\n"
+            formatted_failures += f"   预期: {result['expected']}\n\n"
 
         prompt = f"""Problem: {inputs['problem']}
 
@@ -204,19 +204,19 @@ Current function:
 Failed tests:
 {formatted_failures}
 
-Analyze the failures and output revisions in YAML. You can revise test cases, function code, or both:
+分析失败并以YAML格式输出修订。您可以修改测试用例、函数代码或两者：
 
 ```yaml
 reasoning: |
-    Looking at the failures, I see that...
-    The issue appears to be...
-    I will revise...
-test_cases:  # Dictionary mapping test case index (1-based) to revised test case
+    查看失败，我发现...
+    问题似乎是...
+    我将修改...
+test_cases:  # 将测试用例索引（从1开始）映射到修订后的测试用例的字典
   1:
-    name: "Revised test name"
+    name: "修订后的测试名称"
     input: {{...}}
     expected: ...
-function_code: |  # Include this if revising function
+function_code: |  # 如果修改函数，请包含此项
   def run_code(...):
     return ...
 ```"""
@@ -224,43 +224,43 @@ function_code: |  # Include this if revising function
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         result = yaml.safe_load(yaml_str)
         
-        # Validation asserts
+        # 验证断言
         if "test_cases" in result:
-            assert isinstance(result["test_cases"], dict), "test_cases must be a dictionary"
+            assert isinstance(result["test_cases"], dict), "test_cases 必须是字典"
             for index_str, test_case in result["test_cases"].items():
-                assert isinstance(index_str, (str, int)), "test_cases keys must be strings or ints"
-                assert "name" in test_case, f"Revised test case {index_str} missing 'name' field"
-                assert "input" in test_case, f"Revised test case {index_str} missing 'input' field"
-                assert "expected" in test_case, f"Revised test case {index_str} missing 'expected' field"
+                assert isinstance(index_str, (str, int)), "test_cases 键必须是字符串或整数"
+                assert "name" in test_case, f"修订后的测试用例 {index_str} 缺少 'name' 字段"
+                assert "input" in test_case, f"修订后的测试用例 {index_str} 缺少 'input' 字段"
+                assert "expected" in test_case, f"修订后的测试用例 {index_str} 缺少 'expected' 字段"
         
         if "function_code" in result:
-            assert isinstance(result["function_code"], str), "function_code must be string"
-            assert "def run_code" in result["function_code"], "Function must be named 'run_code'"
+            assert isinstance(result["function_code"], str), "function_code 必须是字符串"
+            assert "def run_code" in result["function_code"], "函数必须命名为 'run_code'"
         
         return result
 
     def post(self, shared, prep_res, exec_res):
-        # Print what is being revised
-        print(f"\n=== Revisions (Iteration {shared['iteration_count']}) ===")
+        # 打印正在修订的内容
+        print(f"\n=== 修订 (迭代 {shared['iteration_count']}) ===")
         
-        # Handle test case revisions - map indices to actual test cases
+        # 处理测试用例修订 - 将索引映射到实际测试用例
         if "test_cases" in exec_res:
             current_tests = shared["test_cases"].copy()
-            print("Revising test cases:")
+            print("修订测试用例：")
             for index_str, revised_test in exec_res["test_cases"].items():
-                index = int(index_str) - 1  # Convert to 0-based
+                index = int(index_str) - 1  # 转换为0-based
                 if 0 <= index < len(current_tests):
                     old_test = current_tests[index]
-                    print(f"  Test {index_str}: '{old_test['name']}' -> '{revised_test['name']}'")
-                    print(f"    old input: {old_test['input']}")
-                    print(f"    new input: {revised_test['input']}")
-                    print(f"    old expected: {old_test['expected']}")
-                    print(f"    new expected: {revised_test['expected']}")
+                    print(f"  测试 {index_str}: '{old_test['name']}' -> '{revised_test['name']}'")
+                    print(f"    旧输入: {old_test['input']}")
+                    print(f"    新输入: {revised_test['input']}")
+                    print(f"    旧预期: {old_test['expected']}")
+                    print(f"    新预期: {revised_test['expected']}")
                     current_tests[index] = revised_test
             shared["test_cases"] = current_tests
             
         if "function_code" in exec_res:
-            print("Revising function code:")
-            print("New function:")
+            print("修订函数代码：")
+            print("新函数：")
             print(exec_res["function_code"])
-            shared["function_code"] = exec_res["function_code"] 
+            shared["function_code"] = exec_res["function_code"]

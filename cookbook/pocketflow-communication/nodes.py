@@ -1,27 +1,29 @@
-"""Node implementations for the communication example."""
+"""通信示例的节点实现。"""
 
 from pocketflow import Node
 
 class EndNode(Node):
-    """Node that handles flow termination."""
+    """处理流程终止的节点。"""
     pass
 
 class TextInput(Node):
-    """Node that reads text input and initializes the shared store."""
+    """读取文本输入并初始化共享存储的节点。"""
     
     def prep(self, shared):
-        """Get user input and ensure shared store is initialized."""
-        return input("Enter text (or 'q' to quit): ")
+        """从共享存储中获取统计信息。"""
+        """获取用户输入并确保共享存储已初始化。"""
+        return input("输入文本（或输入 'q' 退出）：")
     
     def post(self, shared, prep_res, exec_res):
-        """Store text and initialize/update statistics."""
+        """显示统计信息并继续流程。"""
+        """存储文本并初始化/更新统计信息。"""
         if prep_res == 'q':
             return "exit"
         
-        # Store the text
+        # 存储文本
         shared["text"] = prep_res
         
-        # Initialize statistics if they don't exist
+        # 如果统计信息不存在，则初始化
         if "stats" not in shared:
             shared["stats"] = {
                 "total_texts": 0,
@@ -32,23 +34,23 @@ class TextInput(Node):
         return "count"
 
 class WordCounter(Node):
-    """Node that counts words in the text."""
+    """计算文本中单词数量的节点。"""
     
     def prep(self, shared):
-        """Get text from shared store."""
+        """从共享存储中获取文本。"""
         return shared["text"]
     
     def exec(self, text):
-        """Count words in the text."""
+        """计算文本中的单词数量。"""
         return len(text.split())
     
     def post(self, shared, prep_res, exec_res):
-        """Update word count statistics."""
+        """更新单词计数统计信息。"""
         shared["stats"]["total_words"] += exec_res
         return "show"
 
 class ShowStats(Node):
-    """Node that displays statistics from the shared store."""
+    """显示共享存储中统计信息的节点。"""
     
     def prep(self, shared):
         """Get statistics from shared store."""
@@ -57,8 +59,8 @@ class ShowStats(Node):
     def post(self, shared, prep_res, exec_res):
         """Display statistics and continue the flow."""
         stats = prep_res
-        print(f"\nStatistics:")
-        print(f"- Texts processed: {stats['total_texts']}")
-        print(f"- Total words: {stats['total_words']}")
-        print(f"- Average words per text: {stats['total_words'] / stats['total_texts']:.1f}\n")
-        return "continue" 
+        print(f"\n统计信息:")
+        print(f"- 已处理文本数: {stats['total_texts']}")
+        print(f"- 总词数: {stats['total_words']}")
+        print(f"- 平均每文本词数: {stats['total_words'] / stats['total_texts']:.1f}\n")
+        return "continue"

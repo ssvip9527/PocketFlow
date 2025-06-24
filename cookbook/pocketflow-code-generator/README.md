@@ -1,45 +1,45 @@
 # PocketFlow Code Generator
 
-An intelligent AI system that takes LeetCode-style coding problems and automatically generates comprehensive test cases, implements solutions, and iteratively improves them until all tests pass.
+一个智能 AI 系统，它接收 LeetCode 风格的编程问题，并自动生成全面的测试用例，实现解决方案，并迭代改进它们，直到所有测试通过。
 
-- Check out the [Substack Post Tutorial](https://pocketflow.substack.com/p/build-your-own-ai-code-generator) for more!
+- 查看 [Substack 教程](https://pocketflow.substack.com/p/build-your-own-ai-code-generator) 了解更多！
 
-## Features
+## 特性
 
-- **Automatic Test Case Generation**: Creates diverse test cases including edge cases
-- **Intelligent Code Implementation**: Generates `run_code` functions with proper algorithms
-- **Iterative Improvement**: Analyzes failures and decides whether to revise tests or code
-- **Rich Debugging Output**: Detailed progress tracking and validation
+- **自动测试用例生成**: 创建包括边缘情况在内的多样化测试用例
+- **智能代码实现**: 生成具有适当算法的 `run_code` 函数
+- **迭代改进**: 分析失败并决定是修改测试还是代码
+- **丰富的调试输出**: 详细的进度跟踪和验证
 
-## Getting Started
+## 快速开始
 
-1. Install required dependencies:
+1. 安装所需依赖:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Set up your Anthropic API key:
+2. 设置你的 Anthropic API 密钥:
     ```bash
     export ANTHROPIC_API_KEY="your-api-key-here"
     ```
-    Test your API key is working:
+    测试你的 API 密钥是否有效:
     ```bash
     python utils/call_llm.py
     ```
 
-3. Run the code generator with the default Two Sum problem:
+3. 使用默认的 Two Sum 问题运行代码生成器:
 ```bash
 python main.py
 ```
 
-4. Or provide your own problem:
+4. 或者提供你自己的问题:
 ```bash
-python main.py "Reverse a linked list. Given the head of a singly linked list, reverse the list and return the reversed list."
+python main.py "反转链表。给定一个单链表的头节点，反转链表并返回反转后的链表。"
 ```
 
-## How It Works
+## 工作原理
 
-The system follows an intelligent workflow combining **Agent** and **Workflow** design patterns:
+该系统遵循结合了 **Agent** 和 **Workflow** 设计模式的智能工作流:
 
 ```mermaid
 flowchart TD
@@ -53,111 +53,111 @@ flowchart TD
     decision -->|Max Iterations| maxIter[Max Iterations Reached]
 ```
 
-### The Process
+### 流程
 
-1. **GenerateTestCases**: Creates 5-7 comprehensive test cases from problem description
-2. **ImplementFunction**: Writes a `run_code` function based on problem and test cases  
-3. **RunTests**: Executes function against all test cases using batch processing
-4. **Revise**: Analyzes failures and makes intelligent decisions to revise test cases and/or function code
-5. **Loop**: Continues until all tests pass or max iterations reached
+1. **GenerateTestCases**: 根据问题描述创建 5-7 个全面的测试用例
+2. **ImplementFunction**: 根据问题和测试用例编写 `run_code` 函数
+3. **RunTests**: 使用批处理对所有测试用例执行函数
+4. **Revise**: 分析失败并做出智能决策以修改测试用例和/或函数代码
+5. **Loop**: 继续循环直到所有测试通过或达到最大迭代次数
 
-## Sample Output
+## 示例输出
 
-Here's what you'll see when running the Two Sum example:
+以下是运行 Two Sum 示例时你将看到的内容:
 
 ```
 Starting PocketFlow Code Generator...
 
-=== Generated 7 Test Cases ===
-1. Basic case - solution at beginning
-   input: {'nums': [2, 7, 11, 15], 'target': 9}
-   expected: [0, 1]
-2. Basic case - solution in middle
-   input: {'nums': [3, 2, 4], 'target': 6}
-   expected: [1, 2]
-3. Edge case - minimum array size with duplicates
-   input: {'nums': [3, 3], 'target': 6}
-   expected: [0, 1]
-4. Case with negative numbers
-   input: {'nums': [-1, -2, -3, -4, -5], 'target': -8}
-   expected: [2, 4]
-5. Case with zero and negative target
-   input: {'nums': [0, 4, 3, 0], 'target': 0}
-   expected: [0, 3]
-6. Case with solution at the end
-   input: {'nums': [1, 2, 3, 4, 5, 6], 'target': 11}
-   expected: [4, 5]
-7. Larger array case
-   input: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
-   expected: [2, 6]
+=== 生成 7 个测试用例 ===
+1. 基本情况 - 解决方案在开头
+   输入: {'nums': [2, 7, 11, 15], 'target': 9}
+   预期: [0, 1]
+2. 基本情况 - 解决方案在中间
+   输入: {'nums': [3, 2, 4], 'target': 6}
+   预期: [1, 2]
+3. 边缘情况 - 带有重复项的最小数组大小
+   输入: {'nums': [3, 3], 'target': 6}
+   预期: [0, 1]
+4. 带有负数的情况
+   输入: {'nums': [-1, -2, -3, -4, -5], 'target': -8}
+   预期: [2, 4]
+5. 带有零和负目标的情况
+   输入: {'nums': [0, 4, 3, 0], 'target': 0}
+   预期: [0, 3]
+6. 解决方案在末尾的情况
+   输入: {'nums': [1, 2, 3, 4, 5, 6], 'target': 11}
+   预期: [4, 5]
+7. 较大数组的情况
+   输入: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
+   预期: [2, 6]
 
-=== Implemented Function ===
+=== 实现函数 ===
 def run_code(nums, target):
-    # Dictionary to store number -> index mapping
+    # 用于存储数字 -> 索引映射的字典
     num_to_index = {}
     
-    # Iterate through the array
+    # 遍历数组
     for i, num in enumerate(nums):
-        # Calculate what number we need to reach the target
+        # 计算我们需要达到目标的数字
         complement = target - num
         
-        # Check if the complement exists in our map
+        # 检查映射中是否存在补数
         if complement in num_to_index:
-            # Found the pair! Return indices
+            # 找到配对！返回索引
             return [num_to_index[complement], i]
         
-        # Store current number and its index
+        # 存储当前数字及其索引
         num_to_index[num] = i
     
-    # Should never reach here given problem constraints
+    # 在给定问题约束下不应到达此处
     return []
 
-=== Test Results: 6/7 Passed ===
-Failed tests:
-1. Larger array case:
-   error: Expected [2, 6], got [0, 7]
-   expected: [2, 6]
+=== 测试结果: 6/7 通过 ===
+失败的测试:
+1. 较大数组的情况:
+   错误: 预期 [2, 6], 得到 [0, 7]
+   预期: [2, 6]
 
-=== Revisions (Iteration 1) ===
-Revising test cases:
-  Test 7: 'Larger array case' -> 'Larger array case'
-    old input: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
-    new input: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
-    old expected: [2, 6]
-    new expected: [0, 7]
+=== 修订 (迭代 1) ===
+修订测试用例:
+  测试 7: '较大数组的情况' -> '较大数组的情况'
+    旧输入: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
+    新输入: {'nums': [5, 75, 25, 45, 42, 2, 11, 9, 55, 12], 'target': 14}
+    旧预期: [2, 6]
+    新预期: [0, 7]
 
-=== Test Results: 7/7 Passed ===
+=== 测试结果: 7/7 通过 ===
 ```
 
-## Key Features
+## 关键特性
 
-### Intelligent Decision Making
-The **Revise** node acts as an agent that analyzes test failures and decides whether to:
-- Fix test cases (if they have incorrect expected outputs)  
-- Fix the function implementation (if the logic is wrong)
-- Or both
+### 智能决策
+**Revise** 节点充当一个代理，分析测试失败并决定是否:
+- 修复测试用例 (如果它们的预期输出不正确)
+- 修复函数实现 (如果逻辑错误)
+- 或两者兼有
 
-### Structured Output with Validation
-All LLM interactions use YAML format with:
-- **Reasoning fields**: Transparent decision-making process
-- **Validation asserts**: Ensures outputs match expected structure
-- **Rich debugging**: Comprehensive logging of all steps
+### 带有验证的结构化输出
+所有 LLM 交互都使用 YAML 格式，并包含:
+- **推理字段**: 透明的决策过程
+- **验证断言**: 确保输出与预期结构匹配
+- **丰富的调试**: 全面的步骤日志记录
 
-### Batch Processing
-The **RunTests** node uses PocketFlow's BatchNode to efficiently test the function against all test cases in parallel.
+### 批处理
+**RunTests** 节点使用 PocketFlow 的 BatchNode 来高效地并行测试所有测试用例的函数。
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Entry point with sample Two Sum problem
-- [`flow.py`](./flow.py): Connects all nodes into the complete workflow  
-- [`nodes.py`](./nodes.py): Core logic nodes with validation and debugging
-- [`utils/call_llm.py`](./utils/call_llm.py): Anthropic Claude API wrapper
-- [`utils/code_executor.py`](./utils/code_executor.py): Safe Python code execution utility
-- [`doc/design.md`](./doc/design.md): Detailed system design documentation
+- [`main.py`](./main.py): 带有 Two Sum 示例问题的入口点
+- [`flow.py`](./flow.py): 将所有节点连接到完整的工作流中
+- [`nodes.py`](./nodes.py): 带有验证和调试的核心逻辑节点
+- [`utils/call_llm.py`](./utils/call_llm.py): Anthropic Claude API 包装器
+- [`utils/code_executor.py`](./utils/code_executor.py): 安全的 Python 代码执行工具
+- [`doc/design.md`](./doc/design.md): 详细的系统设计文档
 
-## Design Patterns Used
+## 使用的设计模式
 
-- **[Workflow](https://the-pocket.github.io/PocketFlow/design_pattern/workflow.html)**: Sequential steps of test generation → coding → testing
-- **[Agent](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)**: Intelligent decision-making when tests fail
-- **[Batch](https://the-pocket.github.io/PocketFlow/core_abstraction/batch.html)**: Efficient parallel test execution
-- **[Structured Output](https://the-pocket.github.io/PocketFlow/design_pattern/structure.html)**: YAML validation for reliable LLM outputs 
+- **[工作流](https://the-pocket.github.io/PocketFlow/design_pattern/workflow.html)**: 测试生成 → 编码 → 测试的顺序步骤
+- **[代理](https://the-pocket.github.io/PocketFlow/design_pattern/agent.html)**: 测试失败时的智能决策
+- **[批处理](https://the-pocket.github.io/PocketFlow/core_abstraction/batch.html)**: 高效的并行测试执行
+- **[结构化输出](https://the-pocket.github.io/PocketFlow/design_pattern/structure.html)**: 用于可靠 LLM 输出的 YAML 验证

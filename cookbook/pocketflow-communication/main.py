@@ -1,7 +1,7 @@
 from flow import create_flow
 
 def main():
-    """Run the communication example."""
+    """运行通信示例。"""
     flow = create_flow()
     shared = {}
     flow.run(shared)
