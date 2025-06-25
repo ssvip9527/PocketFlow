@@ -1,32 +1,32 @@
-"""Flow definitions for parallel image processing."""
+"""并行图像处理的流定义。"""
 
 from pocketflow import AsyncParallelBatchFlow, AsyncBatchFlow
 from nodes import LoadImage, ApplyFilter, SaveImage
 
 def create_base_flow():
-    """Create flow for processing a single image with one filter."""
-    # Create nodes
+    """创建用于处理单个图像和单个过滤器的流。"""
+    # 创建节点
     load = LoadImage()
     apply_filter = ApplyFilter()
     save = SaveImage()
     
-    # Connect nodes
+    # 连接节点
     load - "apply_filter" >> apply_filter
     apply_filter - "save" >> save
     
-    # Create flow
+    # 创建流
     return load
 
 class ImageBatchFlow(AsyncBatchFlow):
-    """Flow that processes multiple images with multiple filters in batch."""
+    """批量处理多个图像和多个过滤器的流。"""
     
     async def prep_async(self, shared):
-        """Generate parameters for each image-filter combination."""
-        # Get list of images and filters
+        """为每个图像-过滤器组合生成参数。"""
+        # 获取图像和过滤器列表
         images = shared.get("images", [])
         filters = ["grayscale", "blur", "sepia"]
         
-        # Create parameter combinations
+        # 创建参数组合
         params = []
         for image_path in images:
             for filter_type in filters:
@@ -40,15 +40,15 @@ class ImageBatchFlow(AsyncBatchFlow):
         return params
 
 class ImageParallelBatchFlow(AsyncParallelBatchFlow):
-    """Flow that processes multiple images with multiple filters in parallel."""
+    """并行处理多个图像和多个过滤器的流。"""
 
     async def prep_async(self, shared):
-        """Generate parameters for each image-filter combination."""
-        # Get list of images and filters
+        """为每个图像-过滤器组合生成参数。"""
+        # 获取图像和过滤器列表
         images = shared.get("images", [])
         filters = ["grayscale", "blur", "sepia"]
         
-        # Create parameter combinations
+        # 创建参数组合
         params = []
         for image_path in images:
             for filter_type in filters:
@@ -62,9 +62,9 @@ class ImageParallelBatchFlow(AsyncParallelBatchFlow):
         return params
 
 def create_flows():
-    """Create the complete parallel processing flow."""
-    # Create base flow for single image processing
+    """创建完整的并行处理流。"""
+    # 创建用于单个图像处理的基础流
     base_flow = create_base_flow()
     
-    # Wrap in parallel batch flow
+    # 包装在并行批处理流中
     return ImageBatchFlow(start=base_flow), ImageParallelBatchFlow(start=base_flow)

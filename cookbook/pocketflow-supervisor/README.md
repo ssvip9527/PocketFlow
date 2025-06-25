@@ -1,96 +1,125 @@
-# Research Supervisor
+# PocketFlow 监督器示例
 
-This project demonstrates a supervisor that oversees an unreliable [research agent](../pocketflow-agent) to ensure high-quality answers.
+这个示例展示了如何使用 PocketFlow 构建一个具有监督功能的代理。它演示了如何创建一个代理，该代理可以搜索网络以回答问题，并且有一个“监督器”节点来评估答案的质量。如果答案被认为是无意义的，流程将重新启动以尝试生成更好的答案。
 
-## Features
+## 功能
 
-- Evaluates responses for quality and relevance
-- Rejects nonsensical or unreliable answers
-- Requests new answers until a quality response is produced
+- **网络搜索集成**：代理可以利用网络搜索工具获取最新信息。
+- **LLM 驱动的决策**：使用大型语言模型 (LLM) 决定何时搜索以及何时回答。
+- **答案监督**：一个专门的节点评估生成的答案，并在必要时触发重试。
+- **健壮性**：通过重试机制处理不可靠的答案。
 
-## Getting Started
+## 项目结构
 
-1. Install the packages you need with this simple command:
-```bash
-pip install -r requirements.txt
+```
+. 
+├── flow.py          # 定义 PocketFlow 流程
+├── main.py          # 应用程序入口点
+├── nodes.py         # 定义自定义节点（决策、搜索、不可靠答案、监督器）
+├── README.md        # 本文件
+├── requirements.txt # Python 依赖项
+└── utils.py         # 辅助函数（LLM 调用，网络搜索）
 ```
 
-2. Let's get your OpenAI API key ready:
+## 设置
+
+1.  **克隆仓库**：
+    ```bash
+    git clone https://github.com/your-repo/pocketflow-supervisor.git
+    cd pocketflow-supervisor
+    ```
+
+2.  **安装依赖项**：
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **配置 OpenAI API 密钥**：
+    确保你的 OpenAI API 密钥已设置为环境变量 `OPENAI_API_KEY`。
+    ```bash
+    export OPENAI_API_KEY="你的密钥"
+    ```
+
+## 如何运行
+
+运行 `main.py` 脚本并提供一个问题作为命令行参数：
 
 ```bash
-export OPENAI_API_KEY="your-api-key-here"
+python main.py "什么是大型语言模型？"
 ```
 
-3. Let's do a quick check to make sure your API key is working properly:
+## 工作原理
 
-```bash
-python utils.py
-```
+该代理遵循一个循环过程，直到生成一个被监督器批准的答案。以下是流程图和每个组件的说明：
 
-This will test both the LLM call and web search features. If you see responses, you're good to go!
-
-4. Try out the agent with the default question (about Nobel Prize winners):
-
-```bash
-python main.py
-```
-
-5. Got a burning question? Ask anything you want by using the `--` prefix:
-
-```bash
-python main.py --"What is quantum computing?"
-```
-
-## How It Works?
-
-The magic happens through a simple but powerful graph structure with these main components:
+### 流程图
 
 ```mermaid
 graph TD
-    subgraph InnerAgent[Inner Research Agent]
-        DecideAction -->|"search"| SearchWeb
-        DecideAction -->|"answer"| UnreliableAnswerNode
-        SearchWeb -->|"decide"| DecideAction
-    end
-    
-    InnerAgent --> SupervisorNode
-    SupervisorNode -->|"retry"| InnerAgent
+    A[开始] --> B{决定行动}
+    B -- 搜索 --> C[搜索网络]
+    C --> B
+    B -- 回答 --> D[不可靠答案]
+    D --> E{监督器}
+    E -- 无意义 --> B
+    E -- 有效 --> F[结束]
 ```
 
-Here's what each part does:
-1. **DecideAction**: The brain that figures out whether to search or answer based on current context
-2. **SearchWeb**: The researcher that goes out and finds information using web search
-3. **UnreliableAnswerNode**: Generates answers (with a 50% chance of being unreliable)
-4. **SupervisorNode**: Quality control that validates answers and rejects nonsensical ones
+### 组件说明
 
-## Example Output
+-   **`DecideAction` 节点**：
+    -   **目的**：根据当前问题和研究决定下一步是“搜索”网络还是“回答”问题。
+    -   **机制**：调用 LLM 来做出此决策，并提供上下文和可用行动空间。
+
+-   **`SearchWeb` 节点**：
+    -   **目的**：执行网络搜索以获取更多信息。
+    -   **机制**：使用 `utils.py` 中的 `search_web` 函数，并将结果添加到共享上下文。
+    -   **后续**：搜索后始终返回 `DecideAction` 节点以重新评估。
+
+-   **`UnreliableAnswerNode` 节点**：
+    -   **目的**：生成问题的答案，但有 50% 的几率故意返回一个无意义的答案，以模拟不可靠的系统。
+    -   **机制**：调用 LLM 生成答案，或者随机返回一个预设的无意义字符串。
+
+-   **`SupervisorNode` 节点**：
+    -   **目的**：评估 `UnreliableAnswerNode` 生成的答案的质量。
+    -   **机制**：检查答案中是否存在特定的“无意义”标记（例如，“咖啡休息”、“紫色独角兽”）。
+    -   **后续**：如果答案被认为是无意义的，它会清除答案并触发流程重新回到 `DecideAction` 节点（通过返回“retry”），从而有效地重新启动答案生成过程。如果答案有效，流程结束。
+
+## 示例输出
+
+当运行代理时，你将看到类似于以下内容的输出（确切的输出会因 LLM 响应和随机性而异）：
 
 ```
-🤔 Processing question: Who won the Nobel Prize in Physics 2024?
-🤔 Agent deciding what to do next...
-🔍 Agent decided to search for: Nobel Prize in Physics 2024 winner
-🌐 Searching the web for: Nobel Prize in Physics 2024 winner
-📚 Found information, analyzing results...
-🤔 Agent deciding what to do next...
-💡 Agent decided to answer the question
-🤪 Generating unreliable dummy answer...
-✅ Answer generated successfully
-    🔍 Supervisor checking answer quality...
-    ❌ Supervisor rejected answer: Answer appears to be nonsensical or unhelpful
-🤔 Agent deciding what to do next...
-💡 Agent decided to answer the question
-✍️ Crafting final answer...
-✅ Answer generated successfully
-    🔍 Supervisor checking answer quality...
-    ✅ Supervisor approved answer: Answer appears to be legitimate
-
-🎯 Final Answer:
-The Nobel Prize in Physics for 2024 was awarded jointly to John J. Hopfield and Geoffrey Hinton. They were recognized "for foundational discoveries and inventions that enable machine learning with artificial neural networks." Their work has been pivotal in the field of artificial intelligence, specifically in developing the theories and technologies that support machine learning using artificial neural networks. John Hopfield is associated with Princeton University, while Geoffrey Hinton is connected to the University of Toronto. Their achievements have laid essential groundwork for advancements in AI and its widespread application across various domains.
+🤔 代理正在决定下一步...
+🔍 代理决定搜索: 大型语言模型
+🌐 正在搜索网络: 大型语言模型
+📚 找到信息，正在分析结果...
+🤔 代理正在决定下一步...
+✍️ 正在撰写最终答案...
+    🔍 监督器正在检查答案质量...
+    ✅ 监督器批准答案: 答案似乎是合法的
+✅ 答案生成成功
+最终答案: 大型语言模型（LLM）是具有大量参数的深度学习模型，它们在海量文本数据集上进行训练，能够理解、生成和处理人类语言。
 ```
 
-## Files
+或者，如果 `UnreliableAnswerNode` 返回一个无意义的答案：
 
-- [`main.py`](./main.py): The starting point - runs the whole show!
-- [`flow.py`](./flow.py): Connects everything together into a smart agent with supervision
-- [`nodes.py`](./nodes.py): The building blocks that make decisions, take actions, and validate answers
-- [`utils.py`](./utils.py): Helper functions for talking to the LLM and searching the web
+```
+🤔 代理正在决定下一步...
+✍️ 正在撰写最终答案...
+🤪 正在生成不可靠的虚拟答案...
+    🔍 监督器正在检查答案质量...
+    ❌ 监督器拒绝答案: 答案似乎是无意义或无用的
+🤔 代理正在决定下一步...
+🔍 代理决定搜索: 大型语言模型
+🌐 正在搜索网络: 大型语言模型
+📚 找到信息，正在分析结果...
+🤔 代理正在决定下一步...
+✍️ 正在撰写最终答案...
+    🔍 监督器正在检查答案质量...
+    ✅ 监督器批准答案: 答案似乎是合法的
+✅ 答案生成成功
+最终答案: 大型语言模型（LLM）是具有大量参数的深度学习模型，它们在海量文本数据集上进行训练，能够理解、生成和处理人类语言。
+```
+
+这个示例展示了 PocketFlow 如何实现复杂的、有条件的流程，以及如何通过集成外部工具和监督机制来增强代理的健壮性。

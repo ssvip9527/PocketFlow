@@ -2,7 +2,7 @@ from pocketflow import Node
 from utils.generate_image import generate_image
 
 class GenerateImageNode(Node):
-    """Generates image from text prompt using OpenAI API."""
+    """使用 OpenAI API 从文本提示生成图像。"""
     
     def prep(self, shared):
         return shared.get("task_input", "")

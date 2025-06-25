@@ -4,59 +4,59 @@ import time
 from flow import create_flows
 
 def get_image_paths():
-    """Get paths of existing images in the images directory."""
+    """获取 images 目录中现有图像的路径。"""
     images_dir = "images"
     if not os.path.exists(images_dir):
-        raise ValueError(f"Directory '{images_dir}' not found!")
+        raise ValueError(f"目录 '{images_dir}' 未找到！")
     
-    # List all jpg files in the images directory
+    # 列出 images 目录中的所有 jpg 文件
     image_paths = []
     for filename in os.listdir(images_dir):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
             image_paths.append(os.path.join(images_dir, filename))
     
     if not image_paths:
-        raise ValueError(f"No images found in '{images_dir}' directory!")
+        raise ValueError(f"在 '{images_dir}' 目录中未找到图像！")
     
-    print(f"Found {len(image_paths)} images:")
+    print(f"找到 {len(image_paths)} 张图像：")
     for path in image_paths:
         print(f"- {path}")
     
     return image_paths
 
 async def main():
-    """Run the parallel image processing example."""
-    print("Parallel Image Processor")
+    """运行并行图像处理示例。"""
+    print("并行图像处理器")
     print("-" * 30)
     
-    # Get existing image paths
+    # 获取现有图像路径
     image_paths = get_image_paths()
     
-    # Create shared store with image paths
+    # 使用图像路径创建共享存储
     shared = {"images": image_paths}
     
-    # Create both flows
+    # 创建两个流
     batch_flow, parallel_batch_flow = create_flows()
     
-    # Run and time batch flow
+    # 运行并计时批量流
     start_time = time.time()
-    print("\nRunning sequential batch flow...")
+    print("\n正在运行顺序批量流...")
     await batch_flow.run_async(shared)
     batch_time = time.time() - start_time
     
-    # Run and time parallel batch flow
+    # 运行并计时并行批量流
     start_time = time.time()
-    print("\nRunning parallel batch flow...")
+    print("\n正在运行并行批量流...")
     await parallel_batch_flow.run_async(shared)
     parallel_time = time.time() - start_time
     
-    # Print timing results
-    print("\nTiming Results:")
-    print(f"Sequential batch processing: {batch_time:.2f} seconds")
-    print(f"Parallel batch processing: {parallel_time:.2f} seconds")
-    print(f"Speedup: {batch_time/parallel_time:.2f}x")
+    # 打印计时结果
+    print("\n计时结果：")
+    print(f"顺序批量处理：{batch_time:.2f} 秒")
+    print(f"并行批量处理：{parallel_time:.2f} 秒")
+    print(f"加速比：{batch_time/parallel_time:.2f} 倍")
     
-    print("\nProcessing complete! Check the output/ directory for results.")
+    print("\n处理完成！请检查 output/ 目录以获取结果。")
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

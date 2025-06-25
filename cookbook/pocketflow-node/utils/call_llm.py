@@ -9,5 +9,5 @@ def call_llm(prompt):
     return r.choices[0].message.content
     
 if __name__ == "__main__":
-    prompt = "What is the meaning of life?"
+    prompt = "生命的意义是什么？"
     print(call_llm(prompt))

@@ -1,2 +1,8 @@
-pocketflow>=0.0.1
-openai>=1.0.0
+# PocketFlow 核心库
+pocketflow==0.0.1
+
+# 用于 LLM 调用的 OpenAI 库
+openai==1.14.0
+
+# 用于 YAML 解析和序列化
+pyyaml==6.0.1

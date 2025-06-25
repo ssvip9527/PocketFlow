@@ -1,79 +1,79 @@
-# Retrieval Augmented Generation (RAG)
+# 检索增强生成 (RAG)
 
-This project demonstrates a simplified RAG system that retrieves relevant documents based on user queries and generates answers using an LLM. This implementation is based directly on the tutorial: [Retrieval Augmented Generation (RAG) from Scratch — Tutorial For Dummies](https://zacharyhuang.substack.com/p/retrieval-augmented-generation-rag).
+该项目演示了一个简化的 RAG 系统，它根据用户查询检索相关文档并使用 LLM 生成答案。此实现直接基于教程：[从零开始的检索增强生成 (RAG) — 傻瓜教程](https://zacharyhuang.substack.com/p/retrieval-augmented-generation-rag)。
 
 
-## Features
+## 功能
 
-- Document chunking for processing long texts
-- FAISS-powered vector-based document retrieval
-- LLM-powered answer generation
+-   文档分块以处理长文本
+-   FAISS 支持的基于向量的文档检索
+-   LLM 支持的答案生成
 
-## How to Run
+## 如何运行
 
-1. Set your API key:
-   ```bash
-   export OPENAI_API_KEY="your-api-key-here"
-   ```
-   Or update it directly in `utils.py`
+1.  设置您的 API 密钥:
+    ```bash
+    export OPENAI_API_KEY="your-api-key-here"
+    ```
+    或者直接在 `utils.py` 中更新它
 
-   Let's do a quick check to make sure your API key is working properly:
+    让我们快速检查一下您的 API 密钥是否正常工作:
 
-   ```bash
-   python utils.py
-   ```
+    ```bash
+    python utils.py
+    ```
 
-2. Install and run with the default query:
-   ```bash
-   pip install -r requirements.txt
-   python main.py
-   ```
+2.  安装并使用默认查询运行:
+    ```bash
+    pip install -r requirements.txt
+    python main.py
+    ```
 
-3. Run the application with a sample query:
+3.  使用示例查询运行应用程序:
 
-   ```bash
-   python main.py --"How does the Q-Mesh protocol achieve high transaction speeds?"
-   ```
+    ```bash
+    python main.py --"Q-Mesh 协议如何实现高事务速度？"
+    ```
 
-## How It Works
+## 工作原理
 
-The magic happens through a two-phase pipeline implemented with PocketFlow:
+这一切都通过 PocketFlow 实现的两阶段管道来完成:
 
 ```mermaid
 graph TD
-    subgraph OfflineFlow[Offline Document Indexing]
-        ChunkDocs[ChunkDocumentsNode] --> EmbedDocs[EmbedDocumentsNode] --> CreateIndex[CreateIndexNode]
+    subgraph OfflineFlow[离线文档索引]
+        ChunkDocs[文档分块节点] --> EmbedDocs[文档嵌入节点] --> CreateIndex[创建索引节点]
     end
     
-    subgraph OnlineFlow[Online Processing]
-        EmbedQuery[EmbedQueryNode] --> RetrieveDoc[RetrieveDocumentNode] --> GenerateAnswer[GenerateAnswerNode]
+    subgraph OnlineFlow[在线处理]
+        EmbedQuery[查询嵌入节点] --> RetrieveDoc[文档检索节点] --> GenerateAnswer[生成答案节点]
     end
 ```
 
-Here's what each part does:
-1. **ChunkDocumentsNode**: Breaks documents into smaller chunks for better retrieval
-2. **EmbedDocumentsNode**: Converts document chunks into vector representations
-3. **CreateIndexNode**: Creates a searchable FAISS index from embeddings
-4. **EmbedQueryNode**: Converts user query into the same vector space
-5. **RetrieveDocumentNode**: Finds the most similar document using vector search
-6. **GenerateAnswerNode**: Uses an LLM to generate an answer based on the retrieved content
+每个部分的作用如下:
+1.  **ChunkDocumentsNode**: 将文档分解成更小的块以便更好地检索
+2.  **EmbedDocumentsNode**: 将文档块转换为向量表示
+3.  **CreateIndexNode**: 从嵌入中创建可搜索的 FAISS 索引
+4.  **EmbedQueryNode**: 将用户查询转换为相同的向量空间
+5.  **RetrieveDocumentNode**: 使用向量搜索查找最相似的文档
+6.  **GenerateAnswerNode**: 使用 LLM 根据检索到的内容生成答案
 
-## Example Output
+## 示例输出
 
 ```
-✅ Created 5 chunks from 5 documents
-✅ Created 5 document embeddings
-🔍 Creating search index...
-✅ Index created with 5 vectors
-🔍 Embedding query: How to install PocketFlow?
-🔎 Searching for relevant documents...
-📄 Retrieved document (index: 0, distance: 0.3427)
-📄 Most relevant text: "Pocket Flow is a 100-line minimalist LLM framework
-        Lightweight: Just 100 lines. Zero bloat, zero dependencies, zero vendor lock-in.
-        Expressive: Everything you love—(Multi-)Agents, Workflow, RAG, and more.
-        Agentic Coding: Let AI Agents (e.g., Cursor AI) build Agents—10x productivity boost!
-        To install, pip install pocketflow or just copy the source code (only 100 lines)."
+✅ 从 5 个文档创建了 5 个块
+✅ 创建了 5 个文档嵌入
+🔍 正在创建搜索索引...
+✅ 索引已创建，包含 5 个向量
+🔍 正在嵌入查询: 如何安装 PocketFlow？
+🔎 正在搜索相关文档...
+📄 已检索文档 (索引: 0, 距离: 0.3427)
+📄 最相关文本: "Pocket Flow 是一个 100 行的极简 LLM 框架
+        轻量级: 仅 100 行。零膨胀，零依赖，零供应商锁定。
+        富有表现力: 您喜欢的一切——（多）代理，工作流，RAG 等。
+        代理编码: 让 AI 代理（例如，Cursor AI）构建代理——10 倍生产力提升！
+        要安装，请 pip install pocketflow 或直接复制源代码（仅 100 行）。"
 
-🤖 Generated Answer:
-To install PocketFlow, use the command `pip install pocketflow` or simply copy its 100 lines of source code.
+🤖 生成的答案:
+要安装 PocketFlow，请使用命令 `pip install pocketflow` 或直接复制其 100 行源代码。
 ```

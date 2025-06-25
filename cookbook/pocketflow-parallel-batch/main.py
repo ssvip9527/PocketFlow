@@ -7,15 +7,15 @@ from utils import call_llm
 # --- Node Definitions ---
 
 class TranslateTextNodeParallel(AsyncParallelBatchNode):
-    """Translates README into multiple languages in parallel and saves files."""
+    """并行翻译README文件到多种语言并保存。"""
     async def prep_async(self, shared):
-        """Reads text and target languages from shared store."""
+        """从共享存储中读取文本和目标语言。"""
         text = shared.get("text", "(No text provided)")
         languages = shared.get("languages", [])
         return [(text, lang) for lang in languages]
 
     async def exec_async(self, data_tuple):
-        """Calls the async LLM utility for each target language."""
+        """为每种目标语言调用异步LLM工具。"""
         text, language = data_tuple
         
         prompt = f"""
@@ -29,11 +29,11 @@ Original:
 Translated:"""
         
         result = await call_llm(prompt)
-        print(f"Translated {language} text")
+        print(f"已翻译 {language} 文本")
         return {"language": language, "translation": result}
 
     async def post_async(self, shared, prep_res, exec_res_list):
-        """Stores the dictionary of {language: translation} pairs and writes to files."""
+        """存储 {language: translation} 对的字典并写入文件。"""
         output_dir = shared.get("output_dir", "translations")
         os.makedirs(output_dir, exist_ok=True)
         
@@ -51,17 +51,17 @@ Translated:"""
                 except ImportError:
                     with open(filename, "w", encoding="utf-8") as f:
                         f.write(translation)
-                    print(f"Saved translation to {filename} (sync fallback)")
+                    print(f"已保存翻译到 {filename} (同步回退)")
                 except Exception as e:
-                    print(f"Error writing file {filename}: {e}")
+                    print(f"写入文件 {filename} 时出错: {e}")
             else:
-                print(f"Warning: Skipping invalid result item: {result}")
+                print(f"警告: 跳过无效结果项: {result}")
         return "default"
 
 # --- Flow Creation ---
 
 def create_parallel_translation_flow():
-    """Creates and returns the parallel translation flow."""
+    """创建并返回并行翻译流。"""
     translate_node = TranslateTextNodeParallel(max_retries=3)
     return AsyncFlow(start=translate_node)
 
@@ -73,10 +73,10 @@ async def main():
         with open(source_readme_path, "r", encoding='utf-8') as f:
             text = f.read()
     except FileNotFoundError:
-        print(f"Error: Could not find the source README file at {source_readme_path}")
+        print(f"错误: 找不到源 README 文件: {source_readme_path}")
         exit(1)
     except Exception as e:
-        print(f"Error reading file {source_readme_path}: {e}")
+        print(f"读取文件 {source_readme_path} 时出错: {e}")
         exit(1)
 
     shared = {
@@ -87,17 +87,17 @@ async def main():
 
     translation_flow = create_parallel_translation_flow()
 
-    print(f"Starting parallel translation into {len(shared['languages'])} languages...")
+    print(f"开始并行翻译到 {len(shared['languages'])} 种语言...")
     start_time = time.perf_counter()
 
     await translation_flow.run_async(shared)
 
     end_time = time.perf_counter()
     duration = end_time - start_time
-    print(f"\nTotal parallel translation time: {duration:.4f} seconds")
-    print("\n=== Translation Complete ===")
-    print(f"Translations saved to: {shared['output_dir']}")
+    print(f"\n总并行翻译时间: {duration:.4f} 秒")
+    print("\n=== 翻译完成 ===")
+    print(f"翻译已保存到: {shared['output_dir']}")
     print("============================")
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

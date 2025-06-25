@@ -5,141 +5,141 @@ import random
 
 class DecideAction(Node):
     def prep(self, shared):
-        """Prepare the context and question for the decision-making process."""
-        # Get the current context (default to "No previous search" if none exists)
-        context = shared.get("context", "No previous search")
-        # Get the question from the shared store
+        """准备决策过程的上下文和问题。"""
+        # 获取当前上下文（如果不存在，则默认为“无先前搜索”）
+        context = shared.get("context", "无先前搜索")
+        # 从共享存储中获取问题
         question = shared["question"]
-        # Return both for the exec step
+        # 返回两者以供执行步骤使用
         return question, context
         
     def exec(self, inputs):
-        """Call the LLM to decide whether to search or answer."""
+        """调用LLM以决定是搜索还是回答。"""
         question, context = inputs
         
-        print(f"🤔 Agent deciding what to do next...")
+        print(f"🤔 代理正在决定下一步... ")
         
-        # Create a prompt to help the LLM decide what to do next
+        # 创建一个提示，帮助LLM决定下一步做什么
         prompt = f"""
-### CONTEXT
-You are a research assistant that can search the web.
-Question: {question}
-Previous Research: {context}
+### 上下文
+你是一个可以搜索网络的研发助理。
+问题: {question}
+先前的研究: {context}
 
-### ACTION SPACE
-[1] search
-  Description: Look up more information on the web
-  Parameters:
-    - query (str): What to search for
+### 行动空间
+[1] 搜索
+  描述: 在网络上查找更多信息
+  参数:
+    - query (str): 要搜索的内容
 
-[2] answer
-  Description: Answer the question with current knowledge
-  Parameters:
-    - answer (str): Final answer to the question
+[2] 回答
+  描述: 用现有知识回答问题
+  参数:
+    - answer (str): 问题的最终答案
 
-## NEXT ACTION
-Decide the next action based on the context and available actions.
-Return your response in this format:
+## 下一步行动
+根据上下文和可用行动决定下一步行动。
+以这种格式返回你的响应:
 
 ```yaml
 thinking: |
-    <your step-by-step reasoning process>
-action: search OR answer
-reason: <why you chose this action>
-search_query: <specific search query if action is search>
+    <你的逐步推理过程>
+action: search 或 answer
+reason: <你选择此行动的原因>
+search_query: <如果行动是搜索，则为具体的搜索查询>
 ```"""
         
-        # Call the LLM to make a decision
+        # 调用LLM做出决定
         response = call_llm(prompt)
         
-        # Parse the response to get the decision
+        # 解析响应以获取决定
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
         decision = yaml.safe_load(yaml_str)
         
         return decision
     
     def post(self, shared, prep_res, exec_res):
-        """Save the decision and determine the next step in the flow."""
-        # If LLM decided to search, save the search query
+        """保存决定并确定流程中的下一步。"""
+        # 如果LLM决定搜索，则保存搜索查询
         if exec_res["action"] == "search":
             shared["search_query"] = exec_res["search_query"]
-            print(f"🔍 Agent decided to search for: {exec_res['search_query']}")
+            print(f"🔍 代理决定搜索: {exec_res['search_query']}")
         else:
-            print(f"💡 Agent decided to answer the question")
+            print(f"💡 代理决定回答问题")
         
-        # Return the action to determine the next node in the flow
+        # 返回行动以确定流程中的下一个节点
         return exec_res["action"]
 
 class SearchWeb(Node):
     def prep(self, shared):
-        """Get the search query from the shared store."""
+        """从共享存储中获取搜索查询。"""
         return shared["search_query"]
         
     def exec(self, search_query):
-        """Search the web for the given query."""
-        # Call the search utility function
-        print(f"🌐 Searching the web for: {search_query}")
+        """搜索给定查询的网络。"""
+        # 调用搜索实用函数
+        print(f"🌐 正在搜索网络: {search_query}")
         results = search_web(search_query)
         return results
     
     def post(self, shared, prep_res, exec_res):
-        """Save the search results and go back to the decision node."""
-        # Add the search results to the context in the shared store
+        """保存搜索结果并返回决策节点。"""
+        # 将搜索结果添加到共享存储中的上下文
         previous = shared.get("context", "")
-        shared["context"] = previous + "\n\nSEARCH: " + shared["search_query"] + "\nRESULTS: " + exec_res
+        shared["context"] = previous + "\n\n搜索: " + shared["search_query"] + "\n结果: " + exec_res
         
-        print(f"📚 Found information, analyzing results...")
+        print(f"📚 找到信息，正在分析结果...")
         
-        # Always go back to the decision node after searching
+        # 搜索后始终返回决策节点
         return "decide"
 
 class UnreliableAnswerNode(Node):
     def prep(self, shared):
-        """Get the question and context for answering."""
+        """获取问题和上下文以进行回答。"""
         return shared["question"], shared.get("context", "")
         
     def exec(self, inputs):
-        """Call the LLM to generate a final answer with 50% chance of returning a dummy answer."""
+        """调用LLM生成最终答案，有50%的几率返回一个虚拟答案。"""
         question, context = inputs
         
-        # 50% chance to return a dummy answer
+        # 50%的几率返回一个虚拟答案
         if random.random() < 0.5:
-            print(f"🤪 Generating unreliable dummy answer...")
-            return "Sorry, I'm on a coffee break right now. All information I provide is completely made up anyway. The answer to your question is 42, or maybe purple unicorns. Who knows? Certainly not me!"
+            print(f"🤪 正在生成不可靠的虚拟答案...")
+            return "抱歉，我正在休息。我提供的所有信息都是完全虚构的。你问题的答案是42，或者可能是紫色的独角兽。谁知道呢？反正我不知道！"
         
-        print(f"✍️ Crafting final answer...")
+        print(f"✍️ 正在撰写最终答案...")
         
-        # Create a prompt for the LLM to answer the question
+        # 为LLM创建提示以回答问题
         prompt = f"""
-### CONTEXT
-Based on the following information, answer the question.
-Question: {question}
-Research: {context}
+### 上下文
+根据以下信息回答问题。
+问题: {question}
+研究: {context}
 
-## YOUR ANSWER:
-Provide a comprehensive answer using the research results.
+## 你的答案:
+使用研究结果提供全面答案。
 """
-        # Call the LLM to generate an answer
+        # 调用LLM生成答案
         answer = call_llm(prompt)
         return answer
     
     def post(self, shared, prep_res, exec_res):
-        """Save the final answer and complete the flow."""
-        # Save the answer in the shared store
+        """保存最终答案并完成流程。"""
+        # 将答案保存在共享存储中
         shared["answer"] = exec_res
         
-        print(f"✅ Answer generated successfully")
+        print(f"✅ 答案生成成功")
 
 class SupervisorNode(Node):
     def prep(self, shared):
-        """Get the current answer for evaluation."""
+        """获取当前答案以进行评估。"""
         return shared["answer"]
     
     def exec(self, answer):
-        """Check if the answer is valid or nonsensical."""
-        print(f"    🔍 Supervisor checking answer quality...")
+        """检查答案是否有效或无意义。"""
+        print(f"    🔍 监督器正在检查答案质量...")
         
-        # Check for obvious markers of the nonsense answers
+        # 检查无意义答案的明显标记
         nonsense_markers = [
             "coffee break", 
             "purple unicorns", 
@@ -148,23 +148,23 @@ class SupervisorNode(Node):
             "Who knows?"
         ]
         
-        # Check if the answer contains any nonsense markers
+        # 检查答案是否包含任何无意义标记
         is_nonsense = any(marker in answer for marker in nonsense_markers)
         
         if is_nonsense:
-            return {"valid": False, "reason": "Answer appears to be nonsensical or unhelpful"}
+            return {"valid": False, "reason": "答案似乎是无意义或无用的"}
         else:
-            return {"valid": True, "reason": "Answer appears to be legitimate"}
+            return {"valid": True, "reason": "答案似乎是合法的"}
     
     def post(self, shared, prep_res, exec_res):
-        """Decide whether to accept the answer or restart the process."""
+        """决定是接受答案还是重新启动过程。"""
         if exec_res["valid"]:
-            print(f"    ✅ Supervisor approved answer: {exec_res['reason']}")
+            print(f"    ✅ 监督器批准答案: {exec_res['reason']}")
         else:
-            print(f"    ❌ Supervisor rejected answer: {exec_res['reason']}")
-            # Clean up the bad answer
+            print(f"    ❌ 监督器拒绝答案: {exec_res['reason']}")
+            # 清理错误的答案
             shared["answer"] = None
-            # Add a note about the rejected answer
+            # 添加关于被拒绝答案的注释
             context = shared.get("context", "")
-            shared["context"] = context + "\n\nNOTE: Previous answer attempt was rejected by supervisor."
-            return "retry" 
+            shared["context"] = context + "\n\n注意: 先前的答案尝试被监督器拒绝。"
+            return "retry"

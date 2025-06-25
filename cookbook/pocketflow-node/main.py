@@ -1,23 +1,23 @@
 from flow import flow
 
 def main():
-    # Example text to summarize
+    # 示例文本用于总结
     text = """
-    PocketFlow is a minimalist LLM framework that models workflows as a Nested Directed Graph.
-    Nodes handle simple LLM tasks, connecting through Actions for Agents.
-    Flows orchestrate these nodes for Task Decomposition, and can be nested.
-    It also supports Batch processing and Async execution.
+    PocketFlow 是一个极简的 LLM 框架，它将工作流建模为嵌套有向图。
+    节点处理简单的 LLM 任务，通过代理的动作进行连接。
+    流编排这些节点以进行任务分解，并且可以嵌套。
+    它还支持批处理和异步执行。
     """
 
-    # Initialize shared store
+    # 初始化共享存储
     shared = {"data": text}
     
-    # Run the flow
+    # 运行流程
     flow.run(shared)
     
-    # Print result
-    print("\nInput text:", text)
-    print("\nSummary:", shared["summary"])
+    # 打印结果
+    print("\n输入文本:", text)
+    print("\n摘要:", shared["summary"])
 
 if __name__ == "__main__":
-    main() 
+    main()

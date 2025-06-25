@@ -1,85 +1,120 @@
-# Structured Output Demo
+# PocketFlow 结构化输出示例
 
-A minimal demo application showing how to use PocketFlow to extract structured data from a resume using direct prompting and YAML formatting. Why YAML? Check out the [doc](https://the-pocket.github.io/PocketFlow/design_pattern/structure.html).
+这个示例展示了如何使用 PocketFlow 从非结构化文本中提取结构化数据，并特别关注如何指导大型语言模型（LLM）生成带有注释和特定格式（如技能索引列表）的 YAML 输出。
 
-This implementation is based on: [Structured Output for Beginners: 3 Must-Know Prompting Tips](https://zacharyhuang.substack.com/p/structured-output-for-beginners-3).
+## 概述
 
-## Features
+该项目旨在解析简历文本，提取关键信息（如姓名、电子邮件、工作经验）和与预定义目标技能列表相关的技能。它利用 LLM 的能力来理解上下文并以结构化格式（YAML）呈现数据，同时通过提示工程确保输出包含有用的注释和技能索引。
 
-- Extracts structured data using prompt engineering
-- Validates output structure before processing
+## 特点
 
-## Run It
+- **结构化数据提取**：从自由格式的简历文本中提取姓名、电子邮件和工作经验。
+- **技能匹配与索引**：根据预定义的目标技能列表识别并索引简历中存在的技能。
+- **LLM 指导**：通过详细的提示工程指导 LLM 生成带有注释和特定数据结构（如技能索引列表）的 YAML 输出。
+- **验证**：对 LLM 生成的输出进行基本验证，以确保其符合预期格式。
 
-1. Install the packages you need with this simple command:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-2. Make sure your OpenAI API key is set:
-    ```bash
-    export OPENAI_API_KEY="your-api-key-here"
-    ```
-    Alternatively, you can edit the [`utils.py`](./utils.py) file to include your API key directly.
-
-    Let's do a quick check to make sure your API key is working properly:
-
-    ```bash
-    python utils.py
-    ```
-
-3. Edit [data.txt](./data.txt) with the resume you want to parse (a sample resume is already included)
-
-4. Run the application:
-    ```bash
-    python main.py
-    ```
-
-## How It Works
-
-```mermaid
-flowchart LR
-    parser[ResumeParserNode]
-```
-
-The Resume Parser application uses a single node that:
-1. Takes resume text from the shared state (loaded from data.txt)
-2. Sends the resume to an LLM with a prompt that requests YAML formatted output
-3. Extracts and validates the structured YAML data
-4. Outputs the structured result
-
-## Files
-
-- [`main.py`](./main.py): Implementation of the ResumeParserNode
-- [`utils.py`](./utils.py): LLM utilities
-- [`data.txt`](./data.txt): Sample resume text file
- 
-## Example Output
+## 项目结构
 
 ```
-=== Resume Parser - Structured Output with Indexes & Comments ===
+. # pocketflow-structured-output
+├── data.txt          # 包含示例简历文本的输入文件
+├── main.py           # 核心逻辑，定义了简历解析流程和节点
+├── README.md         # 项目说明（您正在阅读的这个文件）
+└── requirements.txt  # 项目依赖
+└── utils.py          # 辅助函数，例如 LLM 调用
+```
 
+## 设置
 
-=== STRUCTURED RESUME DATA (Comments & Skill Index List) ===
+1. **克隆仓库**：
+   ```bash
+   git clone https://github.com/your-repo/pocketflow-structured-output.git
+   cd pocketflow-structured-output
+   ```
 
-name: JOHN SMTIH
-email: johnsmtih1983@gnail.com
+2. **安装依赖**：
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **配置 OpenAI API 密钥**：
+   确保您的 OpenAI API 密钥已设置为环境变量 `OPENAI_API_KEY`。
+   ```bash
+   export OPENAI_API_KEY="YOUR_API_KEY"
+   ```
+
+## 如何运行
+
+运行 `main.py` 脚本：
+
+```bash
+python main.py
+```
+
+脚本将读取 `data.txt` 中的简历，使用 LLM 进行解析，然后打印提取的结构化数据和识别出的技能。
+
+## 工作原理
+
+`main.py` 中的 `ResumeParserNode` 是核心组件：
+
+1.  **`prep` 方法**：从共享状态中获取简历文本和目标技能列表。
+2.  **`exec` 方法**：
+    -   构建一个详细的提示，指导 LLM 解析简历并以特定 YAML 格式输出数据。
+    -   提示包括：
+        -   明确要求 YAML 输出。
+        -   要求在关键字段前添加注释，解释数据来源。
+        -   要求将识别出的技能作为目标技能列表中的索引列表返回。
+        -   提供一个 YAML 格式的示例，以确保 LLM 理解所需的结构和注释放置。
+    -   调用 LLM (`call_llm`) 获取响应。
+    -   从 LLM 响应中提取 YAML 块并使用 `yaml.safe_load` 进行解析。
+    -   执行基本断言验证，以确保提取的数据包含所有预期字段并具有正确的类型。
+3.  **`post` 方法**：将解析后的结构化数据存储到共享状态中，并以易于阅读的 YAML 格式打印出来，同时突出显示识别出的技能。
+
+## 示例输出
+
+运行 `main.py` 后，您将看到类似以下的输出（具体内容取决于 `data.txt` 和 LLM 的响应）：
+
+```
+=== 简历解析器 - 带有索引和注释的结构化输出 ===
+
+=== 结构化简历数据 (注释和技能索引列表) ===
+
+# 在顶部找到姓名
+name: John Doe
+# 在联系信息中找到电子邮件
+email: john.doe@example.com
+# 经验部分分析
 experience:
-- {title: SALES MANAGER, company: ABC Corportaion}
-- {title: ASST. MANAGER, company: XYZ Industries}
-- {title: CUSTOMER SERVICE REPRESENTATIVE, company: Fast Solutions Inc}
-skill_indexes: [0, 1, 2, 3, 4]
-
+  # 列出的第一份工作
+  - title: Senior Software Engineer
+    company: Tech Corp
+  # 列出的第二份工作
+  - title: Software Developer
+    company: Innovate Inc.
+# 根据简历内容从目标列表中识别出的技能
+skill_indexes:
+  # 在经验中找到 5
+  - 5
+  # 在顶部找到 2
+  - 2
 
 ============================================================
 
-✅ Extracted resume information.
+✅ 简历信息提取成功。
 
---- Found Target Skills (from Indexes) ---
-- Team leadership & management (Index: 0)
-- CRM software (Index: 1)
-- Project management (Index: 2)
-- Public speaking (Index: 3)
-- Microsoft Office (Index: 4)
+--- 找到的目标技能 (来自索引) ---
+- Python (索引: 5)
+- 项目管理 (索引: 2)
 ----------------------------------------
 ```
+
+## 用例
+
+这个示例展示了 LLM 在以下方面的强大功能：
+
+-   **信息提取**：从非结构化文本中提取特定数据点。
+-   **结构化输出**：生成符合预定义模式（如 JSON 或 YAML）的输出。
+-   **提示工程**：通过详细的提示指导 LLM 行为，包括添加注释和使用索引等复杂要求。
+-   **数据处理管道**：作为更大数据处理或自动化工作流的一部分。
+
+它对于需要从大量自由文本中提取和标准化信息的应用程序特别有用，例如招聘、文档分析或内容管理系统。

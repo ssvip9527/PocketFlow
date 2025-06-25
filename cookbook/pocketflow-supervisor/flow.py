@@ -3,60 +3,59 @@ from nodes import DecideAction, SearchWeb, UnreliableAnswerNode, SupervisorNode
 
 def create_agent_inner_flow():
     """
-    Create the inner research agent flow without supervision.
+    创建不带监督的内部研究代理流。
     
-    This flow handles the research cycle:
-    1. DecideAction node decides whether to search or answer
-    2. If search, go to SearchWeb node and return to decide
-    3. If answer, go to UnreliableAnswerNode
+    此流程处理研究周期：
+    1. DecideAction 节点决定是搜索还是回答
+    2. 如果是搜索，则转到 SearchWeb 节点并返回决定
+    3. 如果是回答，则转到 UnreliableAnswerNode
     
     Returns:
-        Flow: A research agent flow
+        Flow: 一个研究代理流
     """
-    # Create instances of each node
+    # 创建每个节点的实例
     decide = DecideAction()
     search = SearchWeb()
     answer = UnreliableAnswerNode()
     
-    # Connect the nodes
-    # If DecideAction returns "search", go to SearchWeb
+    # 连接节点
+    # 如果 DecideAction 返回 "search"，则转到 SearchWeb
     decide - "search" >> search
     
-    # If DecideAction returns "answer", go to UnreliableAnswerNode
+    # 如果 DecideAction 返回 "answer"，则转到 UnreliableAnswerNode
     decide - "answer" >> answer
     
-    # After SearchWeb completes and returns "decide", go back to DecideAction
+    # SearchWeb 完成并返回 "decide" 后，返回 DecideAction
     search - "decide" >> decide
     
-    # Create and return the inner flow, starting with the DecideAction node
+    # 创建并返回内部流，从 DecideAction 节点开始
     return Flow(start=decide)
 
 def create_agent_flow():
     """
-    Create a supervised agent flow by treating the entire agent flow as a node
-    and placing the supervisor outside of it.
+    通过将整个代理流视为一个节点并将监督器放置在它之外来创建受监督的代理流。
     
-    The flow works like this:
-    1. Inner agent flow does research and generates an answer
-    2. SupervisorNode checks if the answer is valid
-    3. If answer is valid, flow completes
-    4. If answer is invalid, restart the inner agent flow
+    该流程的工作方式如下：
+    1. 内部代理流进行研究并生成答案
+    2. SupervisorNode 检查答案是否有效
+    3. 如果答案有效，流程完成
+    4. 如果答案无效，重新启动内部代理流
     
     Returns:
-        Flow: A complete research agent flow with supervision
+        Flow: 一个完整的带监督的研究代理流
     """
-    # Create the inner flow
+    # 创建内部流
     agent_flow = create_agent_inner_flow()
     
-    # Create the supervisor node
+    # 创建监督节点
     supervisor = SupervisorNode()
     
-    # Connect the components
-    # After agent_flow completes, go to supervisor
+    # 连接组件
+    # agent_flow 完成后，转到监督器
     agent_flow >> supervisor
     
-    # If supervisor rejects the answer, go back to agent_flow
+    # 如果监督器拒绝答案，返回 agent_flow
     supervisor - "retry" >> agent_flow
     
-    # Create and return the outer flow, starting with the agent_flow
-    return Flow(start=agent_flow) 
+    # 创建并返回外部流，从 agent_flow 开始
+    return Flow(start=agent_flow)

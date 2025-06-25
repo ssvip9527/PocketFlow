@@ -1,61 +1,61 @@
-# Parallel Image Processor
+# 并行图像处理器
 
-Demonstrates how AsyncParallelBatchFlow processes multiple images with multiple filters >8x faster than sequential processing.
+演示了 AsyncParallelBatchFlow 如何以比顺序处理快 8 倍以上的速度处理多张图像和多个过滤器。
 
-## Features
+## 功能
 
   ```mermaid
   graph TD
-      subgraph AsyncParallelBatchFlow[Image Processing Flow]
-          subgraph AsyncFlow[Per Image-Filter Flow]
-              A[Load Image] --> B[Apply Filter]
-              B --> C[Save Image]
+      subgraph AsyncParallelBatchFlow[图像处理流]
+          subgraph AsyncFlow[每图像-过滤器流]
+              A[加载图像] --> B[应用过滤器]
+              B --> C[保存图像]
           end
       end
   ```
   
-- Processes images with multiple filters in parallel
-- Applies three different filters (grayscale, blur, sepia)
-- Shows significant speed improvement over sequential processing
-- Manages system resources with semaphores
+- 并行处理多张图像和多个过滤器
+- 应用三种不同的过滤器（灰度、模糊、棕褐色）
+- 显示出比顺序处理显著的速度提升
+- 使用信号量管理系统资源
 
-## Run It
+## 运行方式
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-## Output
+## 输出
 
-```=== Processing Images in Parallel ===
-Parallel Image Processor
+```=== 并行处理图像 ===
+并行图像处理器
 ------------------------------
-Found 3 images:
+找到 3 张图像：
 - images/bird.jpg
 - images/cat.jpg
 - images/dog.jpg
 
-Running sequential batch flow...
-Processing 3 images with 3 filters...
-Total combinations: 9
-Loading image: images/bird.jpg
-Applying grayscale filter...
-Saved: output/bird_grayscale.jpg
-...etc
+正在运行顺序批量流...
+正在处理 3 张图像和 3 个过滤器...
+总组合数：9
+正在加载图像：images/bird.jpg
+正在应用灰度过滤器...
+已保存：output/bird_grayscale.jpg
+...等等
 
-Timing Results:
-Sequential batch processing: 13.76 seconds
-Parallel batch processing: 1.71 seconds
-Speedup: 8.04x
+计时结果：
+顺序批量处理：13.76 秒
+并行批量处理：1.71 秒
+加速比：8.04 倍
 
-Processing complete! Check the output/ directory for results.
+处理完成！请检查 output/ 目录以获取结果。
 ```
 
-## Key Points
+## 关键点
 
-- **Sequential**: Total time = sum of all item times
-  - Good for: Rate-limited APIs, maintaining order
+- **顺序**：总时间 = 所有项目时间的总和
+  - 适用于：速率受限的 API，保持顺序
 
-- **Parallel**: Total time ≈ longest single item time
-  - Good for: I/O-bound tasks, independent operations 
+- **并行**：总时间 ≈ 最长单个项目时间
+  - 适用于：I/O 密集型任务，独立操作

@@ -1,5 +1,5 @@
 pocketflow>=0.0.2
 anthropic>=0.15.0
-python-dotenv
-httpx
-aiofiles 
+python-dotenv # 用于加载 .env 文件中的环境变量
+httpx # 用于异步 HTTP 请求
+aiofiles # 用于异步文件操作

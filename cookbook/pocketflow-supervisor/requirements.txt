@@ -1,4 +1,4 @@
 pocketflow>=0.0.1
-aiohttp>=3.8.0  # For async HTTP requests
-openai>=1.0.0   # For async LLM calls 
-duckduckgo-search>=7.5.2    # For web search
+aiohttp>=3.8.0  # 用于异步 HTTP 请求
+openai>=1.0.0   # 用于异步 LLM 调用 
+duckduckgo-search>=7.5.2    # 用于网络搜索
