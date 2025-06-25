@@ -2,7 +2,7 @@ from pocketflow import Node, Flow
 
 class TextInput(Node):
     def prep(self, shared):
-        """Get text input from user."""
+        """从用户获取文本输入。"""
         if "text" not in shared:
             text = input("\nEnter text to convert: ")
             shared["text"] = text
@@ -46,22 +46,22 @@ class TextTransform(Node):
         print("\nResult:", exec_res)
         
         if input("\nConvert another text? (y/n): ").lower() == 'y':
-            shared.pop("text", None)  # Remove previous text
+            shared.pop("text", None)  # 移除之前的文本
             return "input"
         return "exit"
 
 class EndNode(Node):
     pass
 
-# Create nodes
+# 创建节点
 text_input = TextInput()
 text_transform = TextTransform()
 end_node = EndNode()
 
-# Connect nodes
+# 连接节点
 text_input - "transform" >> text_transform
 text_transform - "input" >> text_input
 text_transform - "exit" >> end_node
 
-# Create flow
-flow = Flow(start=text_input) 
+# 创建流程
+flow = Flow(start=text_input)

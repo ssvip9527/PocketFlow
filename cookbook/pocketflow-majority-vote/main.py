@@ -6,62 +6,62 @@ import yaml
 
 class MajorityVoteNode(BatchNode):
     def prep(self, shared):
-        question = shared.get("question", "(No question provided)")
+        question = shared.get("question", "(未提供问题)")
         attempts_count = shared.get("num_tries", 3)
         return [question for _ in range(attempts_count)]
 
     def exec(self, single_question: str):
         prompt = f"""
-You are a helpful assistant. Please answer the user's question below.
-Question: {single_question}
+你是一个乐于助人的助手。请回答以下用户的问题。
+问题: {single_question}
 
-Return strictly using the following YAML structure:
+请严格使用以下 YAML 结构返回：
 ```yaml
 thinking: |
-    (Your thinking process here)
-answer: 0.123 # Final answer as a decimal with 3 decimal places
+    (你的思考过程在这里)
+answer: 0.123 # 最终答案为保留三位小数的十进制数
 ```"""
         raw_response = call_llm(prompt)
         yaml_part = raw_response.split("```yaml")[1].split("```")[0].strip()
         parsed = yaml.safe_load(yaml_part)
 
-        # Validate we have at least 'answer' field
+        # 验证我们至少有 'answer' 字段
         if not isinstance(parsed, dict) or 'answer' not in parsed:
-            raise RuntimeError(f"Missing 'answer' in YAML: {parsed}")
+            raise RuntimeError(f"YAML 中缺少 'answer': {parsed}")
 
-        # Return only the 'answer' field for the majority vote.
+        # 仅返回 'answer' 字段用于多数投票。
         return str(parsed['answer'])
     
     def exec_fallback(self, prep_res, exc):
         return None
 
     def post(self, shared, prep_res, exec_res_list):
-        # Count frequency for non-None answers
+        # 计算非 None 答案的频率
         exec_res_list = [res for res in exec_res_list if res is not None]
         counter = collections.Counter(exec_res_list)
         best_answer, freq = counter.most_common(1)[0]
 
-        # Store final
+        # 存储最终结果
         shared["majority_answer"] = best_answer
 
         print("========================")
-        print("All structured answers:", exec_res_list)
-        print("Majority vote =>", best_answer)
-        print("Frequency =>", freq)
+        print("所有结构化答案:", exec_res_list)
+        print("多数投票 =>", best_answer)
+        print("频率 =>", freq)
         print("========================")
 
-        # End the flow
+        # 结束流程
         return "end"
 
 if __name__ == "__main__":
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description="Run majority vote reasoning on a problem")
-    parser.add_argument("--problem", type=str, help="Your reasoning problem to solve")
-    parser.add_argument("--tries", type=int, default=5, help="Number of attempts to make (default: 5)")
+    # 设置命令行参数解析器
+    parser = argparse.ArgumentParser(description="对问题运行多数投票推理")
+    parser.add_argument("--problem", type=str, help="您要解决的推理问题")
+    parser.add_argument("--tries", type=int, default=5, help="尝试次数 (默认: 5)")
     args = parser.parse_args()
     
-    # Default problem if none provided
-    default_problem = """You work at a shoe factory. In front of you, there are three pairs of shoes (six individual shoes) with the following sizes: two size 4s, two size 5s, and two size 6s. The factory defines an "acceptable pair" as two shoes that differ in size by a maximum of one size (e.g., a size 5 and a size 6 would be an acceptable pair). If you close your eyes and randomly pick three pairs of shoes without replacement, what is the probability that you end up drawing three acceptable pairs?"""
+    # 如果未提供问题，则使用默认问题
+    default_problem = """你在一间鞋厂工作。你面前有三双鞋（六只独立的鞋），尺码如下：两只 4 码，两只 5 码，两只 6 码。工厂将“可接受的配对”定义为尺码差异最多为一码的两只鞋（例如，5 码和 6 码将是可接受的配对）。如果你闭上眼睛，随机抽取三双鞋，不放回，那么你最终抽到三双可接受的配对的概率是多少？"""
     
     shared = {
         "question": args.problem if args.problem else default_problem,
@@ -72,6 +72,6 @@ if __name__ == "__main__":
     flow = Flow(start=majority_node)
     flow.run(shared)
 
-    print("\n=== Final Answer ===")
+    print("\n=== 最终答案 ===")
     print(shared["majority_answer"])
     print("====================")

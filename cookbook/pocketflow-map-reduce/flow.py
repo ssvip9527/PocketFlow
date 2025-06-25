@@ -2,14 +2,14 @@ from pocketflow import Flow
 from nodes import ReadResumesNode, EvaluateResumesNode, ReduceResultsNode
 
 def create_resume_processing_flow():
-    """Create a map-reduce flow for processing resumes."""
-    # Create nodes
+    """创建一个用于处理简历的 Map-Reduce 流程。"""
+    # 创建节点
     read_resumes_node = ReadResumesNode()
     evaluate_resumes_node = EvaluateResumesNode()
     reduce_results_node = ReduceResultsNode()
     
-    # Connect nodes
+    # 连接节点
     read_resumes_node >> evaluate_resumes_node >> reduce_results_node
     
-    # Create flow
+    # 创建流程
     return Flow(start=read_resumes_node)

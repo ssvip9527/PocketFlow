@@ -1,25 +1,25 @@
 from flow import create_resume_processing_flow
 
 def main():
-    # Initialize shared store
+    # 初始化共享存储
     shared = {}
     
-    # Create the resume processing flow
+    # 创建简历处理流程
     resume_flow = create_resume_processing_flow()
     
-    # Run the flow
-    print("Starting resume qualification processing...")
+    # 运行流程
+    print("开始简历资格处理...")
     resume_flow.run(shared)
     
-    # Display final summary information (additional to what's already printed in ReduceResultsNode)
+    # 显示最终摘要信息（ReduceResultsNode 中已打印的额外信息）
     if "summary" in shared:
-        print("\nDetailed evaluation results:")
+        print("\n详细评估结果:")
         for filename, evaluation in shared.get("evaluations", {}).items():
             qualified = "✓" if evaluation.get("qualifies", False) else "✗"
-            name = evaluation.get("candidate_name", "Unknown")
+            name = evaluation.get("candidate_name", "未知")
             print(f"{qualified} {name} ({filename})")
     
-    print("\nResume processing complete!")
+    print("\n简历处理完成!")
 
 if __name__ == "__main__":
     main()

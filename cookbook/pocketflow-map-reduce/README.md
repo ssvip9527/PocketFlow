@@ -1,60 +1,60 @@
-# Resume Qualification - Map Reduce Example
+# 简历资格评估 - MapReduce 示例
 
-A PocketFlow example that demonstrates how to implement a Map-Reduce pattern for processing and evaluating resumes.
+这是一个 PocketFlow 示例，演示了如何实现 Map-Reduce 模式来处理和评估简历。
 
-## Features
+## 特性
 
-- Read and process multiple resume files using a Map-Reduce pattern
-- Evaluate each resume individually using an LLM with structured YAML output
-- Determine if candidates qualify for technical roles based on specific criteria
-- Aggregate results to generate qualification statistics and summaries
+- 使用 Map-Reduce 模式读取和处理多个简历文件
+- 使用 LLM 和结构化 YAML 输出单独评估每份简历
+- 根据特定标准确定候选人是否符合技术职位要求
+- 汇总结果以生成资格统计数据和摘要
 
-## Getting Started
+## 快速开始
 
-1. Install the required dependencies:
+1. 安装所需依赖：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Set your OpenAI API key as an environment variable:
+2. 将您的 OpenAI API 密钥设置为环境变量：
 
 ```bash
 export OPENAI_API_KEY=your_api_key_here
 ```
 
-3. Run the application:
+3. 运行应用程序：
 
 ```bash
 python main.py
 ```
 
-## How It Works
+## 工作原理
 
-The workflow follows a classic Map-Reduce pattern with three sequential nodes:
+工作流程遵循classical Map-Reduce 模式，包含三个顺序节点：
 
 ```mermaid
 flowchart LR
-    ReadResumes[Map: Read Resumese] --> EvaluateResumes[Batch: Evaluate Resumes]
-    EvaluateResumes --> ReduceResults[Reduce: Aggregate Results]
+    ReadResumes[Map: 读取简历] --> EvaluateResumes[Batch: 评估简历]
+    EvaluateResumes --> ReduceResults[Reduce: 汇总结果]
 ```
 
-Here's what each node does:
+每个节点的作用如下：
 
-1. **ReadResumesNode (Map Phase)**: Reads all resume files from the data directory and stores them in the shared data store
-2. **EvaluateResumesNode (Batch Processing)**: Processes each resume individually using an LLM to determine if candidates qualify
-3. **ReduceResultsNode (Reduce Phase)**: Aggregates evaluation results and produces a summary of qualified candidates
+1. **ReadResumesNode (Map 阶段)**: 从数据目录读取所有简历文件并将其存储在共享数据存储中
+2. **EvaluateResumesNode (批处理)**: 使用 LLM 单独处理每份简历，以确定候选人是否符合资格
+3. **ReduceResultsNode (Reduce 阶段)**: 汇总评估结果并生成合格候选人的摘要
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Main entry point for running the resume qualification workflow
-- [`flow.py`](./flow.py): Defines the flow that connects the nodes
-- [`nodes.py`](./nodes.py): Contains the node classes for each step in the workflow
-- [`utils.py`](./utils.py): Utility functions including the LLM wrapper
-- [`requirements.txt`](./requirements.txt): Lists the required dependencies
-- [`data/`](./data/): Directory containing sample resume files for evaluation
+- [`main.py`](./main.py): 运行简历资格评估工作流程的主入口点
+- [`flow.py`](./flow.py): 定义连接节点的流程
+- [`nodes.py`](./nodes.py): 包含工作流程中每个步骤的节点类
+- [`utils.py`](./utils.py): 实用函数，包括 LLM 包装器
+- [`requirements.txt`](./requirements.txt): 列出所需依赖项
+- [`data/`](./data/): 包含用于评估的示例简历文件的目录
 
-## Example Output
+## 示例输出
 
 ```
 Starting resume qualification processing...

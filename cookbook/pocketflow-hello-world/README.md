@@ -1,21 +1,21 @@
-# PocketFlow Hello World
+# 您的第一个 PocketFlow 应用！
 
-Your first PocketFlow application! This simple example demonstrates how to create a basic PocketFlow app from scratch.
+这个简单的示例演示了如何从零开始创建一个基本的 PocketFlow 应用。
 
-## Project Structure
+## 项目结构
 
 ```
 .
-├── docs/          # Documentation files
-├── utils/         # Utility functions
-├── flow.py        # PocketFlow implementation
-├── main.py        # Main application entry point
-└── README.md      # Project documentation
+├── docs/          # 文档文件
+├── utils/         # 实用函数
+├── flow.py        # PocketFlow 实现
+├── main.py        # 应用主入口
+└── README.md      # 项目文档
 ```
 
-## Setup
+## 设置
 
-1. Create a virtual environment:
+1. 创建虚拟环境：
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate

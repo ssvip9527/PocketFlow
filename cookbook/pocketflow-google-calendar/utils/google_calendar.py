@@ -17,7 +17,7 @@ TIMEZONE = os.getenv('TIMEZONE')
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def get_calendar_service():
-    """Gets the authenticated Google Calendar service."""
+    """获取经过身份验证的 Google 日历服务。"""
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -36,7 +36,7 @@ def get_calendar_service():
     return build('calendar', 'v3', credentials=creds)
 
 def create_event(summary, description, start_time, end_time, timezone=TIMEZONE):
-    """Creates a new event in Google Calendar."""
+    """在 Google 日历中创建新事件。"""
     service = get_calendar_service()
     
     event = {
@@ -56,7 +56,7 @@ def create_event(summary, description, start_time, end_time, timezone=TIMEZONE):
     return event
 
 def list_events(days=7):
-    """Lists events for the next X days."""
+    """列出未来 X 天的事件。"""
     service = get_calendar_service()
     
     now = datetime.utcnow()
@@ -74,7 +74,7 @@ def list_events(days=7):
     return events_result.get('items', [])
 
 def create_custom_calendar(calendar_name, description=""):
-    """Creates a new custom calendar in Google Calendar."""
+    """在 Google 日历中创建新的自定义日历。"""
     service = get_calendar_service()
     
     calendar = {
@@ -87,7 +87,7 @@ def create_custom_calendar(calendar_name, description=""):
     return created_calendar
 
 def list_calendar_lists():
-    """Lists all available calendars for the user."""
+    """列出用户所有可用的日历。"""
     service = get_calendar_service()
     
     calendar_list = service.calendarList().list().execute()

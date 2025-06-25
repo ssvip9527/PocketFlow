@@ -1,16 +1,16 @@
 from flow import flow
 
 def main():
-    print("\nWelcome to Text Converter!")
+    print("\n欢迎使用文本转换器！")
     print("=========================")
     
-    # Initialize shared store
+    # 初始化共享存储
     shared = {}
     
-    # Run the flow
+    # 运行流程
     flow.run(shared)
     
-    print("\nThank you for using Text Converter!")
+    print("\n感谢您使用文本转换器！")
 
 if __name__ == "__main__":
-    main() 
+    main()

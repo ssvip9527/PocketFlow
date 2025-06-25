@@ -4,7 +4,7 @@ import yaml
 import os
 
 class ReadResumesNode(Node):
-    """Map phase: Read all resumes from the data directory into shared storage."""
+    """Map 阶段：将数据目录中的所有简历读入共享存储。"""
     
     def exec(self, _):
         resume_files = {}
@@ -24,37 +24,37 @@ class ReadResumesNode(Node):
 
 
 class EvaluateResumesNode(BatchNode):
-    """Batch processing: Evaluate each resume to determine if the candidate qualifies."""
+    """批处理：评估每份简历以确定候选人是否合格。"""
     
     def prep(self, shared):
         return list(shared["resumes"].items())
     
     def exec(self, resume_item):
-        """Evaluate a single resume."""
+        """评估一份简历。"""
         filename, content = resume_item
         
         prompt = f"""
-Evaluate the following resume and determine if the candidate qualifies for an advanced technical role.
-Criteria for qualification:
-- At least a bachelor's degree in a relevant field
-- At least 3 years of relevant work experience
-- Strong technical skills relevant to the position
+评估以下简历，并确定候选人是否符合高级技术职位的要求。
+资格标准：
+- 至少拥有相关领域的学士学位
+- 至少 3 年相关工作经验
+- 具备与职位相关的强大技术技能
 
-Resume:
+简历：
 {content}
 
-Return your evaluation in YAML format:
+以 YAML 格式返回您的评估：
 ```yaml
-candidate_name: [Name of the candidate]
+candidate_name: [候选人姓名]
 qualifies: [true/false]
 reasons:
-  - [First reason for qualification/disqualification]
-  - [Second reason, if applicable]
+  - [合格/不合格的第一个原因]
+  - [第二个原因，如果适用]
 ```
 """
         response = call_llm(prompt)
         
-        # Extract YAML content
+        # 提取 YAML 内容
         yaml_content = response.split("```yaml")[1].split("```")[0].strip() if "```yaml" in response else response
         result = yaml.safe_load(yaml_content)
         
@@ -66,7 +66,7 @@ reasons:
 
 
 class ReduceResultsNode(Node):
-    """Reduce node: Count and print out how many candidates qualify."""
+    """Reduce 节点：统计并打印有多少候选人合格。"""
     
     def prep(self, shared):
         return shared["evaluations"]
@@ -79,7 +79,7 @@ class ReduceResultsNode(Node):
         for filename, evaluation in evaluations.items():
             if evaluation.get("qualifies", False):
                 qualified_count += 1
-                qualified_candidates.append(evaluation.get("candidate_name", "Unknown"))
+                qualified_candidates.append(evaluation.get("candidate_name", "未知"))
         
         summary = {
             "total_candidates": total_count,
@@ -93,13 +93,13 @@ class ReduceResultsNode(Node):
     def post(self, shared, prep_res, exec_res):
         shared["summary"] = exec_res
         
-        print("\n===== Resume Qualification Summary =====")
-        print(f"Total candidates evaluated: {exec_res['total_candidates']}")
-        print(f"Qualified candidates: {exec_res['qualified_count']} ({exec_res['qualified_percentage']}%)")
+        print("\n===== 简历资格评估摘要 =====")
+        print(f"评估候选人总数: {exec_res['total_candidates']}")
+        print(f"合格候选人: {exec_res['qualified_count']} ({exec_res['qualified_percentage']}%) 张")
         
         if exec_res['qualified_names']:
-            print("\nQualified candidates:")
+            print("\n合格候选人:")
             for name in exec_res['qualified_names']:
                 print(f"- {name}")
         
-        return "default" 
+        return "default"

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PocketFlow Chat</title>
+    <title>PocketFlow 聊天</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -145,15 +145,15 @@
 <body>
     <div class="chat-container">
         <div class="header">
-            <h1>PocketFlow Chat</h1>
-            <div class="status" id="status">Connecting...</div>
+            <h1>PocketFlow 聊天</h1>
+            <div class="status" id="status">连接中...</div>
         </div>
         
         <div class="messages" id="messages"></div>
         
         <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Type your message..." disabled>
-            <button id="sendButton" disabled>Send</button>
+            <input type="text" id="messageInput" placeholder="输入您的消息..." disabled>
+            <button id="sendButton" disabled>发送</button>
         </div>
     </div>
 
@@ -168,7 +168,7 @@
         let currentAiMessage = null;
 
         ws.onopen = function() {
-            statusDiv.textContent = 'Connected';
+            statusDiv.textContent = '已连接';
             messageInput.disabled = false;
             sendButton.disabled = false;
             messageInput.focus();
@@ -184,7 +184,7 @@
                 messagesDiv.appendChild(currentAiMessage);
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 sendButton.disabled = true;
-                statusDiv.textContent = 'AI is typing...';
+                statusDiv.textContent = 'AI 正在输入...';
                 
             } else if (data.type === 'chunk') {
                 if (currentAiMessage) {
@@ -196,13 +196,13 @@
                 isStreaming = false;
                 currentAiMessage = null;
                 sendButton.disabled = false;
-                statusDiv.textContent = 'Connected';
+                statusDiv.textContent = '已连接';
                 messageInput.focus();
             }
         };
 
         ws.onclose = function() {
-            statusDiv.textContent = 'Disconnected';
+            statusDiv.textContent = '已断开连接';
             messageInput.disabled = true;
             sendButton.disabled = true;
         };
@@ -222,7 +222,7 @@
                 }));
 
                 messageInput.value = '';
-                statusDiv.textContent = 'Sending...';
+                statusDiv.textContent = '发送中...';
             }
         }
 

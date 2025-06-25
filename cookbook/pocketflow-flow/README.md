@@ -1,33 +1,33 @@
-# Text Converter Flow
+# 文本转换器流程
 
-This project demonstrates an interactive text transformation tool built with PocketFlow.
+该项目展示了一个使用 PocketFlow 构建的交互式文本转换工具。
 
-## Features
+## 功能
 
-- Convert text to UPPERCASE
-- Convert text to lowercase
-- Reverse text
-- Remove extra spaces
-- Interactive command-line interface
-- Continuous flow with option to process multiple texts
+- 将文本转换为大写
+- 将文本转换为小写
+- 反转文本
+- 移除多余空格
+- 交互式命令行界面
+- 连续流程，可选择处理多个文本
 
-## Getting Started
+## 入门
 
-1. Install the required dependencies:
+1. 安装所需依赖：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Run the application:
+2. 运行应用程序：
 
 ```bash
 python main.py
 ```
 
-## How It Works
+## 工作原理
 
-The workflow features an interactive loop with branching paths:
+工作流程具有一个带有分支路径的交互式循环：
 
 ```mermaid
 graph TD
@@ -37,11 +37,11 @@ graph TD
     Input -->|exit| End
 ```
 
-Here's what each part does:
-1. **TextInput Node**: Collects text input and handles menu choices
-2. **TextTransform Node**: Applies the selected transformation to the text
+每个部分的作用如下：
+1. **TextInput Node**：收集文本输入并处理菜单选择
+2. **TextTransform Node**：将选定的转换应用于文本
 
-## Example Output
+## 示例输出
 
 ```
 Welcome to Text Converter!
@@ -65,8 +65,8 @@ Convert another text? (y/n): n
 Thank you for using Text Converter!
 ```
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Main entry point for running the text converter
-- [`flow.py`](./flow.py): Defines the nodes and flow for text transformation
-- [`requirements.txt`](./requirements.txt): Lists the required dependencies
+- [`main.py`](./main.py)：运行文本转换器的主入口点
+- [`flow.py`](./flow.py)：定义文本转换的节点和流程
+- [`requirements.txt`](./requirements.txt)：列出所需依赖项

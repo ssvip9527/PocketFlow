@@ -1,46 +1,46 @@
-# Design Doc: FastAPI WebSocket Chat Interface
+# 设计文档：FastAPI WebSocket 聊天界面
 
-> Please DON'T remove notes for AI
+> 请勿删除 AI 备注
 
-## Requirements
+## 要求
 
-> Notes for AI: Keep it simple and clear.
-> If the requirements are abstract, write concrete user stories
+> AI 备注：保持简洁明了。
+> 如果要求是抽象的，请编写具体的用例。
 
-**User Story**: As a user, I want to interact with an AI chatbot through a web interface where:
-1. I can send messages and receive real-time streaming responses
-2. The connection stays persistent (WebSocket)
-3. I can see the AI response being typed out in real-time as the LLM generates it
-4. The interface is minimal and easy to use
+**用户故事**：作为用户，我希望通过一个网页界面与 AI 聊天机器人互动，其中：
+1. 我可以发送消息并接收实时流式响应
+2. 连接保持持久（WebSocket）
+3. 我可以看到 AI 响应在 LLM 生成时实时打出
+4. 界面简洁易用
 
-**Technical Requirements**:
-- FastAPI backend with WebSocket support
-- Real-time bidirectional communication
-- True LLM streaming integration using PocketFlow AsyncNode
-- Simple HTML/JavaScript frontend
-- Minimal dependencies
+**技术要求**：
+- 支持 WebSocket 的 FastAPI 后端
+- 实时双向通信
+- 使用 PocketFlow AsyncNode 实现真正的 LLM 流式集成
+- 简单的 HTML/JavaScript 前端
+- 最少的依赖
 
-## Flow Design
+## 流程设计
 
-> Notes for AI:
-> 1. Consider the design patterns of agent, map-reduce, rag, and workflow. Apply them if they fit.
-> 2. Present a concise, high-level description of the workflow.
+> AI 备注：
+> 1. 彻底理解实用函数定义，请查阅文档。
+> 2. 仅包含必要的实用函数，基于流程中的节点。
 
-### Applicable Design Pattern:
+### 适用设计模式：
 
-**Single Async Node Pattern**: One PocketFlow AsyncNode handles the entire LLM streaming process with real-time WebSocket streaming
+**单异步节点模式**：一个 PocketFlow AsyncNode 处理整个 LLM 流式传输过程，并进行实时 WebSocket 流式传输
 
-### Flow high-level Design:
+### 流程高级设计：
 
-**PocketFlow AsyncFlow**: Just one async node
-1. **Streaming Chat Node**: Processes message, calls LLM with real streaming, sends chunks immediately to WebSocket
+**PocketFlow AsyncFlow**：只有一个异步节点
+1. **流式聊天节点**：处理消息，调用 LLM 进行实时流式传输，立即将分块发送到 WebSocket
 
-**Integration**: FastAPI WebSocket endpoint calls the PocketFlow AsyncFlow
+**集成**：FastAPI WebSocket 端点调用 PocketFlow AsyncFlow
 
 ```mermaid
 flowchart TD
-    user((User Browser)) --> websocket(FastAPI WebSocket)
-    websocket --> flow[Streaming Chat AsyncNode]
+    user((用户浏览器)) --> websocket(FastAPI WebSocket)
+    websocket --> flow[流式聊天异步节点]
     flow --> websocket
     websocket --> user
     
@@ -49,41 +49,41 @@ flowchart TD
     style flow fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
 ```
 
-## Utility Functions
+## 实用函数
 
-> Notes for AI:
-> 1. Understand the utility function definition thoroughly by reviewing the doc.
-> 2. Include only the necessary utility functions, based on nodes in the flow.
+> AI 备注：
+> 1. 彻底理解实用函数定义，请查阅文档。
+> 2. 仅包含必要的实用函数，基于流程中的节点。
 
-1. **Stream LLM** (`utils/stream_llm.py`)
-   - *Input*: messages (list of chat history)
-   - *Output*: generator yielding real-time response chunks from OpenAI API
-   - Used by streaming chat node to get LLM chunks as they're generated
+1. **流式 LLM** (`utils/stream_llm.py`)
+   - *输入*：消息（聊天历史列表）
+   - *输出*：生成器，从 OpenAI API 生成实时响应分块
+   - 由流式聊天节点使用，以获取 LLM 生成的分块
 
-## Node Design
+## 节点设计
 
-### Shared Store
+### 共享存储
 
-> Notes for AI: Try to minimize data redundancy
+> AI 备注：尽量减少数据冗余
 
-The shared store structure is organized as follows:
+共享存储结构如下：
 
 ```python
 shared = {
-    "websocket": None,           # WebSocket connection object
-    "user_message": "",          # Current user message
-    "conversation_history": []   # List of message history with roles
+    "websocket": None,           # WebSocket 连接对象
+    "user_message": "",          # 当前用户消息
+    "conversation_history": []   # 带有角色的消息历史列表
 }
 ```
 
-### Node Steps
+### 节点步骤
 
-> Notes for AI: Carefully decide whether to use Batch/Async Node/Flow.
+> AI 备注：仔细决定是使用批处理/异步节点/流程。
 
-1. **Streaming Chat Node**
-  - *Purpose*: Process user message, call LLM with real streaming, and send chunks immediately via WebSocket
-  - *Type*: AsyncNode (for real-time streaming)
-  - *Steps*:
-    - *prep*: Read user message, build conversation history with new message
-    - *exec_async*: Call streaming LLM utility, stream each chunk immediately to WebSocket as received
-    - *post*: Update conversation history with complete assistant response
+1. **流式聊天节点**
+  - *目的*：处理用户消息，调用 LLM 进行实时流式传输，并通过 WebSocket 立即发送分块
+  - *类型*：AsyncNode（用于实时流式传输）
+  - *步骤*：
+    - *prep*：读取用户消息，使用新消息构建对话历史
+    - *exec_async*：调用流式 LLM 实用程序，接收到每个分块后立即流式传输到 WebSocket
+    - *post*：使用完整的助手响应更新对话历史

@@ -4,7 +4,7 @@ import asyncio
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# Global flag to control whether to use MCP or local implementation
+# 全局标志，控制是使用 MCP 还是本地实现
 MCP = False
 
 def call_llm(prompt):    
@@ -16,15 +16,14 @@ def call_llm(prompt):
     return r.choices[0].message.content
 
 def get_tools(server_script_path=None):
-    """Get available tools, either from MCP server or locally based on MCP global setting."""
+    """获取可用工具，根据 MCP 全局设置从 MCP 服务器或本地获取。"""
     if MCP:
         return mcp_get_tools(server_script_path)
     else:
         return local_get_tools(server_script_path)
     
 def mcp_get_tools(server_script_path):
-    """Get available tools from an MCP server.
-    """
+    """从 MCP 服务器获取可用工具。"""
     async def _get_tools():
         server_params = StdioServerParameters(
             command="python",
@@ -40,11 +39,11 @@ def mcp_get_tools(server_script_path):
     return asyncio.run(_get_tools())
 
 def local_get_tools(server_script_path=None):
-    """A simple dummy implementation of get_tools without MCP."""
+    """一个简单的 get_tools 模拟实现，不使用 MCP。"""
     tools = [
         {
             "name": "add",
-            "description": "Add two numbers together",
+            "description": "将两个数字相加",
             "inputSchema": {
                 "properties": {
                     "a": {"type": "integer"},
@@ -55,7 +54,7 @@ def local_get_tools(server_script_path=None):
         },
         {
             "name": "subtract",
-            "description": "Subtract b from a",
+            "description": "从 b 中减去 a",
             "inputSchema": {
                 "properties": {
                     "a": {"type": "integer"},
@@ -66,7 +65,7 @@ def local_get_tools(server_script_path=None):
         },
         {
             "name": "multiply",
-            "description": "Multiply two numbers together",
+            "description": "将两个数字相乘",
             "inputSchema": {
                 "properties": {
                     "a": {"type": "integer"},
@@ -77,7 +76,7 @@ def local_get_tools(server_script_path=None):
         },
         {
             "name": "divide",
-            "description": "Divide a by b",
+            "description": "将 a 除以 b",
             "inputSchema": {
                 "properties": {
                     "a": {"type": "integer"},
@@ -89,7 +88,7 @@ def local_get_tools(server_script_path=None):
     ]
 
     class DictObject(dict):
-        """A simple class that behaves both as a dictionary and as an object with attributes."""
+        """一个简单的类，既可以作为字典，也可以作为具有属性的对象。"""
         def __init__(self, data):
             super().__init__(data)
             for key, value in data.items():
@@ -102,20 +101,19 @@ def local_get_tools(server_script_path=None):
             try:
                 return self[key]
             except KeyError:
-                raise AttributeError(f"'DictObject' object has no attribute '{key}'")
+                raise AttributeError(f"'DictObject' 对象没有属性 '{key}'")
 
     return [DictObject(tool) for tool in tools]
 
 def call_tool(server_script_path=None, tool_name=None, arguments=None):
-    """Call a tool, either from MCP server or locally based on MCP global setting."""
+    """调用工具，根据 MCP 全局设置从 MCP 服务器或本地调用。"""
     if MCP:
         return mcp_call_tool(server_script_path, tool_name, arguments)
     else:
         return local_call_tool(server_script_path, tool_name, arguments)
     
 def mcp_call_tool(server_script_path=None, tool_name=None, arguments=None):
-    """Call a tool on an MCP server.
-    """
+    """在 MCP 服务器上调用工具。"""
     async def _call_tool():
         server_params = StdioServerParameters(
             command="python",
@@ -131,73 +129,73 @@ def mcp_call_tool(server_script_path=None, tool_name=None, arguments=None):
     return asyncio.run(_call_tool())
 
 def local_call_tool(server_script_path=None, tool_name=None, arguments=None):
-    """A simple dummy implementation of call_tool without MCP."""
-    # Simple implementation of tools
+    """一个简单的 call_tool 模拟实现，不使用 MCP。"""
+    # 工具的简单实现
     if tool_name == "add":
         if "a" in arguments and "b" in arguments:
             return arguments["a"] + arguments["b"]
         else:
-            return "Error: Missing required arguments 'a' or 'b'"
+            return "错误: 缺少必需参数 'a' 或 'b'"
     elif tool_name == "subtract":
         if "a" in arguments and "b" in arguments:
             return arguments["a"] - arguments["b"]
         else:
-            return "Error: Missing required arguments 'a' or 'b'"
+            return "错误: 缺少必需参数 'a' 或 'b'"
     elif tool_name == "multiply":
         if "a" in arguments and "b" in arguments:
             return arguments["a"] * arguments["b"]
         else:
-            return "Error: Missing required arguments 'a' or 'b'"
+            return "错误: 缺少必需参数 'a' 或 'b'"
     elif tool_name == "divide":
         if "a" in arguments and "b" in arguments:
             if arguments["b"] == 0:
-                return "Error: Division by zero is not allowed"
+                return "错误: 不允许除以零"
             return arguments["a"] / arguments["b"]
         else:
-            return "Error: Missing required arguments 'a' or 'b'"
+            return "错误: 缺少必需参数 'a' 或 'b'"
     else:
-        return f"Error: Unknown tool '{tool_name}'"
+        return f"错误: 未知工具 '{tool_name}'"
 
 if __name__ == "__main__":
-    print("=== Testing call_llm ===")
-    prompt = "In a few words, what is the meaning of life?"
-    print(f"Prompt: {prompt}")
+    print("=== 正在测试 call_llm ===")
+    prompt = "用几句话概括生命的意义是什么？"
+    print(f"提示: {prompt}")
     response = call_llm(prompt)
-    print(f"Response: {response}")
+    print(f"响应: {response}")
 
-        # Find available tools
-    print("=== Finding available tools ===")
+        # 查找可用工具
+    print("=== 正在查找可用工具 ===")
     tools = get_tools("simple_server.py")
     
-    # Print tool information nicely formatted
+    # 漂亮地打印工具信息
     for i, tool in enumerate(tools, 1):
-        print(f"\nTool {i}: {tool.name}")
+        print(f"\n工具 {i}: {tool.name}")
         print("=" * (len(tool.name) + 8))
-        print(f"Description: {tool.description}")
+        print(f"描述: {tool.description}")
         
-        # Parameters section
-        print("Parameters:")
+        # 参数部分
+        print("参数:")
         properties = tool.inputSchema.get('properties', {})
         required = tool.inputSchema.get('required', [])
         
-        # No parameters case
+        # 没有参数的情况
         if not properties:
-            print("  None")
+            print("  无")
         
-        # Print each parameter with its details
+        # 打印每个参数及其详细信息
         for param_name, param_info in properties.items():
             param_type = param_info.get('type', 'unknown')
-            req_status = "(Required)" if param_name in required else "(Optional)"
+            req_status = "(必填)" if param_name in required else "(可选)"
             print(f"  • {param_name}: {param_type} {req_status}")
     
-    # Call a tool
-    print("\n=== Calling the add tool ===")
+    # 调用工具
+    print("\n=== 正在调用 add 工具 ===")
     a, b = 5, 3
     result = call_tool("simple_server.py", "add", {"a": a, "b": b})
-    print(f"Result of {a} + {b} = {result}")
+    print(f"{a} + {b} 的结果 = {result}")
     
-    # You can easily call with different parameters
+    # 您可以轻松地使用不同的参数调用
     a, b = 10, 20
     result = call_tool("simple_server.py", "add", {"a": a, "b": b})
-    print(f"Result of {a} + {b} = {result}")
+    print(f"{a} + {b} 的结果 = {result}")
 

@@ -1,16 +1,16 @@
 from flow import qa_flow
 
-# Example main function
-# Please replace this with your own main function
+# 示例主函数
+# 请将其替换为您自己的主函数
 def main():
     shared = {
-        "question": "In one sentence, what's the end of universe?",
+        "question": "用一句话概括，宇宙的终结是什么？",
         "answer": None
     }
 
     qa_flow.run(shared)
-    print("Question:", shared["question"])
-    print("Answer:", shared["answer"])
+    print("问题:", shared["question"])
+    print("答案:", shared["answer"])
 
 if __name__ == "__main__":
     main()

@@ -1,2 +1,2 @@
-pocketflow
-openai>=1.0.0 
+pocketflow # PocketFlow 核心库
+openai>=1.0.0 # OpenAI API 客户端库

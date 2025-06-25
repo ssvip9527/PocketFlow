@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 class CreateCalendarEventNode(Node):
     def prep(self, shared):
-        """Prepares the necessary data to create an event."""
+        """准备创建事件所需的数据。"""
         return {
             'summary': shared.get('event_summary'),
             'description': shared.get('event_description'),
@@ -13,7 +13,7 @@ class CreateCalendarEventNode(Node):
         }
     
     def exec(self, event_data):
-        """Creates a new calendar event."""
+        """创建一个新的日历事件。"""
         try:
             event = create_event(
                 summary=event_data['summary'],
@@ -26,7 +26,7 @@ class CreateCalendarEventNode(Node):
             return {'success': False, 'error': str(e)}
     
     def post(self, shared, prep_res, exec_res):
-        """Stores the event creation result."""
+        """存储事件创建结果。"""
         if exec_res['success']:
             shared['last_created_event'] = exec_res['event']
             return 'success'
@@ -36,13 +36,13 @@ class CreateCalendarEventNode(Node):
 
 class ListCalendarEventsNode(Node):
     def prep(self, shared):
-        """Prepares parameters to list events."""
+        """准备列出事件的参数。"""
         return {
             'days': shared.get('days_to_list', 7)
         }
     
     def exec(self, params):
-        """Lists calendar events."""
+        """列出日历事件。"""
         try:
             events = list_events(days=params['days'])
             return {'success': True, 'events': events}
@@ -50,7 +50,7 @@ class ListCalendarEventsNode(Node):
             return {'success': False, 'error': str(e)}
     
     def post(self, shared, prep_res, exec_res):
-        """Stores the list of events."""
+        """存储事件列表。"""
         if exec_res['success']:
             shared['calendar_events'] = exec_res['events']
             return 'success'
@@ -60,11 +60,11 @@ class ListCalendarEventsNode(Node):
 
 class ListCalendarsNode(Node):
     def prep(self, shared):
-        """No special preparation needed to list calendars."""
+        """列出日历不需要特殊准备。"""
         return {}
 
     def exec(self, params):
-        """Lists all available calendars for the user."""
+        """列出用户所有可用的日历。"""
         try:
             calendars = list_calendar_lists()
             return {'success': True, 'calendars': calendars}
@@ -72,7 +72,7 @@ class ListCalendarsNode(Node):
             return {'success': False, 'error': str(e)}
 
     def post(self, shared, prep_res, exec_res):
-        """Stores the list of calendars in the shared store."""
+        """将日历列表存储在共享存储中。"""
         if exec_res['success']:
             shared['available_calendars'] = exec_res['calendars']
             return 'success'

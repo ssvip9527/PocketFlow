@@ -19,100 +19,100 @@ class DecideAction(Node):
     def exec(self, prep_res):
         session, history, query = prep_res
         prompt = f"""
-### INSTRUCTIONS
-You are a lifestyle assistant capable of helping users book hotels and check weather conditions.
-You need to decide the next action based on your last action, action execution result, chat history, and current user question.
+### 指令
+您是一名生活助理，能够帮助用户预订酒店和查询天气状况。
+您需要根据您上次的操作、操作执行结果、聊天历史和当前用户问题来决定下一步操作。
 
-### CHAT HISTORY
+### 聊天历史
 {format_chat_history(history)}
 
-### CURRENT USER QUESTION
+### 当前用户问题
 user: {query}
 
-### CONTEXT
-Last Action: {session.get("last_action", None)}
-Last Action Result: {session.get("action_result", None)}
-Current Date: {datetime.now().date()} 
+### 上下文
+上次操作: {session.get("last_action", None)}
+上次操作结果: {session.get("action_result", None)}
+当前日期: {datetime.now().date()} 
 
-### ACTION SPACE
+### 操作空间
 [1] check-weather
-Description: When the user asks about the weather, use this tool.
-Parameters:
+描述: 当用户询问天气时，使用此工具。
+参数:
     - name: city
-        description: The city to check the weather
+        description: 要查询天气的城市
         required: true
-        example: Beijing
+        example: 北京
     - name: date
-        description: The date to check the weather, if not provided, use the current date
+        description: 要查询天气的日期，如果未提供，则使用当前日期
         required: false
         example: 2025-05-28
 
 [2] book-hotel
-Description: When the user wants to book a hotel, use this tool.
-Parameters:
+描述: 当用户想要预订酒店时，使用此工具。
+参数:
     - name: hotel
-        description: The name of the hotel to be booked
+        description: 要预订的酒店名称
         required: true
-        example: ShanghaiHilton Hotel
+        example: 上海希尔顿酒店
     - name: checkin_date
-        description: The check-in date
+        description: 入住日期
         required: true
         example: 2025-05-28
     - name: checkout_date
-        description: The check-out date
+        description: 退房日期
         required: true
         example: 2025-05-29
 
 [3] follow-up
-Description: 1. When the user's question is out of the scope of booking hotels and checking weather, use this tool to guide the user; 2. When the current information cannot meet the parameter requirements of the corresponding tool, use this tool to ask the user.
-Parameters:
+描述: 1. 当用户的问题超出预订酒店和查询天气的范围时，使用此工具引导用户；2. 当当前信息无法满足相应工具的参数要求时，使用此工具询问用户。
+参数:
     - name: question
-        description: Your guidance or follow-up to the user, maintain an enthusiastic and lively language style, and use the same language as the user's question.
+        description: 您对用户的引导或跟进，保持热情活泼的语言风格，并使用与用户问题相同的语言。
         required: true
-        example: Which hotel would you like to book?😊
+        example: 您想预订哪家酒店？😊
 
 [4] result-notification
-Description: When the booking of a hotel or checking the weather is completed, use this tool to notify the user of the result and ask if they need any other help. If you find that the user's question is not completed in the history conversation, you can guide the user to complete the intention in the last step.
-Parameters:
+描述: 当酒店预订或天气查询完成后，使用此工具通知用户结果并询问是否需要其他帮助。如果您发现用户的历史对话中未完成的问题，您可以在最后一步引导用户完成意图。
+参数:
     - name: result
-        description: Notify the user of the result based on the Last Action Result. Maintain an enthusiastic and lively language style, and use the same language as the user's question.
+        description: 根据上次操作结果通知用户结果。保持热情活泼的语言风格，并使用与用户问题相同的语言。
         required: true
-        example: The hotel has been successfully booked for you. 😉\n\nThe check-in date is XX, and the check-out date is XX. Thank you for using it. Would you like any other help?😀
+        example: 酒店已为您成功预订。😉\n\n入住日期是 XX，退房日期是 XX。感谢您的使用。您还需要其他帮助吗？😀
 
-## NEXT ACTION
-Decide the next action based on the context and available actions.
-Return your response in this format:
+## 下一步操作
+根据上下文和可用操作决定下一步操作。
+以以下格式返回您的响应:
 
 ```yaml
 thinking: |
-    <your step-by-step reasoning process>
+    <您的逐步推理过程>
 action: check-weather OR book-hotel OR follow-up OR result-notification
-reason: <why you chose this action>
-question: <if action is follow-up>
-city: <if action is check-weather> 
-hotel: <if action is book-hotel>
-checkin_date: <if action is book-hotel>
-checkout_date: <if action is book-hotel>
-result: <if action is result-notification>
+reason: <您选择此操作的原因>
+question: <如果操作是 follow-up>
+city: <如果操作是 check-weather> 
+hotel: <如果操作是 book-hotel>
+checkin_date: <如果操作是 book-hotel>
+checkout_date: <如果操作是 book-hotel>
+result: <如果操作是 result-notification>
 ```
 
-IMPORTANT: Make sure to:
-1. Use proper indentation (4 spaces) for all multi-line fields
-2. Use the | character for multi-line text fields
-3. Keep single-line fields without the | character
+重要提示: 确保:
+1. 所有多行字段都使用正确的缩进（4 个空格）
+2. 多行文本字段使用 | 字符
+3. 单行字段不带 | 字符
 """
 
         response = call_llm(prompt.strip())
         yaml_str = response.split("```yaml")[1].split("```")[0].strip()
-        print(f"🤖 Agent response: \n{yaml_str}")
+        print(f"🤖 代理响应: \n{yaml_str}")
         decision = yaml.safe_load(yaml_str)
         return decision
 
     def post(self, shared, prep_res, exec_res):
         conversation_id = shared["conversation_id"]
         session: dict = load_conversation(conversation_id)
-        """Save the decision and determine the next step in the flow."""
-        # If LLM decided to search, save the search query
+        """保存决策并确定流程中的下一步。"""
+        # 如果 LLM 决定搜索，则保存搜索查询
         session["last_action"] = exec_res["action"]
         flow_log: Queue = shared["flow_queue"]
 
@@ -126,22 +126,22 @@ IMPORTANT: Make sure to:
                 "city": exec_res["city"],
                 "date": exec_res.get("date", None),
             }
-            flow_log.put(f"➡️ Agent decided to check weather for: {exec_res['city']}")
+            flow_log.put(f"➡️ 代理决定查询 {exec_res['city']} 的天气")
         elif exec_res["action"] == "book-hotel":
             session["book_hotel_params"] = {
                 "hotel": exec_res["hotel"],
                 "checkin_date": exec_res["checkin_date"],
                 "checkout_date": exec_res["checkout_date"],
             }
-            flow_log.put(f"➡️ Agent decided to book hotel: {exec_res['hotel']}")
+            flow_log.put(f"➡️ 代理决定预订酒店: {exec_res['hotel']}")
         elif exec_res["action"] == "follow-up":
             session["follow_up_params"] = {"question": exec_res["question"]}
-            flow_log.put(f"➡️ Agent decided to follow up: {exec_res['question']}")
+            flow_log.put(f"➡️ 代理决定跟进: {exec_res['question']}")
         elif exec_res["action"] == "result-notification":
             session["result_notification_params"] = {"result": exec_res["result"]}
-            flow_log.put(f"➡️ Agent decided to notify the result: {exec_res['result']}")
+            flow_log.put(f"➡️ 代理决定通知结果: {exec_res['result']}")
         save_conversation(conversation_id, session)
-        # Return the action to determine the next node in the flow
+        # 返回操作以确定流程中的下一个节点
         return exec_res["action"]
 
 
@@ -159,7 +159,7 @@ class CheckWeather(Node):
 
     def post(self, shared, prep_res, exec_res):
         flow_log: Queue = shared["flow_queue"]
-        flow_log.put(f"⬅️ Check weather result: {exec_res}")
+        flow_log.put(f"⬅️ 查询天气结果: {exec_res}")
 
         conversation_id = shared["conversation_id"]
         session: dict = load_conversation(conversation_id)
@@ -184,7 +184,7 @@ class BookHotel(Node):
 
     def post(self, shared, prep_res, exec_res):
         flow_log: Queue = shared["flow_queue"]
-        flow_log.put(f"⬅️ Book hotel result: {exec_res}")
+        flow_log.put(f"⬅️ 预订酒店结果: {exec_res}")
 
         conversation_id = shared["conversation_id"]
         session: dict = load_conversation(conversation_id)

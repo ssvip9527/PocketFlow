@@ -1,31 +1,31 @@
 from fastmcp import FastMCP
 
-# Create a named server
-mcp = FastMCP("Math Operations Server")
+# 创建一个命名服务器
+mcp = FastMCP("数学运算服务器")
 
-# Define mathematical operation tools
+# 定义数学运算工具
 @mcp.tool()
 def add(a: int, b: int) -> int:
-    """Add two numbers together"""
+    """将两个数字相加"""
     return a + b
 
 @mcp.tool()
 def subtract(a: int, b: int) -> int:
-    """Subtract b from a"""
+    """从 a 中减去 b"""
     return a - b
 
 @mcp.tool()
 def multiply(a: int, b: int) -> int:
-    """Multiply two numbers together"""
+    """将两个数字相乘"""
     return a * b
 
 @mcp.tool()
 def divide(a: int, b: int) -> float:
-    """Divide a by b"""
+    """将 a 除以 b"""
     if b == 0:
-        raise ValueError("Division by zero is not allowed")
+        raise ValueError("不允许除以零")
     return a / b
 
-# Start the server
+# 启动服务器
 if __name__ == "__main__":
     mcp.run()

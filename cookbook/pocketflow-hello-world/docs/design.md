@@ -1,29 +1,29 @@
-# Your Project Title
+# 您的项目标题
 
-## Project Requirements
-A description of the project requirements. 
+## 项目需求
+项目需求的描述。
 
-## Utility Functions
+## 实用函数
 
-1. **Call LLM** (`utils/call_llm.py`)
+1. **调用 LLM** (`utils/call_llm.py`)
 
-## Flow Design
+## 流程设计
 
-1. **First Node**
-2. **Second Node**
-3. **Third Node**
+1. **第一个节点**
+2. **第二个节点**
+3. **第三个节点**
 
-### Flow Diagram
+### 流程图
 
 ```mermaid
 flowchart TD
-    firstNode[First Node] --> secondNode[Second Node]
-    secondNode --> thirdNode[Third Node]
+    firstNode[第一个节点] --> secondNode[第二个节点]
+    secondNode --> thirdNode[第三个节点]
 ```
 
-## Data Structure
+## 数据结构
 
-The shared memory structure will be organized as follows:
+共享内存结构将组织如下：
 
 ```python
 shared = {
@@ -31,16 +31,16 @@ shared = {
 }
 ```
 
-## Node Designs
+## 节点设计
 
-### 1. First Node
-- **Purpose**: What the node does
-- **Design**: Regular Node (no Batch/Async)
-- **Data Access**: 
-  - Read: "key" from shared store
-  - Write: "key" to shared store
+### 1. 第一个节点
+- **目的**：节点的作用
+- **设计**：常规节点（无批处理/异步）
+- **数据访问**：
+  - 读取：共享存储中的 "key"
+  - 写入："key" 到共享存储
 
-### 2. Second Node
+### 2. 第二个节点
 ...
 
-### 3. Third Node
+### 3. 第三个节点

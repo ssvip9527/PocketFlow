@@ -8,7 +8,7 @@ from gradio import ChatMessage
 
 from flow import create_flow
 
-# create global thread pool
+# 创建全局线程池
 chatflow_thread_pool = ThreadPoolExecutor(
     max_workers=5,
     thread_name_prefix="chatflow_worker",
@@ -17,24 +17,24 @@ chatflow_thread_pool = ThreadPoolExecutor(
 
 def chat_fn(message, history, uuid):
     """
-    Main chat function that handles the conversation flow and message processing.
+    处理对话流程和消息处理的主聊天函数。
     
     Args:
-        message (str): The current user message
-        history (list): Previous conversation history
-        uuid (UUID): Unique identifier for the conversation
+        message (str): 当前用户消息
+        history (list): 先前对话历史
+        uuid (UUID): 对话的唯一标识符
     
     Yields:
-        ChatMessage: Streams of thought process and chat responses
+        ChatMessage: 思维过程和聊天响应的流
     """
-    # Log conversation details
+    # 记录对话详情
     print(f"Conversation ID: {str(uuid)}\nHistory: {history}\nQuery: {message}\n---")
     
-    # Initialize queues for chat messages and flow thoughts
+    # 初始化聊天消息和流程思考的队列
     chat_queue = Queue()
     flow_queue = Queue()
     
-    # Create shared context for the flow
+    # 为流程创建共享上下文
     shared = {
         "conversation_id": str(uuid),
         "query": message,
@@ -43,18 +43,18 @@ def chat_fn(message, history, uuid):
         "flow_queue": flow_queue,
     }
     
-    # Create and run the chat flow in a separate thread
+    # 在单独的线程中创建并运行聊天流程
     chat_flow = create_flow()
     chatflow_thread_pool.submit(chat_flow.run, shared)
 
-    # Initialize thought response tracking
+    # 初始化思考响应跟踪
     start_time = time.time()
     thought_response = ChatMessage(
-        content="", metadata={"title": "Flow Log", "id": 0, "status": "pending"}
+        content="", metadata={"title": "流程日志", "id": 0, "status": "pending"}
     )
     yield thought_response
 
-    # Process and accumulate thoughts from the flow queue
+    # 处理并累积流程队列中的思考
     accumulated_thoughts = ""
     while True:
         thought = flow_queue.get()
@@ -65,12 +65,12 @@ def chat_fn(message, history, uuid):
         yield thought_response
         flow_queue.task_done()
 
-    # Mark thought processing as complete and record duration
+    # 标记思考处理完成并记录持续时间
     thought_response.metadata["status"] = "done"
     thought_response.metadata["duration"] = time.time() - start_time
     yield thought_response
 
-    # Process and yield chat messages from the chat queue
+    # 处理并生成聊天队列中的聊天消息
     while True:
         msg = chat_queue.get()
         if msg is None:
@@ -81,7 +81,7 @@ def chat_fn(message, history, uuid):
 
 
 def clear_fn():
-    print("Clearing conversation")
+    print("正在清除对话")
     return uuid.uuid4()
 
 
@@ -97,7 +97,7 @@ with gr.Blocks(fill_height=True, theme="ocean") as demo:
         type="messages",
         additional_inputs=[uuid_state],
         chatbot=chatbot,
-        title="PocketFlow Gradio Demo",
+        title="PocketFlow Gradio 演示",
     )
 
 

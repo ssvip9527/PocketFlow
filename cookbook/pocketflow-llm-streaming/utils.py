@@ -4,37 +4,36 @@ import os
 def stream_llm(prompt):
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
 
-    # Make a streaming chat completion request
+    # 发送流式聊天补全请求
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "user", "content": prompt}
         ],
         temperature=0.7,
-        stream=True  # Enable streaming
+        stream=True  # 启用流式传输
     )
     return response
 
-def fake_stream_llm(prompt, predefined_text="This is a fake response. Today is a sunny day. The sun is shining. The birds are singing. The flowers are blooming. The bees are buzzing. The wind is blowing. The clouds are drifting. The sky is blue. The grass is green. The trees are tall. The water is clear. The fish are swimming. The sun is shining. The birds are singing. The flowers are blooming. The bees are buzzing. The wind is blowing. The clouds are drifting. The sky is blue. The grass is green. The trees are tall. The water is clear. The fish are swimming."):
+def fake_stream_llm(prompt, predefined_text="这是一个虚假响应。今天是个晴天。阳光普照。鸟儿歌唱。花儿绽放。蜜蜂嗡嗡。风儿吹拂。云儿飘荡。天空湛蓝。草地翠绿。树木高耸。水流清澈。鱼儿畅游。阳光普照。鸟儿歌唱。花儿绽放。蜜蜂嗡嗡。风儿吹拂。云儿飘荡。天空湛蓝。草地翠绿。树木高耸。水流清澈。鱼儿畅游。"):
     """
-    Returns a list of simple objects that mimic the structure needed
-    for OpenAI streaming responses.
+    返回一个简单对象列表，模仿 OpenAI 流式响应所需的结构。
     """
-    # Split text into small chunks
+    # 将文本分割成小块
     chunk_size = 10
     chunks = []
     
-    # Create the chunks using a simple class outside the nested structure
+    # 使用一个简单的类在嵌套结构之外创建块
     class SimpleObject:
         def __init__(self, **kwargs):
             for key, value in kwargs.items():
                 setattr(self, key, value)
     
-    # Build the chunks
+    # 构建块
     for i in range(0, len(predefined_text), chunk_size):
         text_chunk = predefined_text[i:i+chunk_size]
         
-        # Create the nested structure using simple objects
+        # 使用简单对象创建嵌套结构
         delta = SimpleObject(content=text_chunk)
         choice = SimpleObject(delta=delta)
         chunk = SimpleObject(choices=[choice])
@@ -44,15 +43,15 @@ def fake_stream_llm(prompt, predefined_text="This is a fake response. Today is a
     return chunks
 
 if __name__ == "__main__":
-    print("## Testing streaming LLM")
-    prompt = "What's the meaning of life?"
-    print(f"## Prompt: {prompt}")
+    print("## 测试流式 LLM")
+    prompt = "生命的意义是什么？"
+    print(f"## 提示: {prompt}")
     # response = fake_stream_llm(prompt)
     response = stream_llm(prompt)
-    print(f"## Response: ")
+    print(f"## 响应: ")
     for chunk in response:
         if hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content is not None:
             chunk_content = chunk.choices[0].delta.content
-            # Print the incoming text without a newline (simulate real-time streaming)
+            # 打印传入的文本，不带换行符（模拟实时流式传输）
             print(chunk_content, end="", flush=True)
 

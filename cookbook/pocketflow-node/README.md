@@ -1,82 +1,82 @@
-# PocketFlow Summarize
+# PocketFlow 摘要
 
-A practical example demonstrating how to use PocketFlow to build a robust text summarization tool with error handling and retries. This example showcases core PocketFlow concepts in a real-world application.
+这是一个实际示例，演示如何使用 PocketFlow 构建一个具有错误处理和重试功能的健壮文本摘要工具。此示例展示了 PocketFlow 在实际应用中的核心概念。
 
-## Features
+## 特性
 
-- Text summarization using LLMs (Large Language Models)
-- Automatic retry mechanism (up to 3 attempts) on API failures
-- Graceful error handling with fallback responses
-- Clean separation of concerns using PocketFlow's Node architecture
+- 使用 LLM（大型语言模型）进行文本摘要
+- API 失败时自动重试机制（最多 3 次尝试）
+- 优雅的错误处理与回退响应
+- 使用 PocketFlow 的节点架构实现关注点分离
 
-## Project Structure
+## 项目结构
 
 ```
 .
-├── docs/          # Documentation files
-├── utils/         # Utility functions (LLM API wrapper)
-├── flow.py        # PocketFlow implementation with Summarize Node
-├── main.py        # Main application entry point
-└── README.md      # Project documentation
+├── docs/          # 文档文件
+├── utils/         # 工具函数（LLM API 封装）
+├── flow.py        # 包含摘要节点的 PocketFlow 实现
+├── main.py        # 主应用程序入口点
+└── README.md      # 项目文档
 ```
 
-## Implementation Details
+## 实现细节
 
-The example implements a simple but robust text summarization workflow:
+此示例实现了一个简单但健壮的文本摘要工作流：
 
-1. **Summarize Node** (`flow.py`):
-   - `prep()`: Retrieves text from the shared store
-   - `exec()`: Calls LLM to summarize text in 10 words
-   - `exec_fallback()`: Provides graceful error handling
-   - `post()`: Stores the summary back in shared store
+1. **摘要节点**（`flow.py`）：
+   - `prep()`: 从共享存储中检索文本
+   - `exec()`: 调用 LLM 将文本总结为 10 个词
+   - `exec_fallback()`: 提供优雅的错误处理
+   - `post()`: 将摘要存储回共享存储
 
-2. **Flow Structure**:
-   - Single node flow for demonstration
-   - Configured with 3 retries for reliability
-   - Uses shared store for data passing
+2. **流程结构**：
+   - 用于演示的单节点流程
+   - 配置 3 次重试以提高可靠性
+   - 使用共享存储进行数据传递
 
-## Setup
+## 设置
 
-1. Create a virtual environment:
+1. 创建虚拟环境：
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # 在 Windows 上: venv\Scripts\activate
 ```
 
-2. Install dependencies:
+2. 安装依赖：
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Configure your environment:
-   - Set up your LLM API key (check utils/call_llm.py for configuration)
+3. 配置您的环境：
+   - 设置您的 LLM API 密钥（请检查 utils/call_llm.py 进行配置）
 
-4. Run the example:
+4. 运行示例：
 ```bash
 python main.py
 ```
 
-## Example Usage
+## 示例用法
 
-The example comes with a sample text about PocketFlow, but you can modify `main.py` to summarize your own text:
+此示例包含一段关于 PocketFlow 的示例文本，但您可以修改 `main.py` 来总结您自己的文本：
 
 ```python
-shared = {"data": "Your text to summarize here..."}
+shared = {"data": "您的文本在此处进行总结..."}
 flow.run(shared)
-print("Summary:", shared["summary"])
+print("摘要:", shared["summary"])
 ```
 
-## What You'll Learn
+## 您将学到什么
 
-This example demonstrates several key PocketFlow concepts:
+此示例演示了几个关键的 PocketFlow 概念：
 
-- **Node Architecture**: How to structure LLM tasks using prep/exec/post pattern
-- **Error Handling**: Implementing retry mechanisms and fallbacks
-- **Shared Store**: Using shared storage for data flow between steps
-- **Flow Creation**: Setting up a basic PocketFlow workflow
+- **节点架构**：如何使用 prep/exec/post 模式构建 LLM 任务
+- **错误处理**：实现重试机制和回退
+- **共享存储**：使用共享存储在步骤之间传递数据
+- **流程创建**：设置基本的 PocketFlow 工作流
 
-## Additional Resources
+## 额外资源
 
-- [PocketFlow Documentation](https://the-pocket.github.io/PocketFlow/)
-- [Node Concept Guide](https://the-pocket.github.io/PocketFlow/node.html)
-- [Flow Design Patterns](https://the-pocket.github.io/PocketFlow/flow.html) 
+- [PocketFlow 文档](https://the-pocket.github.io/PocketFlow/)
+- [节点概念指南](https://the-pocket.github.io/PocketFlow/node.html)
+- [流程设计模式](https://the-pocket.github.io/PocketFlow/flow.html)

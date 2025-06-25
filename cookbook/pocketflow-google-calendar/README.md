@@ -1,118 +1,118 @@
 # Pocket Google Calendar
 
-An application based on the Pocket Flow framework for Google Calendar integration.
+一个基于 Pocket Flow 框架的 Google 日历集成应用程序。
 
-## 📋 Description
+## 📋 描述
 
-This project implements a Google Calendar integration using the Pocket Flow framework, allowing efficient management of events and appointments through a simple and intuitive interface.
+该项目使用 Pocket Flow 框架实现了 Google 日历集成，通过简单直观的界面高效管理事件和约会。
 
-## 🚀 Features
+## 🚀 功能
 
-- Google Calendar API Integration
-- Event Management
-- Appointment Viewing
-- Flow-based Interface using Pocket Flow
+- Google 日历 API 集成
+- 事件管理
+- 约会查看
+- 使用 Pocket Flow 的基于流的界面
 
-## 🛠️ Technologies Used
+## 🛠️ 使用的技术
 
 - Python
-- Pocket Flow Framework
-- Google Calendar API
-- Pipenv for dependency management
+- Pocket Flow 框架
+- Google 日历 API
+- Pipenv 用于依赖管理
 
-## 📦 Installation
+## 📦 安装
 
-1. Clone the repository:
+1. 克隆仓库：
 ```bash
 git clone [REPOSITORY_URL]
 cd pocket-google-calendar
 ```
 
-2. Install dependencies using Pipenv:
+2. 使用 Pipenv 安装依赖：
 ```bash
 pipenv install
 ```
 
-## 🔑 Credentials Setup
+## 🔑 凭据设置
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the Google Calendar API for your project
-4. Create credentials:
-   - Go to "APIs & Services" > "Credentials"
-   - Click "Create Credentials" > "OAuth client ID"
-   - Choose "Desktop application" as the application type
-   - Download the credentials file
-   - Rename it to `credentials.json`
-   - Place it in the root directory of the project
+1. 访问 [Google Cloud Console](https://console.cloud.google.com/)
+2. 创建新项目或选择现有项目
+3. 为您的项目启用 Google 日历 API
+4. 创建凭据：
+   - 转到“API 和服务”>“凭据”
+   - 点击“创建凭据”>“OAuth 客户端 ID”
+   - 选择“桌面应用程序”作为应用程序类型
+   - 下载凭据文件
+   - 将其重命名为 `credentials.json`
+   - 将其放置在项目的根目录中
 
-## 🌍 Environment Variables
+## 🌍 环境变量
 
-Create a `.env` file in the root directory with the following variables:
+在根目录中创建 `.env` 文件，包含以下变量：
 
 ```env
-# Google Calendar API Configuration
+# Google Calendar API 配置
 GOOGLE_CALENDAR_ID=your_calendar_id@group.calendar.google.com
 GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 
-# Application Configuration
-TIMEZONE=America/Sao_Paulo  # or your preferred timezone
+# 应用程序配置
+TIMEZONE=America/Sao_Paulo  # 或您偏好的时区
 ```
 
-## 🔧 Configuration
+## 🔧 配置
 
-1. Activate the virtual environment:
+1. 激活虚拟环境：
 ```bash
 pipenv shell
 ```
 
-2. Run the application:
+2. 运行应用程序：
 ```bash
 python main.py
 ```
 
-## Expected Output
+## 预期输出
 
-When running the example, you'll see an output similar to this:
+运行示例时，您将看到类似以下的输出：
 
 ```
-=== Listing your calendars ===
-- Primary Calendar
-- Work
-- Personal
+=== 列出您的日历 ===
+- 主要日历
+- 工作
+- 个人
 
-=== Creating an example event ===
-Event created successfully!
-Event ID: abc123xyz
+=== 创建一个示例事件 ===
+事件创建成功！
+事件 ID: abc123xyz
 ```
 
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 pocket-google-calendar/
-├── main.py           # Application entry point
-├── nodes.py          # Pocket Flow node definitions
-├── utils/            # Utilities and helper functions
-├── Pipfile           # Pipenv configuration
-├── credentials.json  # Google Calendar API credentials
-├── .env             # Environment variables
-└── token.pickle      # Google Calendar authentication token
+├── main.py           # 应用程序入口点
+├── nodes.py          # Pocket Flow 节点定义
+├── utils/            # 实用工具和辅助函数
+├── Pipfile           # Pipenv 配置
+├── credentials.json  # Google 日历 API 凭据
+├── .env             # 环境变量
+└── token.pickle      # Google 日历身份验证令牌
 ```
 
-## 🤝 Contributing
+## 🤝 贡献
 
-1. Fork the project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork 项目
+2. 创建您的功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 提交拉取请求
 
-## 📝 License
+## 📝 许可证
 
-This project is under the MIT License. See the [LICENSE](LICENSE) file for more details.
+本项目采用 MIT 许可证。更多详情请参阅 [LICENSE](LICENSE) 文件。
 
-## ✨ Acknowledgments
+## ✨ 致谢
 
-- [Pocket Flow](https://github.com/the-pocket/PocketFlow) - Framework used
-- [Google Calendar API](https://developers.google.com/calendar) - Integration API 
+- [Pocket Flow](https://github.com/the-pocket/PocketFlow) - 使用的框架
+- [Google Calendar API](https://developers.google.com/calendar) - 集成 API

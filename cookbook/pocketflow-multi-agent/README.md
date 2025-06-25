@@ -1,38 +1,38 @@
-# Multi-Agent Taboo Game
+# 多智能体禁忌游戏
 
-A PocketFlow example that demonstrates how to implement asynchronous multi-agent communication using the Taboo word guessing game.
+这是一个 PocketFlow 示例，演示了如何使用禁忌猜词游戏实现异步多智能体通信。
 
-## Features
+## 特性
 
-- Implement asynchronous communication between two AI agents (Hinter and Guesser)
-- Use AsyncNode for non-blocking agent interactions
-- Create dynamic conversation flow through asyncio message queues
-- Demonstrate complex turn-based game mechanics with LLMs
-- Automatically terminate the game when the correct word is guessed
+- 实现两个 AI 智能体（提示者和猜词者）之间的异步通信
+- 使用 AsyncNode 进行非阻塞智能体交互
+- 通过 asyncio 消息队列创建动态对话流
+- 使用 LLM 演示复杂的基于回合的游戏机制
+- 在猜对正确单词时自动终止游戏
 
-## Getting Started
+## 入门指南
 
-1. Install the required dependencies:
+1. 安装所需的依赖项：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Set your OpenAI API key as an environment variable:
+2. 将您的 OpenAI API 密钥设置为环境变量：
 
 ```bash
 export OPENAI_API_KEY=your_api_key_here
 ```
 
-3. Run the application:
+3. 运行应用程序：
 
 ```bash
 python main.py
 ```
 
-## How It Works
+## 工作原理
 
-The workflow follows an asynchronous multi-agent communication pattern:
+工作流程遵循异步多智能体通信模式：
 
 ```mermaid
 flowchart LR
@@ -40,19 +40,19 @@ flowchart LR
     MessageQueue <--> AsyncGuesser[AsyncGuesser Node]
 ```
 
-Here's what each component does:
+每个组件的功能如下：
 
-1. **AsyncHinter Node**: Generates hints about the target word while avoiding forbidden words
-2. **AsyncGuesser Node**: Makes guesses based on the hints received from the Hinter
-3. **Message Queue**: Facilitates asynchronous communication between the agents
+1. **AsyncHinter 节点**：生成关于目标词的提示，同时避免禁用词
+2. **AsyncGuesser 节点**：根据从提示者接收到的提示进行猜测
+3. **消息队列**：促进智能体之间的异步通信
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Main entry point implementing the AsyncHinter and AsyncGuesser nodes and game flow
-- [`utils.py`](./utils.py): Utility functions including LLM wrappers for generating hints and guesses
-- [`requirements.txt`](./requirements.txt): Lists the required dependencies
+- [`main.py`](./main.py)：实现 AsyncHinter 和 AsyncGuesser 节点以及游戏流程的主入口点
+- [`utils.py`](./utils.py)：实用函数，包括用于生成提示和猜测的 LLM 包装器
+- [`requirements.txt`](./requirements.txt)：列出所需的依赖项
 
-## Example Output
+## 示例输出
 
 ```
 =========== Taboo Game Starting! ===========
@@ -81,3 +81,4 @@ Guesser: I guess it's - Longing
 Hinter: Here's your hint - Sentiment for earlier times.
 Guesser: I guess it's - Nostalgic
 Game Over - Correct guess!
+```

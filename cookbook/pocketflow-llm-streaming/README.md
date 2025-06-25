@@ -1,48 +1,48 @@
-#  LLM Streaming and Interruption
+# LLM 流式传输与中断
 
-Demonstrates real-time LLM response streaming with user interrupt capability.
+演示了具有用户中断功能的实时 LLM 响应流式传输。
 
-- Check out the [Substack Post Tutorial](https://zacharyhuang.substack.com/p/streaming-llm-responses-tutorial) for more!
+- 更多内容请查看 [Substack 帖子教程](https://zacharyhuang.substack.com/p/streaming-llm-responses-tutorial)！
 
-## Features
+## 特性
 
-- Real-time display of LLM responses as they're generated
-- User interrupt with ENTER key at any time
+- 实时显示 LLM 生成的响应
+- 随时通过 ENTER 键中断用户
 
-## Run It
+## 运行
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-## How It Works
+## 工作原理
 
-StreamNode:
-1. Creates interrupt listener thread
-2. Fetches content chunks from LLM
-3. Displays chunks in real-time
-4. Handles user interruption
+StreamNode：
+1. 创建中断监听线程
+2. 从 LLM 获取内容块
+3. 实时显示内容块
+4. 处理用户中断
 
-## API Key
+## API 密钥
 
-By default, demo uses fake streaming responses. To use real OpenAI streaming:
+默认情况下，演示使用伪造的流式响应。要使用真实的 OpenAI 流式传输：
 
-1. Edit main.py to replace the fake_stream_llm with stream_llm:
+1. 编辑 main.py，将 `fake_stream_llm` 替换为 `stream_llm`：
 ```python
-# Change this line:
+# 将此行更改为：
 chunks = fake_stream_llm(prompt)
-# To this:
+# 更改为：
 chunks = stream_llm(prompt)
 ```
 
-2. Make sure your OpenAI API key is set:
+2. 确保您的 OpenAI API 密钥已设置：
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-## Files
+## 文件
 
-- `main.py`: StreamNode implementation
-- `utils.py`: Real and fake LLM streaming functions
+- `main.py`：StreamNode 实现
+- `utils.py`：真实和伪造的 LLM 流式传输函数
  

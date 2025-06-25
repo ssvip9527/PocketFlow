@@ -1,47 +1,47 @@
-# PocketFlow Nested BatchFlow Example
+# PocketFlow 嵌套批量流示例
 
-This example demonstrates Nested BatchFlow using a simple school grades calculator.
+此示例演示了使用简单学校成绩计算器的嵌套批量流。
 
-## What this Example Does
+## 此示例的功能
 
-Calculates average grades for:
-1. Each student in a class
-2. Each class in the school
+计算以下各项的平均成绩：
+1. 班级中的每个学生
+2. 学校中的每个班级
 
-## Structure
+## 结构
 ```
 school/
 ├── class_a/
-│   ├── student1.txt  (grades: 7.5, 8.0, 9.0)
-│   └── student2.txt  (grades: 8.5, 7.0, 9.5)
+│   ├── student1.txt  (成绩: 7.5, 8.0, 9.0)
+│   └── student2.txt  (成绩: 8.5, 7.0, 9.5)
 └── class_b/
-    ├── student3.txt  (grades: 6.5, 8.5, 7.0)
-    └── student4.txt  (grades: 9.0, 9.5, 8.0)
+    ├── student3.txt  (成绩: 6.5, 8.5, 7.0)
+    └── student4.txt  (成绩: 9.0, 9.5, 8.0)
 ```
 
-## How it Works
+## 工作原理
 
-1. **Outer BatchFlow (SchoolBatchFlow)**
-   - Processes each class folder
-   - Returns parameters like: `{"class": "class_a"}`
+1. **外部批量流 (SchoolBatchFlow)**
+   - 处理每个班级文件夹
+   - 返回参数，例如：`{"class": "class_a"}`
 
-2. **Inner BatchFlow (ClassBatchFlow)**
-   - Processes each student file in a class
-   - Returns parameters like: `{"student": "student1.txt"}`
+2. **内部批量流 (ClassBatchFlow)**
+   - 处理班级中的每个学生文件
+   - 返回参数，例如：`{"student": "student1.txt"}`
 
-3. **Base Flow**
-   - Loads student grades
-   - Calculates average
-   - Saves result
+3. **基础流**
+   - 加载学生成绩
+   - 计算平均值
+   - 保存结果
 
-## Running the Example
+## 运行示例
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-## Expected Output
+## 预期输出
 
 ```
 Processing class_a...
@@ -57,8 +57,8 @@ Class B Average: 8.05
 School Average: 8.15
 ```
 
-## Key Concepts
+## 关键概念
 
-1. **Nested BatchFlow**: One BatchFlow inside another
-2. **Parameter Inheritance**: Inner flow gets parameters from outer flow
-3. **Hierarchical Processing**: Process data in a tree-like structure 
+1. **嵌套批量流**: 一个批量流嵌套在另一个批量流中
+2. **参数继承**: 内部流从外部流获取参数
+3. **分层处理**: 以树状结构处理数据

@@ -1,3 +1,4 @@
 pocketflow>=0.0.1
 anthropic>=0.15.0
+# 用于处理 YAML 数据的库
 pyyaml>=6.0

@@ -1,40 +1,40 @@
-# PocketFlow Gradio HITL Example
+# PocketFlow Gradio 人机协作 (HITL) 示例
 
-A web-based application that demonstrates Human-in-the-Loop (HITL) workflow orchestration using PocketFlow and Gradio. This example provides an interactive interface for users to engage with AI-powered tasks while maintaining human oversight and feedback.
+一个基于 Web 的应用程序，演示了如何使用 PocketFlow 和 Gradio 进行人机协作 (HITL) 工作流编排。此示例提供了一个交互式界面，供用户参与 AI 驱动的任务，同时保持人工监督和反馈。
 
-## Features
+## 功能
 
-- **Web-based Interface**: Built with Gradio for an accessible and user-friendly experience
-- **Human-in-the-Loop Integration**: Seamless integration of human feedback into the AI workflow
-- **Modern UI**: Clean and intuitive interface for better user interaction
-- **Powered by LLMs**: Utilizes OpenAI's models for intelligent task processing
-- **Flow Visualization**: Real-time visualization of node execution sequence and workflow progress
-- **Interactive Debugging**: Monitor and understand the decision-making process through visual feedback
+- **基于 Web 的界面**：使用 Gradio 构建，提供易于访问和用户友好的体验
+- **人机协作集成**：将人工反馈无缝集成到 AI 工作流中
+- **现代 UI**：简洁直观的界面，提供更好的用户交互
+- **由 LLM 提供支持**：利用 OpenAI 模型进行智能任务处理
+- **流程可视化**：实时可视化节点执行序列和工作流进度
+- **交互式调试**：通过视觉反馈监控和理解决策过程
 
-## Getting Started
+## 入门
 
-This project is part of the PocketFlow cookbook examples. It's assumed you have already cloned the [PocketFlow repository](https://github.com/the-pocket/PocketFlow) and are in the `cookbook/pocketflow-gradio-hitl` directory.
+该项目是 PocketFlow 烹饪书示例的一部分。假设您已经克隆了 [PocketFlow 仓库](https://github.com/the-pocket/PocketFlow) 并且位于 `cookbook/pocketflow-gradio-hitl` 目录中。
 
-1. **Install required dependencies**:
+1. **安装所需依赖**：
     ```bash
     pip install -r requirements.txt
     ```
 
-2. **Set up your OpenAI API key**:
-    The application uses OpenAI models for processing. You need to set your API key as an environment variable:
+2. **设置您的 OpenAI API 密钥**：
+    应用程序使用 OpenAI 模型进行处理。您需要将您的 API 密钥设置为环境变量：
     ```bash
     export OPENAI_API_KEY="your-openai-api-key-here"
     ```
 
-3. **Run the Application**:
+3. **运行应用程序**：
     ```bash
     python main.py
     ```
-    This will start the Gradio web interface, typically accessible at `http://localhost:7860`
+    这将启动 Gradio Web 界面，通常可在 `http://localhost:7860` 访问
 
-## How It Works
+## 工作原理
 
-The system implements a PocketFlow workflow with a web interface:
+该系统实现了带有 Web 界面的 PocketFlow 工作流：
 
 ```mermaid
 flowchart TD
@@ -46,47 +46,47 @@ flowchart TD
     DecideAction --> |"result-notification"| ResultNotification[Result Notification Node]
 ```
 
-The workflow consists of the following nodes:
+工作流包含以下节点：
 
-1. **Decide Action Node**: The central decision-making node that determines the next action based on user input and context
-2. **Check Weather Node**: Provides weather information for specified cities and dates
-3. **Book Hotel Node**: Handles hotel reservation requests with check-in and check-out dates
-4. **Follow Up Node**: Manages user interactions by asking clarifying questions or handling out-of-scope requests
-5. **Result Notification Node**: Delivers action results and offers additional assistance
+1. **决策节点 (Decide Action Node)**：根据用户输入和上下文决定下一步操作的中心决策节点
+2. **检查天气节点 (Check Weather Node)**：提供指定城市和日期的天气信息
+3. **预订酒店节点 (Book Hotel Node)**：处理酒店预订请求，包括入住和退房日期
+4. **跟进节点 (Follow Up Node)**：通过提出澄清问题或处理超出范围的请求来管理人机交互
+5. **结果通知节点 (Result Notification Node)**：传递操作结果并提供额外帮助
 
-The flow is orchestrated through a series of directed connections:
-- The Decide Action node can trigger weather checks, hotel bookings, follow-ups, or result notifications
-- Weather checks and hotel bookings can feed back to the Decide Action node for further processing
-- Follow-up and result notification nodes provide the final steps in the workflow
+流程通过一系列有向连接进行编排：
+- 决策节点可以触发天气检查、酒店预订、跟进或结果通知
+- 天气检查和酒店预订可以反馈到决策节点以进行进一步处理
+- 跟进和结果通知节点提供工作流中的最后步骤
 
-### Flow Visualization
+### 流程可视化
 
-The application provides real-time visualization of the workflow execution:
-- The sequence of node activations is displayed chronologically
-- Users can see which decision paths are being taken
-- The visualization helps in understanding the AI's decision-making process
+应用程序提供工作流执行的实时可视化：
+- 节点激活序列按时间顺序显示
+- 用户可以看到正在采取的决策路径
+- 可视化有助于理解 AI 的决策过程
 
-![flow visualization](./assets/flow_visualization.png)
+![流程可视化](./assets/flow_visualization.png)
 
-## Sample Output
+## 示例输出
 
-Here's an example of book hotel:
+以下是预订酒店的示例：
 
-![book hotel](./assets/book_hotel.png)
+![预订酒店](./assets/book_hotel.png)
 
-Here's an example of changing intention mid-conversation:
+以下是对话中途改变意图的示例：
 
-![change intention](./assets/change_intention.png)
+![改变意图](./assets/change_intention.png)
 
-## Files
+## 文件
 
-- [`main.py`](./main.py): Entry point for the application and Gradio interface setup
-- [`flow.py`](./flow.py): Defines the PocketFlow graph and node connections
-- [`nodes.py`](./nodes.py): Contains the node definitions for the workflow
-- [`utils/`](./utils/): Contains utility functions and helper modules
-- [`requirements.txt`](./requirements.txt): Lists project dependencies
+- [`main.py`](./main.py)：应用程序和 Gradio 界面设置的入口点
+- [`flow.py`](./flow.py)：定义 PocketFlow 图和节点连接
+- [`nodes.py`](./nodes.py)：包含工作流的节点定义
+- [`utils/`](./utils/)：包含实用函数和辅助模块
+- [`requirements.txt`](./requirements.txt)：列出项目依赖项
 
-## Requirements
+## 要求
 
 - Python 3.8+
 - PocketFlow >= 0.0.2

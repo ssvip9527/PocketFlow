@@ -2,12 +2,12 @@ import os
 from flow import create_flow
 
 def create_sample_data():
-    """Create sample grade files."""
-    # Create directory structure
+    """创建示例成绩文件。"""
+    # 创建目录结构
     os.makedirs("school/class_a", exist_ok=True)
     os.makedirs("school/class_b", exist_ok=True)
     
-    # Sample grades
+    # 示例成绩
     data = {
         "class_a": {
             "student1.txt": [7.5, 8.0, 9.0],
@@ -19,7 +19,7 @@ def create_sample_data():
         }
     }
     
-    # Create files
+    # 创建文件
     for class_name, students in data.items():
         for student, grades in students.items():
             file_path = os.path.join("school", class_name, student)
@@ -28,15 +28,15 @@ def create_sample_data():
                     f.write(f"{grade}\n")
 
 def main():
-    """Run the nested batch example."""
-    # Create sample data
+    """运行嵌套批量示例。"""
+    # 创建示例数据
     create_sample_data()
     
-    print("Processing school grades...\n")
+    print("正在处理学校成绩...\n")
     
-    # Create and run flow
+    # 创建并运行流程
     flow = create_flow()
     flow.run({})
 
 if __name__ == "__main__":
-    main() 
+    main()

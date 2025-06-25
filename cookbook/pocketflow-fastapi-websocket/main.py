@@ -15,7 +15,7 @@ async def get_chat_interface():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     
-    # Initialize conversation history for this connection
+    # 为此连接初始化对话历史
     shared_store = {
         "websocket": websocket,
         "conversation_history": []
@@ -26,7 +26,7 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_text()
             message = json.loads(data)
             
-            # Update only the current message, keep conversation history
+            # 仅更新当前消息，保留对话历史
             shared_store["user_message"] = message.get("content", "")
             
             flow = create_streaming_chat_flow()
