@@ -6,7 +6,7 @@ nav_order: 1
 
 # Pocket Flow
 
-一个 [100 行](https://github.com/the-pocket/PocketFlow/blob/main/pocketflow/__init__.py) 的极简 LLM 框架，用于*智能体、任务分解、RAG 等*。
+一个 [100 行](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py) 的极简 LLM 框架，用于*智能体、任务分解、RAG 等*。
 
 - **轻量级**：核心图抽象仅 100 行。零依赖，无厂商锁定。
 - **富有表现力**：包含您喜爱的大型框架中的所有功能——（[多智能体](./design_pattern/multi_agent.html)）[智能体](./design_pattern/agent.html)、[工作流](./design_pattern/workflow.html)、[RAG](./design_pattern/rag.html) 等。

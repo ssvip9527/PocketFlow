@@ -2,9 +2,9 @@
   <img src="https://github.com/The-Pocket/.github/raw/main/assets/title.png" alt="Pocket Flow – 100-line minimalist LLM framework" width="600"/>
 </div>
 
-<!-- [English](https://github.com/The-Pocket/PocketFlow/blob/main/README.md) -->
+<!-- [English](https://github.com/ssvip9527/PocketFlow/blob/main/README.md) -->
 
-[English](https://github.com/The-Pocket/PocketFlow/blob/main/README.md) | [中文](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_CHINESE.md) | [Español](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_SPANISH.md) | [日本語](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_JAPANESE.md) | [Deutsch](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_GERMAN.md) | [Русский](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_RUSSIAN.md) | Português | [Français](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_FRENCH.md) | [한국어](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_KOREAN.md)
+[English](https://github.com/ssvip9527/PocketFlow/blob/main/README.md) | [中文](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_CHINESE.md) | [Español](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_SPANISH.md) | [日本語](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_JAPANESE.md) | [Deutsch](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_GERMAN.md) | [Русский](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_RUSSIAN.md) | Português | [Français](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_FRENCH.md) | [한국어](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_KOREAN.md)
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![Docs](https://img.shields.io/badge/docs-latest-blue)](https://the-pocket.github.io/PocketFlow/)
@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/discord/1346833819172601907?logo=discord&style=flat">
 </a>
 
-Pocket Flow é um framework minimalista para LLM com [apenas 100 linhas](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py)
+Pocket Flow é um framework minimalista para LLM com [apenas 100 linhas](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py)
 
 - **Leve**: Apenas 100 linhas. Zero inchaço, zero dependências, zero aprisionamento a fornecedores.
   
@@ -21,11 +21,11 @@ Pocket Flow é um framework minimalista para LLM com [apenas 100 linhas](https:/
 - **[Codificação Agêntica](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)**: Deixe que Agentes de IA (ex: Cursor AI) construam Agentes—aumento de produtividade de 10x!
 
 Comece com o Pocket Flow:
-- Para instalar, ```pip install pocketflow``` ou apenas copie o [código-fonte](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py) (apenas 100 linhas).
+- Para instalar, ```pip install pocketflow``` ou apenas copie o [código-fonte](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py) (apenas 100 linhas).
 - Para saber mais, consulte a [documentação](https://the-pocket.github.io/PocketFlow/). Para entender a motivação, leia a [história](https://zacharyhuang.substack.com/p/i-built-an-llm-framework-in-just).
-- Tem perguntas? Consulte este [Assistente de IA](https://chatgpt.com/g/g-677464af36588191b9eba4901946557b-pocket-flow-assistant), ou [crie uma issue!](https://github.com/The-Pocket/PocketFlow/issues/new)
+- Tem perguntas? Consulte este [Assistente de IA](https://chatgpt.com/g/g-677464af36588191b9eba4901946557b-pocket-flow-assistant), ou [crie uma issue!](https://github.com/ssvip9527/PocketFlow/issues/new)
 - 🎉 Junte-se ao nosso [Discord](https://discord.gg/hUHHE9Sa6T) para se conectar com outros desenvolvedores construindo com o Pocket Flow!
-- 🎉 O Pocket Flow é inicialmente em Python, mas agora temos versões em [Typescript](https://github.com/The-Pocket/PocketFlow-Typescript), [Java](https://github.com/The-Pocket/PocketFlow-Java), [C++](https://github.com/The-Pocket/PocketFlow-CPP) e [Go](https://github.com/The-Pocket/PocketFlow-Go)!
+- 🎉 O Pocket Flow é inicialmente em Python, mas agora temos versões em [Typescript](https://github.com/ssvip9527/PocketFlow-Typescript), [Java](https://github.com/ssvip9527/PocketFlow-Java), [C++](https://github.com/ssvip9527/PocketFlow-CPP) e [Go](https://github.com/ssvip9527/PocketFlow-Go)!
 
 ## Por que Pocket Flow?
 
@@ -48,7 +48,7 @@ Os frameworks LLM atuais são pesados... Você só precisa de 100 linhas para um
 
 ## Como funciona o Pocket Flow?
 
-As [100 linhas](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py) capturam a abstração central dos frameworks LLM: o Grafo!
+As [100 linhas](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py) capturam a abstração central dos frameworks LLM: o Grafo!
 <br>
 <div align="center">
   <img src="https://github.com/The-Pocket/.github/raw/main/assets/abstraction.png" width="900"/>
@@ -67,30 +67,30 @@ A partir daí, é fácil implementar padrões de design populares como ([Multi-]
   
 |  Nome  | Dificuldade    |  Descrição  |  
 | :-------------:  | :-------------: | :--------------------- |  
-| [Chat](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat) | ☆☆☆ <br> *Básico*   | Um chatbot básico com histórico de conversação |
-| [Saída Estruturada](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-structured-output) | ☆☆☆ <br> *Básico* | Extraindo dados estruturados de currículos por prompt |
-| [Fluxo de Trabalho](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-workflow) | ☆☆☆ <br> *Básico*   | Um fluxo de escrita que esboça, escreve conteúdo e aplica estilo |
-| [Agente](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-agent) | ☆☆☆ <br> *Básico*   | Um agente de pesquisa que pode buscar na web e responder perguntas |
-| [RAG](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-rag) | ☆☆☆ <br> *Básico*   | Um processo simples de Geração Aumentada por Recuperação |
-| [Processamento em Lote](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-batch) | ☆☆☆ <br> *Básico* | Um processador em lote que traduz conteúdo markdown para vários idiomas |
-| [Streaming](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-llm-streaming) | ☆☆☆ <br> *Básico*   | Uma demonstração de streaming LLM em tempo real com capacidade de interrupção pelo usuário |
-| [Guardrail de Chat](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat-guardrail) | ☆☆☆ <br> *Básico*  | Um chatbot de consultoria de viagens que processa apenas consultas relacionadas a viagens |
-| [Map-Reduce](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-map-reduce) | ★☆☆ <br> *Iniciante* | Um processador de qualificação de currículos usando o padrão map-reduce para avaliação em lote |
-| [Multi-Agente](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-multi-agent) | ★☆☆ <br> *Iniciante* | Um jogo de Tabu para comunicação assíncrona entre dois agentes |
-| [Supervisor](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-supervisor) | ★☆☆ <br> *Iniciante* | O agente de pesquisa está ficando pouco confiável... Vamos criar um processo de supervisão |
-| [Paralelo](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch) | ★☆☆ <br> *Iniciante*   | Uma demonstração de execução paralela que mostra um aumento de velocidade de 3x |
-| [Fluxo Paralelo](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch-flow) | ★☆☆ <br> *Iniciante*   | Uma demonstração de processamento de imagem paralelo mostrando um aumento de velocidade de 8x com múltiplos filtros |
-| [Voto Majoritário](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-majority-vote) | ★☆☆ <br> *Iniciante* | Melhore a precisão de raciocínio agregando múltiplas tentativas de solução |
-| [Pensamento](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-thinking) | ★☆☆ <br> *Iniciante*   | Resolva problemas complexos de raciocínio através de Cadeia-de-Pensamento |
-| [Memória](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat-memory) | ★☆☆ <br> *Iniciante* | Um chatbot com memória de curto e longo prazo |
-| [Text2SQL](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-text2sql) | ★☆☆ <br> *Iniciante* | Converta linguagem natural para consultas SQL com um loop de autodepuração |
-| [MCP](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-mcp) | ★☆☆ <br> *Iniciante* | Agente usando o Protocolo de Contexto de Modelo para operações numéricas |
-| [A2A](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-a2a) | ★☆☆ <br> *Iniciante* | Agente envolvido com o protocolo Agente-para-Agente para comunicação entre agentes |
-| [Web HITL](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-web-hitl) | ★☆☆ <br> *Iniciante* | Um serviço web mínimo para um loop de revisão humana com atualizações SSE |
+| [Chat](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat) | ☆☆☆ <br> *Básico*   | Um chatbot básico com histórico de conversação |
+| [Saída Estruturada](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-structured-output) | ☆☆☆ <br> *Básico* | Extraindo dados estruturados de currículos por prompt |
+| [Fluxo de Trabalho](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-workflow) | ☆☆☆ <br> *Básico*   | Um fluxo de escrita que esboça, escreve conteúdo e aplica estilo |
+| [Agente](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-agent) | ☆☆☆ <br> *Básico*   | Um agente de pesquisa que pode buscar na web e responder perguntas |
+| [RAG](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-rag) | ☆☆☆ <br> *Básico*   | Um processo simples de Geração Aumentada por Recuperação |
+| [Processamento em Lote](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-batch) | ☆☆☆ <br> *Básico* | Um processador em lote que traduz conteúdo markdown para vários idiomas |
+| [Streaming](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-llm-streaming) | ☆☆☆ <br> *Básico*   | Uma demonstração de streaming LLM em tempo real com capacidade de interrupção pelo usuário |
+| [Guardrail de Chat](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat-guardrail) | ☆☆☆ <br> *Básico*  | Um chatbot de consultoria de viagens que processa apenas consultas relacionadas a viagens |
+| [Map-Reduce](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-map-reduce) | ★☆☆ <br> *Iniciante* | Um processador de qualificação de currículos usando o padrão map-reduce para avaliação em lote |
+| [Multi-Agente](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-multi-agent) | ★☆☆ <br> *Iniciante* | Um jogo de Tabu para comunicação assíncrona entre dois agentes |
+| [Supervisor](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-supervisor) | ★☆☆ <br> *Iniciante* | O agente de pesquisa está ficando pouco confiável... Vamos criar um processo de supervisão |
+| [Paralelo](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch) | ★☆☆ <br> *Iniciante*   | Uma demonstração de execução paralela que mostra um aumento de velocidade de 3x |
+| [Fluxo Paralelo](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch-flow) | ★☆☆ <br> *Iniciante*   | Uma demonstração de processamento de imagem paralelo mostrando um aumento de velocidade de 8x com múltiplos filtros |
+| [Voto Majoritário](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-majority-vote) | ★☆☆ <br> *Iniciante* | Melhore a precisão de raciocínio agregando múltiplas tentativas de solução |
+| [Pensamento](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-thinking) | ★☆☆ <br> *Iniciante*   | Resolva problemas complexos de raciocínio através de Cadeia-de-Pensamento |
+| [Memória](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat-memory) | ★☆☆ <br> *Iniciante* | Um chatbot com memória de curto e longo prazo |
+| [Text2SQL](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-text2sql) | ★☆☆ <br> *Iniciante* | Converta linguagem natural para consultas SQL com um loop de autodepuração |
+| [MCP](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-mcp) | ★☆☆ <br> *Iniciante* | Agente usando o Protocolo de Contexto de Modelo para operações numéricas |
+| [A2A](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-a2a) | ★☆☆ <br> *Iniciante* | Agente envolvido com o protocolo Agente-para-Agente para comunicação entre agentes |
+| [Web HITL](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-web-hitl) | ★☆☆ <br> *Iniciante* | Um serviço web mínimo para um loop de revisão humana com atualizações SSE |
 
 </div>
 
-👀 Quer ver outros tutoriais para iniciantes? [Crie uma issue!](https://github.com/The-Pocket/PocketFlow/issues/new)
+👀 Quer ver outros tutoriais para iniciantes? [Crie uma issue!](https://github.com/ssvip9527/PocketFlow/issues/new)
 
 ## Como usar o Pocket Flow?
 
@@ -122,4 +122,4 @@ A partir daí, é fácil implementar padrões de design populares como ([Multi-]
 
   - Confira [meu YouTube](https://www.youtube.com/@ZacharyLLM?sub_confirmation=1) para tutoriais em vídeo sobre como alguns dos aplicativos acima são feitos!
 
-  - Quer construir seu próprio aplicativo LLM? Leia este [post](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)! Comece com [este modelo](https://github.com/The-Pocket/PocketFlow-Template-Python)!
+  - Quer construir seu próprio aplicativo LLM? Leia este [post](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)! Comece com [este modelo](https://github.com/ssvip9527/PocketFlow-Template-Python)!

@@ -2,9 +2,9 @@
   <img src="https://github.com/The-Pocket/.github/raw/main/assets/title.png" alt="Pocket Flow – 100-line minimalist LLM framework" width="600"/>
 </div>
 
-<!-- [English](https://github.com/The-Pocket/PocketFlow/blob/main/README.md) -->
+<!-- [English](https://github.com/ssvip9527/PocketFlow/blob/main/README.md) -->
 
-[English](https://github.com/The-Pocket/PocketFlow/blob/main/README.md) | [中文](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_CHINESE.md) | [Español](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_SPANISH.md) | [日本語](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_JAPANESE.md) | [Deutsch](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_GERMAN.md) | [Русский](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_RUSSIAN.md) | [Português](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_PORTUGUESE.md) | [Français](https://github.com/The-Pocket/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_FRENCH.md) | 한국어
+[English](https://github.com/ssvip9527/PocketFlow/blob/main/README.md) | [中文](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_CHINESE.md) | [Español](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_SPANISH.md) | [日本語](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_JAPANESE.md) | [Deutsch](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_GERMAN.md) | [Русский](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_RUSSIAN.md) | [Português](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_PORTUGUESE.md) | [Français](https://github.com/ssvip9527/PocketFlow/blob/main/cookbook/pocketflow-batch/translations/README_FRENCH.md) | 한국어
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![Docs](https://img.shields.io/badge/docs-latest-blue)](https://the-pocket.github.io/PocketFlow/)
@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/discord/1346833819172601907?logo=discord&style=flat">
 </a>
 
-Pocket Flow는 [100줄](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py)의 미니멀리스트 LLM 프레임워크입니다
+Pocket Flow는 [100줄](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py)의 미니멀리스트 LLM 프레임워크입니다
 
 - **경량화**: 단 100줄. 불필요한 요소 없음, 의존성 없음, 벤더 종속성 없음.
   
@@ -21,11 +21,11 @@ Pocket Flow는 [100줄](https://github.com/The-Pocket/PocketFlow/blob/main/pocke
 - **[에이전트 코딩](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)**: AI 에이전트(예: Cursor AI)가 에이전트를 구축하도록 하세요—생산성 10배 향상!
 
 Pocket Flow 시작하기:
-- 설치하려면 ```pip install pocketflow```나 [소스 코드](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py)(단 100줄)를 복사하세요.
+- 설치하려면 ```pip install pocketflow```나 [소스 코드](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py)(단 100줄)를 복사하세요.
 - 더 알아보려면 [문서](https://the-pocket.github.io/PocketFlow/)를 확인하세요. 개발 동기에 대해 알고 싶다면 [이야기](https://zacharyhuang.substack.com/p/i-built-an-llm-framework-in-just)를 읽어보세요.
-- 질문이 있으신가요? [AI 어시스턴트](https://chatgpt.com/g/g-677464af36588191b9eba4901946557b-pocket-flow-assistant)를 확인하거나, [이슈를 생성하세요!](https://github.com/The-Pocket/PocketFlow/issues/new)
+- 질문이 있으신가요? [AI 어시스턴트](https://chatgpt.com/g/g-677464af36588191b9eba4901946557b-pocket-flow-assistant)를 확인하거나, [이슈를 생성하세요!](https://github.com/ssvip9527/PocketFlow/issues/new)
 - 🎉 Pocket Flow로 개발하는 다른 개발자들과 소통하려면 [Discord](https://discord.gg/hUHHE9Sa6T)에 가입하세요!
-- 🎉 Pocket Flow는 처음에 Python으로 개발되었지만, 이제 [Typescript](https://github.com/The-Pocket/PocketFlow-Typescript), [Java](https://github.com/The-Pocket/PocketFlow-Java), [C++](https://github.com/The-Pocket/PocketFlow-CPP) 및 [Go](https://github.com/The-Pocket/PocketFlow-Go) 버전도 있습니다!
+- 🎉 Pocket Flow는 처음에 Python으로 개발되었지만, 이제 [Typescript](https://github.com/ssvip9527/PocketFlow-Typescript), [Java](https://github.com/ssvip9527/PocketFlow-Java), [C++](https://github.com/ssvip9527/PocketFlow-CPP) 및 [Go](https://github.com/ssvip9527/PocketFlow-Go) 버전도 있습니다!
 
 ## 왜 Pocket Flow인가?
 
@@ -48,7 +48,7 @@ Pocket Flow 시작하기:
 
 ## Pocket Flow는 어떻게 작동하나요?
 
-[100줄](https://github.com/The-Pocket/PocketFlow/blob/main/pocketflow/__init__.py)의 코드는 LLM 프레임워크의 핵심 추상화인 그래프를 구현합니다!
+[100줄](https://github.com/ssvip9527/PocketFlow/blob/main/pocketflow/__init__.py)의 코드는 LLM 프레임워크의 핵심 추상화인 그래프를 구현합니다!
 <br>
 <div align="center">
   <img src="https://github.com/The-Pocket/.github/raw/main/assets/abstraction.png" width="900"/>
@@ -67,30 +67,30 @@ Pocket Flow 시작하기:
   
 |  이름  | 난이도    |  설명  |  
 | :-------------:  | :-------------: | :--------------------- |  
-| [채팅](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat) | ☆☆☆ <br> *초보*   | 대화 기록을 가진 기본 채팅봇 |
-| [구조화된 출력](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-structured-output) | ☆☆☆ <br> *초보* | 프롬프트를 통해 이력서에서 구조화된 데이터 추출 |
-| [워크플로우](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-workflow) | ☆☆☆ <br> *초보*   | 개요 작성, 내용 작성, 스타일 적용이 포함된 작성 워크플로우 |
-| [에이전트](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-agent) | ☆☆☆ <br> *초보*   | 웹을 검색하고 질문에 답할 수 있는 연구 에이전트 |
-| [RAG](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-rag) | ☆☆☆ <br> *초보*   | 간단한 검색 증강 생성 프로세스 |
-| [배치](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-batch) | ☆☆☆ <br> *초보* | 마크다운 콘텐츠를 여러 언어로 번역하는 배치 프로세서 |
-| [스트리밍](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-llm-streaming) | ☆☆☆ <br> *초보*   | 사용자 중단 기능이 있는 실시간 LLM 스트리밍 데모 |
-| [채팅 가드레일](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat-guardrail) | ☆☆☆ <br> *초보*  | 여행 관련 쿼리만 처리하는 여행 상담 채팅봇 |
-| [맵-리듀스](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-map-reduce) | ★☆☆ <br> *초급* | 배치 평가를 위한 맵-리듀스 패턴을 사용하는 이력서 자격 처리기 |
-| [멀티-에이전트](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-multi-agent) | ★☆☆ <br> *초급* | 두 에이전트 간의 비동기 통신을 위한 금지어 게임 |
-| [감독자](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-supervisor) | ★☆☆ <br> *초급* | 연구 에이전트가 불안정할 때... 감독 프로세스를 구축해 봅시다 |
-| [병렬](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch) | ★☆☆ <br> *초급*   | 3배 속도 향상을 보여주는 병렬 실행 데모 |
-| [병렬 플로우](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch-flow) | ★☆☆ <br> *초급*   | 여러 필터를 사용한 8배 속도 향상을 보여주는 병렬 이미지 처리 데모 |
-| [다수결 투표](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-majority-vote) | ★☆☆ <br> *초급* | 여러 솔루션 시도를 집계하여 추론 정확도 향상 |
-| [사고](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-thinking) | ★☆☆ <br> *초급*   | Chain-of-Thought를 통한 복잡한 추론 문제 해결 |
-| [메모리](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-chat-memory) | ★☆☆ <br> *초급* | 단기 및 장기 메모리가 있는 채팅봇 |
-| [Text2SQL](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-text2sql) | ★☆☆ <br> *초급* | 자동 디버그 루프가 있는 자연어에서 SQL 쿼리로 변환 |
-| [MCP](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-mcp) | ★☆☆ <br> *초급* | 수치 연산을 위한 모델 컨텍스트 프로토콜을 사용하는 에이전트 |
-| [A2A](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-a2a) | ★☆☆ <br> *초급* | 에이전트 간 통신을 위한 Agent-to-Agent 프로토콜로 래핑된 에이전트 |
-| [웹 HITL](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-web-hitl) | ★☆☆ <br> *초급* | SSE 업데이트가 있는 인간 검토 루프를 위한 최소한의 웹 서비스 |
+| [채팅](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat) | ☆☆☆ <br> *초보*   | 대화 기록을 가진 기본 채팅봇 |
+| [구조화된 출력](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-structured-output) | ☆☆☆ <br> *초보* | 프롬프트를 통해 이력서에서 구조화된 데이터 추출 |
+| [워크플로우](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-workflow) | ☆☆☆ <br> *초보*   | 개요 작성, 내용 작성, 스타일 적용이 포함된 작성 워크플로우 |
+| [에이전트](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-agent) | ☆☆☆ <br> *초보*   | 웹을 검색하고 질문에 답할 수 있는 연구 에이전트 |
+| [RAG](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-rag) | ☆☆☆ <br> *초보*   | 간단한 검색 증강 생성 프로세스 |
+| [배치](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-batch) | ☆☆☆ <br> *초보* | 마크다운 콘텐츠를 여러 언어로 번역하는 배치 프로세서 |
+| [스트리밍](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-llm-streaming) | ☆☆☆ <br> *초보*   | 사용자 중단 기능이 있는 실시간 LLM 스트리밍 데모 |
+| [채팅 가드레일](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat-guardrail) | ☆☆☆ <br> *초보*  | 여행 관련 쿼리만 처리하는 여행 상담 채팅봇 |
+| [맵-리듀스](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-map-reduce) | ★☆☆ <br> *초급* | 배치 평가를 위한 맵-리듀스 패턴을 사용하는 이력서 자격 처리기 |
+| [멀티-에이전트](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-multi-agent) | ★☆☆ <br> *초급* | 두 에이전트 간의 비동기 통신을 위한 금지어 게임 |
+| [감독자](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-supervisor) | ★☆☆ <br> *초급* | 연구 에이전트가 불안정할 때... 감독 프로세스를 구축해 봅시다 |
+| [병렬](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch) | ★☆☆ <br> *초급*   | 3배 속도 향상을 보여주는 병렬 실행 데모 |
+| [병렬 플로우](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-parallel-batch-flow) | ★☆☆ <br> *초급*   | 여러 필터를 사용한 8배 속도 향상을 보여주는 병렬 이미지 처리 데모 |
+| [다수결 투표](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-majority-vote) | ★☆☆ <br> *초급* | 여러 솔루션 시도를 집계하여 추론 정확도 향상 |
+| [사고](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-thinking) | ★☆☆ <br> *초급*   | Chain-of-Thought를 통한 복잡한 추론 문제 해결 |
+| [메모리](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-chat-memory) | ★☆☆ <br> *초급* | 단기 및 장기 메모리가 있는 채팅봇 |
+| [Text2SQL](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-text2sql) | ★☆☆ <br> *초급* | 자동 디버그 루프가 있는 자연어에서 SQL 쿼리로 변환 |
+| [MCP](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-mcp) | ★☆☆ <br> *초급* | 수치 연산을 위한 모델 컨텍스트 프로토콜을 사용하는 에이전트 |
+| [A2A](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-a2a) | ★☆☆ <br> *초급* | 에이전트 간 통신을 위한 Agent-to-Agent 프로토콜로 래핑된 에이전트 |
+| [웹 HITL](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-web-hitl) | ★☆☆ <br> *초급* | SSE 업데이트가 있는 인간 검토 루프를 위한 최소한의 웹 서비스 |
 
 </div>
 
-👀 더 많은 초보자용 튜토리얼을 보고 싶으신가요? [이슈를 생성하세요!](https://github.com/The-Pocket/PocketFlow/issues/new)
+👀 더 많은 초보자용 튜토리얼을 보고 싶으신가요? [이슈를 생성하세요!](https://github.com/ssvip9527/PocketFlow/issues/new)
 
 ## Pocket Flow를 어떻게 사용하나요?
 
@@ -122,4 +122,4 @@ Pocket Flow 시작하기:
 
   - 위에 소개된 앱들이 어떻게 만들어졌는지 비디오 튜토리얼을 보려면 [제 YouTube](https://www.youtube.com/@ZacharyLLM?sub_confirmation=1)를 확인하세요!
 
-  - 자신만의 LLM 앱을 만들고 싶으신가요? 이 [포스트](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)를 읽어보세요! [이 템플릿](https://github.com/The-Pocket/PocketFlow-Template-Python)으로 시작하세요!
+  - 자신만의 LLM 앱을 만들고 싶으신가요? 이 [포스트](https://zacharyhuang.substack.com/p/agentic-coding-the-most-fun-way-to)를 읽어보세요! [이 템플릿](https://github.com/ssvip9527/PocketFlow-Template-Python)으로 시작하세요!

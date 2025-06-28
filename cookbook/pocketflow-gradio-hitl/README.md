@@ -13,7 +13,7 @@
 
 ## 入门
 
-该项目是 PocketFlow 烹饪书示例的一部分。假设您已经克隆了 [PocketFlow 仓库](https://github.com/the-pocket/PocketFlow) 并且位于 `cookbook/pocketflow-gradio-hitl` 目录中。
+该项目是 PocketFlow 烹饪书示例的一部分。假设您已经克隆了 [PocketFlow 仓库](https://github.com/ssvip9527/PocketFlow) 并且位于 `cookbook/pocketflow-gradio-hitl` 目录中。
 
 1. **安装所需依赖**：
     ```bash

@@ -8,7 +8,7 @@
 
 本项目结合了两个主要部分:
 
-1.  **PocketFlow代理逻辑:** 原始代理代码([`nodes.py`](nodes.py), [`utils.py`](utils.py), [`flow.py`](flow.py))定义了内部工作流程(决策->搜索->回答)。此代码直接取自[PocketFlow代理教程](https://github.com/The-Pocket/PocketFlow/tree/main/cookbook/pocketflow-agent)。
+1.  **PocketFlow代理逻辑:** 原始代理代码([`nodes.py`](nodes.py), [`utils.py`](utils.py), [`flow.py`](flow.py))定义了内部工作流程(决策->搜索->回答)。此代码直接取自[PocketFlow代理教程](https://github.com/ssvip9527/PocketFlow/tree/main/cookbook/pocketflow-agent)。
 2.  **A2A服务器封装:** 来自[google/A2A示例仓库](https://github.com/google/A2A/tree/main/samples/python)的代码(`common/`目录)提供了必要的基础设施，将代理托管为符合A2A标准的服务器。*注:对通用服务器/客户端代码进行了少量修改，添加了详细日志记录用于教学目的。*
 3.  **桥梁([`task_manager.py`](task_manager.py)):** 自定义的`PocketFlowTaskManager`类充当桥梁。它接收A2A请求(如`tasks/send`)，提取用户查询，运行PocketFlow的`agent_flow`，从流程的共享状态中获取最终结果，并将其打包回带有答案作为`Artifact`的A2A`Task`对象。
 
