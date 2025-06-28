@@ -70,6 +70,7 @@ class Node(BaseNode):
     def __init__(self, max_retries=1, wait=0):
         # 初始化节点，设置最大重试次数和重试间隔
         super().__init__()
+        self.cur_retry = 0
         self.max_retries, self.wait = max_retries, wait
 
     def exec_fallback(self, prep_res, exc):
@@ -79,7 +80,7 @@ class Node(BaseNode):
     def _exec(self, prep_res):
         # 内部执行方法，包含重试逻辑
         for self.cur_retry in range(self.max_retries):
-            try:
+            try: 
                 return self.exec(prep_res)
             except Exception as e:
                 # 如果是最后一次重试，则调用回退方法
@@ -88,6 +89,8 @@ class Node(BaseNode):
                 # 如果设置了等待时间，则暂停
                 if self.wait > 0:
                     time.sleep(self.wait)
+        raise Exception("Max retries reached")
+
 
 # BatchNode 类继承自 Node，用于批量处理数据
 class BatchNode(Node):
