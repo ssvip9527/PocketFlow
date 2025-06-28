@@ -24,17 +24,17 @@ def run_text_to_sql(natural_query, db_path=DB_FILE, max_debug_retries=3):
     print("=" * 45)
 
     flow = create_text_to_sql_flow()
-    flow.run(shared) # Let errors inside the loop be handled by the flow logic
+    flow.run(shared) # 让流程逻辑处理循环内的错误
 
-    # Check final state based on shared data
+    # 根据共享数据检查最终状态
     if shared.get("final_error"):
             print("\n=== Workflow Completed with Error ===")
             print(f"Error: {shared['final_error']}")
     elif shared.get("final_result") is not None:
             print("\n=== Workflow Completed Successfully ===")
-            # Result already printed by ExecuteSQL node
+            # 结果已经由ExecuteSQL节点打印
     else:
-            # Should not happen if flow logic is correct and covers all end states
+            # 如果流程逻辑正确且覆盖所有结束状态，这种情况不应该发生
             print("\n=== Workflow Completed (Unknown State) ===")
 
     print("=" * 36)

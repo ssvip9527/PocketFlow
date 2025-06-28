@@ -20,38 +20,38 @@ class DecideAction(Node):
         
         # 创建一个提示，帮助LLM决定下一步做什么，并使用正确的yaml格式
         prompt = f"""
-### CONTEXT
-You are a research assistant that can search the web.
-Question: {question}
-Previous Research: {context}
+### 上下文
+你是一个可以搜索网络的研究助手。
+问题: {question}
+先前研究: {context}
 
-### ACTION SPACE
+### 动作空间
 [1] search
-  Description: Look up more information on the web
-  Parameters:
-    - query (str): What to search for
+  描述: 在网络上查找更多信息
+  参数:
+    - query (str): 要搜索的内容
 
 [2] answer
-  Description: Answer the question with current knowledge
-  Parameters:
-    - answer (str): Final answer to the question
+  描述: 用当前知识回答问题
+  参数:
+    - answer (str): 问题的最终答案
 
-## NEXT ACTION
-Decide the next action based on the context and available actions.
-Return your response in this format:
+## 下一个动作
+根据上下文和可用动作决定下一个动作。
+按以下格式返回你的响应:
 
 ```yaml
 thinking: |
-    <your step-by-step reasoning process>
-action: search OR answer
-reason: <why you chose this action>
-answer: <if action is answer>
-search_query: <specific search query if action is search>
+    <你的逐步推理过程>
+action: search 或 answer
+reason: <为什么选择这个动作>
+answer: <如果动作是answer>
+search_query: <如果动作是search，具体的搜索查询>
 ```
-IMPORTANT: Make sure to:
-1. Use proper indentation (4 spaces) for all multi-line fields
-2. Use the | character for multi-line text fields
-3. Keep single-line fields without the | character
+重要提示: 确保:
+1. 对所有多行字段使用正确的缩进（4个空格）
+2. 对多行文本字段使用 | 字符
+3. 保持单行字段不使用 | 字符
 """
         
         # 调用LLM做出决定
@@ -112,13 +112,13 @@ class AnswerQuestion(Node):
         
         # 为LLM创建回答问题的提示
         prompt = f"""
-### CONTEXT
-Based on the following information, answer the question.
-Question: {question}
-Research: {context}
+### 上下文
+根据以下信息回答问题。
+问题: {question}
+研究: {context}
 
-## YOUR ANSWER:
-Provide a comprehensive answer using the research results.
+## 你的答案:
+使用研究结果提供全面的答案。
 """
         # 调用LLM生成答案
         answer = call_llm(prompt)

@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 DB_FILE = "ecommerce.db"
 
 def populate_database(db_file=DB_FILE):
-    """Creates and populates the SQLite database."""
+    """创建并填充SQLite数据库。"""
     if os.path.exists(db_file):
         os.remove(db_file)
         print(f"Removed existing database: {db_file}")
@@ -14,7 +14,7 @@ def populate_database(db_file=DB_FILE):
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
 
-    # Create Tables
+    # 创建表
     cursor.execute("""
     CREATE TABLE customers (
         customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,7 +66,7 @@ def populate_database(db_file=DB_FILE):
     """)
     print("Created 'order_items' table.")
 
-    # Insert Sample Data
+    # 插入示例数据
     customers_data = [
         ('Alice', 'Smith', 'alice.s@email.com', '2023-01-15', 'New York', 'USA'),
         ('Bob', 'Johnson', 'b.johnson@email.com', '2023-02-20', 'Los Angeles', 'USA'),
@@ -100,25 +100,25 @@ def populate_database(db_file=DB_FILE):
     orders_data = []
     start_date = datetime.now() - timedelta(days=60)
     order_statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
-    for i in range(1, 21): # Create 20 orders
+    for i in range(1, 21): # 创建20个订单
         customer_id = random.randint(1, 10)
         order_date = start_date + timedelta(days=random.randint(0, 59), hours=random.randint(0, 23))
         status = random.choice(order_statuses)
         shipping_address = f"{random.randint(100, 999)} Main St, Anytown"
-        orders_data.append((customer_id, order_date.strftime('%Y-%m-%d %H:%M:%S'), status, None, shipping_address)) # Total amount calculated later
+        orders_data.append((customer_id, order_date.strftime('%Y-%m-%d %H:%M:%S'), status, None, shipping_address)) # 总金额稍后计算
 
     cursor.executemany("INSERT INTO orders (customer_id, order_date, status, total_amount, shipping_address) VALUES (?, ?, ?, ?, ?)", orders_data)
     print(f"Inserted {len(orders_data)} orders.")
 
     order_items_data = []
-    order_totals = {} # Keep track of totals per order
+    order_totals = {} # 跟踪每个订单的总金额
     for order_id in range(1, 21):
         num_items = random.randint(1, 4)
         order_total = 0
         for _ in range(num_items):
             product_id = random.randint(1, 10)
             quantity = random.randint(1, 5)
-            # Get product price
+            # 获取产品价格
             cursor.execute("SELECT price FROM products WHERE product_id = ?", (product_id,))
             price_per_unit = cursor.fetchone()[0]
             order_items_data.append((order_id, product_id, quantity, price_per_unit))
@@ -128,7 +128,7 @@ def populate_database(db_file=DB_FILE):
     cursor.executemany("INSERT INTO order_items (order_id, product_id, quantity, price_per_unit) VALUES (?, ?, ?, ?)", order_items_data)
     print(f"Inserted {len(order_items_data)} order items.")
 
-    # Update order totals
+    # 更新订单总金额
     for order_id, total_amount in order_totals.items():
         cursor.execute("UPDATE orders SET total_amount = ? WHERE order_id = ?", (total_amount, order_id))
     print("Updated order totals.")

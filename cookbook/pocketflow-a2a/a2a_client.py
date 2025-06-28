@@ -1,32 +1,32 @@
 import asyncio
-import asyncclick as click # Using asyncclick for async main
+import asyncclick as click # 使用asyncclick进行异步主函数
 from uuid import uuid4
-import json # For potentially inspecting raw errors
+import json # 用于可能检查原始错误
 import anyio
 import functools
 import logging
 
-# Import from the common directory placed alongside this script
+# 从与此脚本并排的通用目录导入
 from common.client import A2AClient
 from common.types import (
     TaskState,
     A2AClientError,
-    TextPart, # Used to construct the message
-    JSONRPCResponse # Potentially useful for error checking
+    TextPart, # 用于构造消息
+    JSONRPCResponse # 可能用于错误检查
 )
 
-# --- Configure logging ---
-# Set level to INFO to see client requests and responses
-# Set level to DEBUG to see raw response bodies and SSE data lines
+# --- 配置日志记录 ---
+# 设置为INFO级别以查看客户端请求和响应
+# 设置为DEBUG级别以查看原始响应体和SSE数据行
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-# Optionally silence overly verbose libraries
+# 可选地静音过于冗长的库
 # logging.getLogger("httpx").setLevel(logging.WARNING)
 # logging.getLogger("httpcore").setLevel(logging.WARNING)
 
-# --- ANSI Colors (Optional but helpful) ---
+# --- ANSI颜色（可选但有用） ---
 C_RED = "\x1b[31m"
 C_GREEN = "\x1b[32m"
 C_YELLOW = "\x1b[33m"
@@ -45,7 +45,7 @@ def colorize(color, text):
 @click.command()
 @click.option(
     "--agent-url",
-    default="http://localhost:10003", # Default to the port used in server __main__
+    default="http://localhost:10003", # 默认为服务器__main__中使用的端口
     help="URL of the PocketFlow A2A agent server.",
 )
 async def cli(agent_url: str):
@@ -58,11 +58,11 @@ async def cli(agent_url: str):
     # 所以在这个最小客户端中我们跳过获取卡片。
     client = A2AClient(url=agent_url)
 
-    sessionId = uuid4().hex # Generate a new session ID for this run
+    sessionId = uuid4().hex # 为此次运行生成新的会话ID
     print(colorize(C_GRAY, f"Using Session ID: {sessionId}"))
 
     while True:
-        taskId = uuid4().hex # Generate a new task ID for each interaction
+        taskId = uuid4().hex # 为每次交互生成新的任务ID
         try:
             # 使用functools.partial准备提示函数调用
             prompt_func = functools.partial(
@@ -118,7 +118,7 @@ async def cli(agent_url: str):
                 # 从artifacts中提取答案(如PocketFlowTaskManager中的实现)
                 if task_result.artifacts:
                     try:
-                        # Find the first text part in the first artifact
+                        # 在第一个artifact中查找第一个文本部分
                         first_artifact = task_result.artifacts[0]
                         first_text_part = next(
                             (p for p in first_artifact.parts if isinstance(p, TextPart)),
@@ -147,7 +147,7 @@ async def cli(agent_url: str):
                 print(colorize(C_BOLD + C_WHITE, f"\nAgent Response:\n{final_answer}"))
 
             else:
-                # Should not happen if error is None
+                # 如果error为None，这种情况不应该发生
                 print(colorize(C_YELLOW, "Received response with no result and no error."))
 
         except A2AClientError as e:

@@ -3,13 +3,13 @@ import aiohttp
 from openai import AsyncOpenAI
 
 async def fetch_recipes(ingredient):
-    """Fetch recipes from an API asynchronously."""
+    """异步从API获取菜谱。"""
     print(f"Fetching recipes for {ingredient}...")
     
-    # Simulate API call with delay
+    # 模拟带延迟的API调用
     await asyncio.sleep(1)
     
-    # Mock recipes (in real app, would fetch from API)
+    # 模拟菜谱（在实际应用中，会从API获取）
     recipes = [
         f"{ingredient} Stir Fry",
         f"Grilled {ingredient} with Herbs",
@@ -21,25 +21,25 @@ async def fetch_recipes(ingredient):
     return recipes
 
 async def call_llm_async(prompt):
-    """Make async LLM call."""
+    """进行异步LLM调用。"""
     print("\nSuggesting best recipe...")
     
-    # Simulate LLM call with delay
+    # 模拟带延迟的LLM调用
     await asyncio.sleep(1)
     
-    # Mock LLM response (in real app, would call OpenAI)
+    # 模拟LLM响应（在实际应用中，会调用OpenAI）
     recipes = prompt.split(": ")[1].split(", ")
-    suggestion = recipes[1]  # Always suggest second recipe
+    suggestion = recipes[1]  # 总是建议第二个菜谱
     
     print(f"How about: {suggestion}")
     return suggestion
 
 async def get_user_input(prompt):
-    """Get user input asynchronously."""
-    # Create event loop to handle async input
+    """异步获取用户输入。"""
+    # 创建事件循环来处理异步输入
     loop = asyncio.get_event_loop()
     
-    # Get input in a non-blocking way
+    # 以非阻塞方式获取输入
     answer = await loop.run_in_executor(None, input, prompt)
 
     return answer.lower() 
