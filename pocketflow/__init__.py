@@ -70,7 +70,6 @@ class Node(BaseNode):
     def __init__(self, max_retries=1, wait=0):
         # 初始化节点，设置最大重试次数和重试间隔
         super().__init__()
-        self.cur_retry = 0
         self.max_retries, self.wait = max_retries, wait
 
     def exec_fallback(self, prep_res, exc):
@@ -79,12 +78,12 @@ class Node(BaseNode):
 
     def _exec(self, prep_res):
         # 内部执行方法，包含重试逻辑
-        for self.cur_retry in range(self.max_retries):
-            try: 
+        for cur_retry in range(self.max_retries):
+            try:
                 return self.exec(prep_res)
             except Exception as e:
                 # 如果是最后一次重试，则调用回退方法
-                if self.cur_retry == self.max_retries - 1:
+                if cur_retry == self.max_retries - 1:
                     return self.exec_fallback(prep_res, e)
                 # 如果设置了等待时间，则暂停
                 if self.wait > 0:
@@ -110,7 +109,8 @@ class Flow(BaseNode):
         self.start_node = start
         return start
 
-    def get_next_node(self, curr, action):
+    @staticmethod
+    def get_next_node(curr, action):
         # 获取当前节点的下一个后继节点
         nxt = curr.successors.get(action or "default")
         if not nxt and curr.successors:
@@ -122,7 +122,7 @@ class Flow(BaseNode):
         curr, p, last_action = copy.copy(self.start_node), (params or {**self.params}), None
         while curr:
             curr.set_params(p)
-            last_action = curr._run(shared)
+            last_action = curr.run(shared)
             curr = copy.copy(self.get_next_node(curr, last_action))
         return last_action
 
@@ -165,16 +165,17 @@ class AsyncNode(Node):
 
     async def _exec(self, prep_res):
         # 内部异步执行方法，包含重试逻辑
-        for i in range(self.max_retries):
+        for cur_retry in range(self.max_retries):
             try:
                 return await self.exec_async(prep_res)
             except Exception as e:
                 # 如果是最后一次重试，则调用异步回退方法
-                if i == self.max_retries - 1:
+                if cur_retry == self.max_retries - 1:
                     return await self.exec_fallback_async(prep_res, e)
                 # 如果设置了等待时间，则异步暂停
                 if self.wait > 0:
                     await asyncio.sleep(self.wait)
+        raise Exception("Max retries reached")
 
     async def run_async(self, shared):
         # 异步运行节点，如果存在后继节点则发出警告，建议使用 AsyncFlow
@@ -212,7 +213,7 @@ class AsyncFlow(Flow, AsyncNode):
         while curr:
             curr.set_params(p)
             # 根据节点类型选择同步或异步运行方法
-            last_action = await curr._run_async(shared) if isinstance(curr, AsyncNode) else curr._run(shared)
+            last_action = await curr._run_async(shared) if isinstance(curr, AsyncNode) else curr.run(shared)
             curr = copy.copy(self.get_next_node(curr, last_action))
         return last_action
 
